@@ -10,7 +10,11 @@ As fases a seguir são incrementais. Só avançar após validar a fase anterior 
 
 **Avaliação:** não deve ser possível avançar para fora do tabuleiro; um caminho bloqueado resulta em erro compreensível e possibilidade de corrigir o programa.
 
-## V0.2 — Repetir N vezes (`for`)
+## V0.2 — Coleta e decisões (escopo atualizado)
+
+A diretriz atual prioriza entidades genéricas, coleta, estado e `if/else`, com missões 07–12 e variantes determinísticas. Consulte [V02.md](V02.md) para o contrato e os critérios de aceite. As seis missões V0.1 continuam disponíveis.
+
+## Futuro — Repetir N vezes (`for`)
 
 **Mecânica:** bloco `Repita N vezes { ... }` com N pequeno e visualização do contador.
 
@@ -18,7 +22,7 @@ As fases a seguir são incrementais. Só avançar após validar a fase anterior 
 
 **Avaliação:** distinguir repetição do programa de velocidade de animação; permitir repetição de um bloco de comandos, não só de uma ação.
 
-## V0.3 — Decisão (`if/else`)
+## Decisões — contempladas na V0.2
 
 **Mecânica:** sensor booleano `caminhoLivreÀFrente`; blocos `Se... Senão...`. Criar cenários variáveis com posições de obstáculos distintas. Mesma solução deve passar nos cenários definidos.
 
