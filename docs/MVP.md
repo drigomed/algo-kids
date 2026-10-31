@@ -1,5 +1,7 @@
 # Escopo e aceite — MVP V0.1
 
+Documento histórico da primeira versão. Para a evolução de coleta e decisões, consulte [V02.md](V02.md); suas regras complementam e substituem o escopo antigo quando indicado.
+
 ## Resultado esperado
 
 Jogo HTML/CSS/JavaScript funcional, apresentável e jogável no navegador, com **programação sequencial** para guiar um robô no tabuleiro. É uma versão de experiência real, não apenas um mockup ou protótipo estático.

@@ -49,3 +49,66 @@
   .little-note{margin-top:12px!important}
   footer{padding:18px 0;flex-wrap:wrap;gap:6px}
 }
+
+/* V0.2: estado da missão e blocos estruturados. */
+[hidden]{display:none!important}
+#board{grid-template-columns:repeat(var(--columns,5),minmax(0,1fr));grid-template-rows:repeat(var(--rows,5),minmax(0,1fr))}
+#missions{grid-template-columns:repeat(6,minmax(0,1fr))}
+.collection-progress{margin-top:12px;padding:10px 12px;border-radius:10px;background:#eaf2e3;color:#37654c;font-size:13px;font-weight:bold;line-height:1.5}
+.entity{grid-area:1 / 1;position:relative;display:grid;place-items:center;font-size:clamp(20px,4vw,32px);color:#765fba;text-shadow:0 2px 0 #514487;line-height:1}
+.entity small{position:absolute;right:-8px;bottom:-8px;font-size:10px;background:#fff;color:#574680;text-shadow:none;border-radius:6px;padding:2px}
+.variant-tests{border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
+.variant-tests p{font-size:12px;color:#46674f}
+.variant-tests button{background:#e6eedb;border:1px solid #c9d8bd;border-radius:10px;min-height:44px;padding:10px 12px;margin:5px 6px 0 0;font-size:12px}
+#back-training{background:#f7f8f3}
+.palette:has(#add-if:not([hidden])){grid-template-columns:repeat(3,minmax(0,1fr))}
+.palette #add-if{grid-column:1 / -1;background:#eee6f8;border-color:#d9c7e9;color:#705091;min-height:48px;display:flex;align-items:center;justify-content:center;gap:12px}
+.palette #add-if b{margin:0;font-size:24px}
+.insertion-location{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:11px;color:#746180;padding:6px 0}
+.insertion-location span{flex:1;min-width:130px;line-height:1.5}
+.insertion-location button{min-height:44px;padding:7px 10px;background:#f1ebf7;border-radius:8px;font-size:11px}
+.insertion-location button[aria-pressed=true]{box-shadow:inset 0 0 0 2px #80619c}
+#editor-message{font-size:12px;color:#94642b;line-height:1.5}
+#editor-message:empty{display:none}
+#program{max-height:560px;max-height:clamp(260px,55svh,560px)}
+.condition-block{list-style:none;min-width:0;margin:7px;padding:10px;border:2px solid #d9cae6;border-radius:12px;background:#f4eef9}
+.condition-heading{display:flex;align-items:center;flex-wrap:wrap;gap:8px;color:#75508f;font-size:12px}
+.condition-heading>strong{font-size:16px}
+.condition-heading .row-controls{margin-left:auto}
+.condition-choice{display:block;margin-top:8px;font-size:11px;color:#705183}
+.condition-block select,.condition-block input{display:block;min-height:44px;width:100%;max-width:100%;border:1px solid #c6b3d6;border-radius:8px;padding:8px;background:#fff;color:#493854;font:inherit;margin-top:4px}
+.condition-block select:focus-visible,.condition-block input:focus-visible{outline:3px solid #b97b22;outline-offset:2px}
+.threshold-fields{display:grid;grid-template-columns:minmax(0,1fr) 82px;gap:8px;margin-top:8px;font-size:11px;color:#705183}
+.threshold-fields label{min-width:0}
+.branch{margin-top:10px;padding:8px;border-left:3px solid #b8cbb5;border-radius:6px;background:#f6faf1;min-width:0}
+.branch.else{background:#fff8ec;border-color:#dccaac}
+.branch-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;font-size:10px;color:#68785b}
+.branch.else>.branch-heading{color:#91764d}
+.branch-heading button{min-height:44px;padding:6px 8px;border-radius:8px;background:#fff;border:1px solid var(--line);font-size:11px}
+.branch-list{list-style:none;padding:0;margin:4px 0;min-width:0}
+.branch-list .command{margin:6px 0;flex-wrap:wrap}
+.branch-list .condition-block{margin:6px 0;padding:6px;border-width:1px}
+.branch-empty{font-size:11px;color:#839079;padding:10px 4px;line-height:1.5}
+.insertion-branch{outline:2px dashed #9475ad;outline-offset:-2px}
+.executing-branch{box-shadow:inset 0 0 0 3px #518864}
+.condition-block.active-block{border-color:#518864}
+.condition-block.active{box-shadow:0 0 0 2px #bdd8c1}
+.command{flex-wrap:wrap}
+.command>span:not(.command-number){min-width:0;flex:1}
+.row-controls{flex-shrink:0}
+@media(max-width:1000px){#missions{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:720px){
+  #missions{grid-template-columns:none}
+  .collection-progress{font-size:12px;padding:8px 10px;margin-top:8px}
+  .condition-block{margin:5px;padding:7px}
+  .branch{padding:6px}
+  .branch-list .branch{padding:6px 0 6px 2px}
+  .branch-list .condition-block{padding:6px 0;border-left:0;border-right:0}
+  .condition-heading .row-controls button{min-width:44px;min-height:44px}
+  .threshold-fields{grid-template-columns:minmax(0,1fr) 76px;gap:6px}
+  .condition-block select{font-size:16px}
+  .condition-block input{font-size:16px}
+  .variant-tests button{width:100%;margin-right:0}
+}
+
+.mission.selected.completed>span{color:white}
