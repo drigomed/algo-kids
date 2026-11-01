@@ -1,3 +1,4 @@
+import {objectProperties} from './properties.js';
 import {escapeHtml as h} from './html.js';
 import {commandOption,explicitTypes} from './commands.js';
 import {conditionQuestion} from './condition-options.js';
@@ -13,7 +14,7 @@ export function renderExplicitCommand(mission,node,key,controls,active,disabled)
  const option=commandOption(mission,node),lock=disabled?'disabled':'';
  const choices=(mission.commandOptions??[]).filter(item=>item.node.type===node.type);
  const values=option?.values;
- return `<li class="explicit-command ${node.type} ${active?'active':''}" ${active?'aria-current="step"':''}><div class="explicit-heading"><strong>${icons[node.type]} ${titles[node.type]}</strong>${controls}</div><label>Ação<select data-field="command-option" data-path="${key}" ${lock}>${choices.map(item=>`<option value="${h(item.id)}" ${item.id===option?.id?'selected':''}>${h(item.label)}</option>`).join('')}</select></label>${values?`<label>Valor<select data-field="command-value" data-path="${key}" ${lock}>${values.map((item,index)=>`<option value="${index}" ${item.value===node.value?'selected':''}>${h(item.label)}</option>`).join('')}</select></label>`:''}<p class="reach-note">${node.type==='interact'?node.relativeTo==='front'?'Alcance: casa à frente':'Alcance: casa atual':node.type==='inspect'?'Observa a casa à frente e guarda uma cópia':'Escreve apenas na memória do robô'}</p></li>`;
+ return `<li class="explicit-command ${node.type} ${active?'active':''}" ${active?'aria-current="step"':''}><div class="explicit-heading"><strong>${icons[node.type]} ${titles[node.type]}</strong>${controls}</div><label>Ação<select data-field="command-option" data-path="${key}" ${lock}>${choices.map(item=>`<option value="${h(item.id)}" ${item.id===option?.id?'selected':''}>${h(item.label)}</option>`).join('')}</select></label>${values?`<label>Valor<select data-field="command-value" data-path="${key}" ${lock}>${values.map((item,index)=>`<option value="${index}" ${item.value===node.value?'selected':''}>${h(item.label)}</option>`).join('')}</select></label>`:''}<p class="reach-note">${h(commandDescription(mission,node))}</p></li>`;
 }
 export function memoryName(mission,variable) { return mission.presentation?.memory?.[variable]?.label??`Informação ${Object.keys(mission.robotMemory??{}).indexOf(variable)+1}`; }
 function memoryValueLabel(mission,name,value) {
@@ -33,7 +34,7 @@ export function failureMessage(mission,state) {
 }
 export function commandMessages(mission,state) {
  return state.events.flatMap(event=>{
-  if(event.type==='inspected'&&event.success)return [`Observei a casa à frente e guardei ${memoryValueLabel(mission,event.variable,event.value)} em ${memoryName(mission,event.variable)}.`];
+  if(event.type==='inspected'&&event.success)return [`Observei ${sourceLabels(mission,{type:'inspect',source:event.source,into:event.variable}).target} na casa ${event.source.relativeTo==='here'?'atual':'à frente'} e guardei ${memoryValueLabel(mission,event.variable,event.value)} em ${memoryName(mission,event.variable)}.`];
   if(event.type==='memoryWritten'&&event.success)return [`Guardei ${memoryValueLabel(mission,event.variable,event.value)} em ${memoryName(mission,event.variable)}. O mundo continua igual.`];
   if(event.type==='interacted'&&event.success)return [mission.presentation?.entities?.[event.entityId]?.interactionMessage??'Interação realizada! Observe o que mudou no mundo.'];
   return [];
@@ -46,3 +47,29 @@ export function renderDecisionTrace(mission,state) {
  return `<ol class="decision-trace" aria-label="Como o robô decidiu"><li><small>1 · PERGUNTA</small>${h(event.condition?conditionQuestion(mission,event.condition):'Já guardei essa informação?')}</li><li><small>2 · RESPOSTA</small>${failed?'Ainda não sei':event.result?'Sim':'Não'}</li><li><small>3 · CAMINHO</small>${failed?'Nenhum ramo executado':event.result?'ENTÃO':'SENÃO'}</li></ol>`;
 }
 export {explicitTypes};
+
+function sourceLabels(mission,node) {
+  const source=node.source??{},barrier=source.type==='barrierProperty';
+  const selector=barrier?source.barrierId:source.entityId??node.entityId;
+  const visual=(barrier?mission.presentation?.barriers:mission.presentation?.entities)?.[selector]??{};
+  const target=visual.label??(source.type==='cellProperty'?'a casa':barrier?'a passagem':'o objeto');
+  const property=visual.propertyLabels?.[source.property]??mission.presentation?.properties?.[source.property]?.label??'informação';
+  return {target,property};
+}
+export function commandDescription(mission,node) {
+  const {target,property}=sourceLabels(mission,node);
+  const reach=(node.type==='inspect'?node.source.relativeTo:node.relativeTo)==='here'?'casa atual':'casa à frente';
+  if(node.type==='inspect')return `Observar ${property} · ${target} · ${reach} → ${memoryName(mission,node.into)}`;
+  if(node.type==='interact')return `${commandOption(mission,node)?.label??'Interagir'} · ${target} · ${reach}`;
+  return `Guardar em ${memoryName(mission,node.variable)} · sem alterar o mundo`;
+}
+export function collisionMessage(mission,state) {
+  const event=state.events.find(e=>e.type==='collision');
+  const template=mission.presentation?.barriers?.[event?.barrierId]?.failureMessages?.[event?.reason]??mission.presentation?.failures?.[event?.reason];
+  if(template)return template.replace(/\{(actual|limit)\}/g,(_,key)=>event[key]===undefined?'?':String(event[key]));
+  return state.lastEvent==='boundary'?'Opa, o tabuleiro acaba aqui! Que tal mudar o caminho?':state.lastEvent==='barrier'?'Esta passagem está bloqueada para o estado atual. O programa parou.':'Uma rocha no caminho! Vamos tentar contornar?';
+}
+export function passageIndicators(mission,state) {
+  return (mission.barriers??[]).flatMap(barrier=>Object.entries(objectProperties(barrier,state)).map(([name,value])=>`${mission.presentation?.barriers?.[barrier.id]?.label??'Passagem'} · ${mission.presentation?.barriers?.[barrier.id]?.propertyLabels?.[name]??'Informação'}: ${typeof value==='boolean'?(value?'Sim':'Não'):value}`)).join(' | ');
+}
+export function resultLabel(category) {return {success:'Objetivo concluído',failure:'Programa interrompido',incomplete:'Programa incompleto',inProgress:'Em andamento'}[category];}

@@ -1,3 +1,4 @@
+import {demoMissionsV05} from './demo-missions-v05.js';
 import {reactiveMissions} from './reactive-missions.js';
 import {demoMissions} from './demo-missions.js';
 const make = (id,title,instructions,start,goal,obstacles,solution,hint) => ({id,title,instructions,grid:{width:5,height:5,obstacles:obstacles.map(([row,col])=>({row,col}))},start:{row:start[0],col:start[1],direction:start[2]},goal:{row:goal[0],col:goal[1]},solution:solution.split('').map(c=>({type:{A:'move',E:'turnLeft',D:'turnRight'}[c]})),hint});
@@ -73,3 +74,5 @@ export function missionVariants(mission) {
 
 missions.push(...reactiveMissions);
 missions.push(...demoMissions);
+
+missions.push(...demoMissionsV05);

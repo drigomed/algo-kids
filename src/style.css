@@ -154,3 +154,9 @@
 .entity.collectible{color:#8660ac}
 .cell.goal:has(.delivery) .star{align-self:start;justify-self:start;font-size:22px}
 @media(max-width:720px){.cell-feature{padding:1px;gap:1px;font-size:11px}.cell-feature small{font-size:7px}.barrier{font-size:22px}.world-state{font-size:12px}.value-fields select,.value-fields input{font-size:16px}}
+
+/* Restrições físicas e escolha inequívoca de objetos. */
+.failure-target{outline:3px solid #ae5945;outline-offset:-3px}.blocked-marker{position:absolute;right:2px;top:2px;z-index:3;background:#a94633;color:white;font-size:15px;font-weight:bold;border-radius:50%;width:21px;height:21px;text-align:center}
+.entity-stack{position:absolute;inset:4%;display:flex;flex-wrap:wrap;gap:2px;align-content:center;justify-content:center}.entity-stack .entity{font-size:18px;line-height:1;width:42%;height:42%;text-shadow:none;position:relative}.entity-stack .entity.interaction-target{outline-offset:0}
+.outcome-label{font-size:11px;font-weight:bold;color:#68745e;margin:12px 0 4px}#feedback[data-result=failure]{background:#fff1e7;color:#8b4b32}#feedback[data-result=incomplete]{background:#fff8df;color:#87723b}
+@media(max-width:720px){.barrier small{font-size:7px;line-height:1.2}.entity-stack .entity{font-size:17px}.reach-note{font-size:11px;overflow-wrap:anywhere}}

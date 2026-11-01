@@ -1,0 +1,428 @@
+{
+  "id": 21,
+  "title": "Observar e escolher um objeto",
+  "demo": true,
+  "instructions": "Inspecione a fechadura, guarde a informação e escolha um dos três objetos. Interagir com o objeto incorreto falha; a porta consulta o estado do mundo.",
+  "hint": "Os objetos estão na mesma casa. Use a ação que identifica o objeto escolhido. A informação da fechadura pode mudar entre os testes.",
+  "start": {
+    "row": 4,
+    "col": 0,
+    "direction": "L"
+  },
+  "goal": {
+    "row": 4,
+    "col": 3
+  },
+  "grid": {
+    "width": 5,
+    "height": 5,
+    "obstacles": [
+      {
+        "row": 3,
+        "col": 0
+      },
+      {
+        "row": 3,
+        "col": 1
+      },
+      {
+        "row": 3,
+        "col": 2
+      },
+      {
+        "row": 3,
+        "col": 3
+      },
+      {
+        "row": 3,
+        "col": 4
+      }
+    ]
+  },
+  "initialVariables": {
+    "cor": "vermelho",
+    "liberada": false,
+    "escolhida": ""
+  },
+  "robotMemory": {
+    "corNecessaria": {
+      "type": "string",
+      "initial": null
+    }
+  },
+  "entities": [
+    {
+      "id": "fechadura",
+      "row": 4,
+      "col": 1,
+      "collectible": false,
+      "onEnter": [],
+      "properties": {
+        "cor": {
+          "stateVariable": "cor"
+        }
+      }
+    },
+    {
+      "id": "opcao-vermelho",
+      "row": 4,
+      "col": 1,
+      "collectible": false,
+      "onEnter": [],
+      "properties": {
+        "cor": "vermelho"
+      },
+      "interactions": [
+        {
+          "id": "take",
+          "relativeTo": [
+            "front"
+          ],
+          "once": true,
+          "consume": true,
+          "when": {
+            "type": "stateEquals",
+            "variable": "cor",
+            "value": "vermelho"
+          },
+          "effects": [
+            {
+              "type": "set",
+              "variable": "escolhida",
+              "value": "vermelho"
+            },
+            {
+              "type": "set",
+              "variable": "liberada",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "opcao-azul",
+      "row": 4,
+      "col": 1,
+      "collectible": false,
+      "onEnter": [],
+      "properties": {
+        "cor": "azul"
+      },
+      "interactions": [
+        {
+          "id": "take",
+          "relativeTo": [
+            "front"
+          ],
+          "once": true,
+          "consume": true,
+          "when": {
+            "type": "stateEquals",
+            "variable": "cor",
+            "value": "azul"
+          },
+          "effects": [
+            {
+              "type": "set",
+              "variable": "escolhida",
+              "value": "azul"
+            },
+            {
+              "type": "set",
+              "variable": "liberada",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "opcao-verde",
+      "row": 4,
+      "col": 1,
+      "collectible": false,
+      "onEnter": [],
+      "properties": {
+        "cor": "verde"
+      },
+      "interactions": [
+        {
+          "id": "take",
+          "relativeTo": [
+            "front"
+          ],
+          "once": true,
+          "consume": true,
+          "when": {
+            "type": "stateEquals",
+            "variable": "cor",
+            "value": "verde"
+          },
+          "effects": [
+            {
+              "type": "set",
+              "variable": "escolhida",
+              "value": "verde"
+            },
+            {
+              "type": "set",
+              "variable": "liberada",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "barriers": [
+    {
+      "id": "passagem",
+      "row": 4,
+      "col": 2,
+      "passableWhen": {
+        "type": "stateEquals",
+        "variable": "liberada",
+        "value": true
+      },
+      "failureCode": "locked"
+    }
+  ],
+  "commandOptions": [
+    {
+      "id": "observarFechadura",
+      "label": "Inspecionar a cor da fechadura à frente",
+      "node": {
+        "type": "inspect",
+        "source": {
+          "type": "entityProperty",
+          "relativeTo": "front",
+          "property": "cor",
+          "entityId": "fechadura"
+        },
+        "into": "corNecessaria"
+      }
+    },
+    {
+      "id": "retirarvermelho",
+      "label": "Retirar a chave vermelha à frente",
+      "node": {
+        "type": "interact",
+        "relativeTo": "front",
+        "actionId": "take",
+        "entityId": "opcao-vermelho"
+      }
+    },
+    {
+      "id": "retirarazul",
+      "label": "Retirar a chave azul à frente",
+      "node": {
+        "type": "interact",
+        "relativeTo": "front",
+        "actionId": "take",
+        "entityId": "opcao-azul"
+      }
+    },
+    {
+      "id": "retirarverde",
+      "label": "Retirar a chave verde à frente",
+      "node": {
+        "type": "interact",
+        "relativeTo": "front",
+        "actionId": "take",
+        "entityId": "opcao-verde"
+      }
+    }
+  ],
+  "conditionOptions": [
+    {
+      "id": "corVermelha",
+      "label": "A cor observada é vermelha?",
+      "condition": {
+        "type": "memoryEquals",
+        "variable": "corNecessaria",
+        "value": "vermelho"
+      },
+      "values": [
+        {
+          "value": "vermelho",
+          "label": "Vermelha",
+          "question": "A cor observada é vermelha?"
+        }
+      ]
+    },
+    {
+      "id": "corAzul",
+      "label": "A cor observada é azul?",
+      "condition": {
+        "type": "memoryEquals",
+        "variable": "corNecessaria",
+        "value": "azul"
+      },
+      "values": [
+        {
+          "value": "azul",
+          "label": "Azul",
+          "question": "A cor observada é azul?"
+        }
+      ]
+    }
+  ],
+  "solution": [
+    {
+      "type": "inspect",
+      "source": {
+        "type": "entityProperty",
+        "relativeTo": "front",
+        "property": "cor",
+        "entityId": "fechadura"
+      },
+      "into": "corNecessaria"
+    },
+    {
+      "type": "if",
+      "condition": {
+        "type": "memoryEquals",
+        "variable": "corNecessaria",
+        "value": "vermelho"
+      },
+      "then": [
+        {
+          "type": "interact",
+          "relativeTo": "front",
+          "actionId": "take",
+          "entityId": "opcao-vermelho"
+        }
+      ],
+      "else": [
+        {
+          "type": "if",
+          "condition": {
+            "type": "memoryEquals",
+            "variable": "corNecessaria",
+            "value": "azul"
+          },
+          "then": [
+            {
+              "type": "interact",
+              "relativeTo": "front",
+              "actionId": "take",
+              "entityId": "opcao-azul"
+            }
+          ],
+          "else": [
+            {
+              "type": "interact",
+              "relativeTo": "front",
+              "actionId": "take",
+              "entityId": "opcao-verde"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "move"
+    },
+    {
+      "type": "move"
+    },
+    {
+      "type": "move"
+    }
+  ],
+  "variants": [
+    {
+      "id": "vermelho",
+      "label": "Fechadura vermelha",
+      "initialVariables": {
+        "cor": "vermelho",
+        "liberada": false,
+        "escolhida": ""
+      }
+    },
+    {
+      "id": "azul",
+      "label": "Fechadura azul",
+      "initialVariables": {
+        "cor": "azul",
+        "liberada": false,
+        "escolhida": ""
+      }
+    },
+    {
+      "id": "verde",
+      "label": "Fechadura verde",
+      "initialVariables": {
+        "cor": "verde",
+        "liberada": false,
+        "escolhida": ""
+      }
+    }
+  ],
+  "presentation": {
+    "memory": {
+      "corNecessaria": {
+        "label": "Cor observada",
+        "values": [
+          {
+            "value": "vermelho",
+            "label": "Vermelha"
+          },
+          {
+            "value": "azul",
+            "label": "Azul"
+          },
+          {
+            "value": "verde",
+            "label": "Verde"
+          }
+        ]
+      }
+    },
+    "entities": {
+      "fechadura": {
+        "label": "Fechadura",
+        "glyph": "▥",
+        "propertyLabels": {
+          "cor": "Cor requerida"
+        }
+      },
+      "opcao-vermelho": {
+        "label": "Chave vermelha",
+        "glyph": "■",
+        "role": "collectible",
+        "interactionMessage": "Você retirou a chave vermelha!",
+        "failureMessages": {
+          "preconditionFailed": "Esse objeto não corresponde à informação observada. O programa parou sem retirar nada."
+        }
+      },
+      "opcao-azul": {
+        "label": "Chave azul",
+        "glyph": "◆",
+        "role": "collectible",
+        "interactionMessage": "Você retirou a chave azul!",
+        "failureMessages": {
+          "preconditionFailed": "Esse objeto não corresponde à informação observada. O programa parou sem retirar nada."
+        }
+      },
+      "opcao-verde": {
+        "label": "Chave verde",
+        "glyph": "●",
+        "role": "collectible",
+        "interactionMessage": "Você retirou a chave verde!",
+        "failureMessages": {
+          "preconditionFailed": "Esse objeto não corresponde à informação observada. O programa parou sem retirar nada."
+        }
+      }
+    },
+    "barriers": {
+      "passagem": {
+        "label": "Porta"
+      }
+    },
+    "failures": {
+      "locked": "A passagem ainda está fechada. Observe e escolha um objeto antes de atravessar."
+    }
+  }
+}

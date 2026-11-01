@@ -38,7 +38,11 @@ Prioridade no mecanismo: inspect, setMemory, memoryEquals e interact com autoriz
 
 **Avaliação:** a missão não pode premiar um programa que só funciona na disposição visual inicial da porta.
 
-## V0.5 planejada — Múltiplos casos (`switch`)
+## V0.5 — Restrições físicas e alvos observáveis
+
+Comparações numéricas genéricas, propriedades de entidades/barreiras, passagem física avaliada em runtime e seleção explícita de alvo. As únicas demos novas (20–21) validam contratos; 01–19 ficam preservadas. O editor permite tentativas proibidas, que falham durante a execução. Consulte [V05.md](V05.md).
+
+## V0.6 planejada — Múltiplos casos (`switch`)
 
 **Mecânica:** sensor `corDoPiso` com alternativas e um caso padrão.
 
