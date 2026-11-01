@@ -18,6 +18,10 @@ A diretriz atual prioriza entidades genéricas, coleta, estado e `if/else`, com 
 
 Sensores ambientais à frente, igualdade estrita de estado, passagens dinâmicas e efeitos condicionais genéricos. Missões 13–16 com variantes determinísticas e perguntas guiadas; contratos e aceite em [V03.md](V03.md). Preserva 01–12, sem implementar repetição ou alterar publicação.
 
+## V0.4 — Interação, memória e variáveis
+
+Prioridade no mecanismo: inspect, setMemory, memoryEquals e interact com autorização declarativa, memória tipada independente do mundo, transações e melhorias do editor móvel. Preserva 01–16; os cenários 17–19 são demonstrações de contratos, não expansão do conteúdo. Consulte [V04.md](V04.md). Sem switch, for ou while.
+
 ## Futuro — Repetir N vezes (`for`)
 
 **Mecânica:** bloco `Repita N vezes { ... }` com N pequeno e visualização do contador.
@@ -34,7 +38,7 @@ Sensores ambientais à frente, igualdade estrita de estado, passagens dinâmicas
 
 **Avaliação:** a missão não pode premiar um programa que só funciona na disposição visual inicial da porta.
 
-## V0.4 — Múltiplos casos (`switch`)
+## V0.5 planejada — Múltiplos casos (`switch`)
 
 **Mecânica:** sensor `corDoPiso` com alternativas e um caso padrão.
 
@@ -42,7 +46,7 @@ Sensores ambientais à frente, igualdade estrita de estado, passagens dinâmicas
 
 **Avaliação:** testar cada cor e caso padrão relevante; dar feedback da condição avaliada.
 
-## V0.5 — Enquanto (`while`)
+## Futuro — Enquanto (`while`)
 
 **Mecânica:** `Enquanto condição { ... }`, avaliação a cada iteração e limite global de passos para interromper loops sem progresso.
 

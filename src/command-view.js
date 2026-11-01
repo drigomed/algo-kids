@@ -1,0 +1,48 @@
+import {escapeHtml as h} from './html.js';
+import {commandOption,explicitTypes} from './commands.js';
+import {conditionQuestion} from './condition-options.js';
+const titles={inspect:'Inspecionar',setMemory:'Guardar valor',interact:'Interagir'};
+const icons={inspect:'◉',setMemory:'▤',interact:'✋'};
+export function renderCommandPalette(mission,disabled=false,inlinePath) {
+ return (mission.commandOptions??[]).map(option=>`<button ${inlinePath===undefined?'data-command-option':'data-inline-option'}="${h(option.id)}" ${inlinePath===undefined?'':`data-target="${inlinePath}"`} ${disabled?'disabled':''}><b>${icons[option.node.type]}</b><span>${titles[option.node.type]}<small>${h(option.label)}</small></span></button>`).join('');
+}
+export function renderInlinePalette(mission,path) {
+ return `<div class="branch-tools" aria-label="Adicionar neste ramo">${[['move','↑ Avançar'],['turnLeft','↶ Esquerda'],['turnRight','↷ Direita'],...(mission.conditionOptions||mission.id>=9?[['if','◇ SE / SENÃO']]:[])].map(([type,label])=>`<button data-inline-add="${type}" data-target="${path}">${label}</button>`).join('')}${renderCommandPalette(mission,false,path)}</div>`;
+}
+export function renderExplicitCommand(mission,node,key,controls,active,disabled) {
+ const option=commandOption(mission,node),lock=disabled?'disabled':'';
+ const choices=(mission.commandOptions??[]).filter(item=>item.node.type===node.type);
+ const values=option?.values;
+ return `<li class="explicit-command ${node.type} ${active?'active':''}" ${active?'aria-current="step"':''}><div class="explicit-heading"><strong>${icons[node.type]} ${titles[node.type]}</strong>${controls}</div><label>Ação<select data-field="command-option" data-path="${key}" ${lock}>${choices.map(item=>`<option value="${h(item.id)}" ${item.id===option?.id?'selected':''}>${h(item.label)}</option>`).join('')}</select></label>${values?`<label>Valor<select data-field="command-value" data-path="${key}" ${lock}>${values.map((item,index)=>`<option value="${index}" ${item.value===node.value?'selected':''}>${h(item.label)}</option>`).join('')}</select></label>`:''}<p class="reach-note">${node.type==='interact'?node.relativeTo==='front'?'Alcance: casa à frente':'Alcance: casa atual':node.type==='inspect'?'Observa a casa à frente e guarda uma cópia':'Escreve apenas na memória do robô'}</p></li>`;
+}
+export function memoryName(mission,variable) { return mission.presentation?.memory?.[variable]?.label??`Informação ${Object.keys(mission.robotMemory??{}).indexOf(variable)+1}`; }
+function memoryValueLabel(mission,name,value) {
+ return mission.presentation?.memory?.[name]?.values?.find(item=>item.value===value)?.label??(typeof value==='boolean'?(value?'Sim':'Não'):value===''?'Texto vazio':String(value));
+}
+export function renderMemory(mission,state) {
+ const entries=Object.entries(state.memory??{});if(!entries.length)return '';
+ return `<section class="memory-card" aria-label="Memória do robô"><h3>▤ Memória do robô</h3><dl>${entries.map(([name,item])=>{
+  const changed=state.events.some(event=>['inspected','memoryWritten'].includes(event.type)&&event.variable===name&&event.success);
+  return `<div class="memory-field ${changed?'updated':''}"><dt>${h(memoryName(mission,name))}</dt><dd>${item.known?h(memoryValueLabel(mission,name,item.value)):'<span aria-label="Ainda não definido">?</span>'}</dd></div>`;
+ }).join('')}</dl></section>`;
+}
+const reasons={memoryUnknown:'Antes, descubra e guarde essa informação. Use Inspecionar ou Guardar valor.',outOfReach:'Chegue perto e olhe para a casa certa antes de usar esse comando.',propertyMissing:'Não encontrei essa informação na casa à frente. Confira a posição e a direção.',typeMismatch:'Essa informação não combina com o campo de memória. Tente outra fonte.',targetMissing:'Não há um objeto para essa ação aqui.',incompatibleTarget:'Esse objeto não aceita a ação escolhida nesse alcance.',ambiguousTarget:'Há mais de um objeto para a mesma ação. Escolha uma posição com um único alvo.',preconditionFailed:'Ainda falta cumprir uma condição para usar esse objeto.',alreadyUsed:'Essa ação já foi usada nesta tentativa. Reinicie para experimentar de novo.',targetConsumed:'Esse objeto já foi retirado nesta tentativa.',effectFailed:'Essa ação não pôde terminar. O mundo foi preservado; vamos tentar outro caminho.'};
+export function failureMessage(mission,state) {
+ const event=state.events.find(event=>event.type==='actionFailed');
+ return mission.presentation?.entities?.[event?.entityId]?.failureMessages?.[state.reason]??reasons[state.reason]??'Não foi possível realizar a ação. Confira o programa e tente de novo.';
+}
+export function commandMessages(mission,state) {
+ return state.events.flatMap(event=>{
+  if(event.type==='inspected'&&event.success)return [`Observei a casa à frente e guardei ${memoryValueLabel(mission,event.variable,event.value)} em ${memoryName(mission,event.variable)}.`];
+  if(event.type==='memoryWritten'&&event.success)return [`Guardei ${memoryValueLabel(mission,event.variable,event.value)} em ${memoryName(mission,event.variable)}. O mundo continua igual.`];
+  if(event.type==='interacted'&&event.success)return [mission.presentation?.entities?.[event.entityId]?.interactionMessage??'Interação realizada! Observe o que mudou no mundo.'];
+  return [];
+ });
+}
+export function renderDecisionTrace(mission,state) {
+ const event=state.events.find(event=>event.type==='condition'||(event.type==='actionFailed'&&event.action==='if'));
+ if(!event)return '';
+ const failed=event.type==='actionFailed';
+ return `<ol class="decision-trace" aria-label="Como o robô decidiu"><li><small>1 · PERGUNTA</small>${h(event.condition?conditionQuestion(mission,event.condition):'Já guardei essa informação?')}</li><li><small>2 · RESPOSTA</small>${failed?'Ainda não sei':event.result?'Sim':'Não'}</li><li><small>3 · CAMINHO</small>${failed?'Nenhum ramo executado':event.result?'ENTÃO':'SENÃO'}</li></ol>`;
+}
+export {explicitTypes};

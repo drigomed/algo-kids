@@ -1,8 +1,11 @@
 import {validateDecision} from './condition-options.js';
+import {assertJsonData,ExecutionFault,actionFailure} from './data.js';
+import {explicitTypes,validateCommand} from './commands.js';
 import {initialState, applyCommand, terminal, validateMission} from './world.js';
 import {evaluateCondition} from './rules.js';
 export const MAX_NODES = 300, MAX_DEPTH = 8, DEFAULT_LIMIT = 1000;
 export function validateProgram(program, mission) {
+  assertJsonData(program,'program');
   const pending = [{list: program, depth: 0}];
   let count = 0;
   while (pending.length) {
@@ -13,7 +16,8 @@ export function validateProgram(program, mission) {
       if (node.type === 'if') {
         validateDecision(node.condition, mission);
         pending.push({list: node.then, depth: depth + 1}, {list: node.else, depth: depth + 1});
-      } else if (!['move', 'turnLeft', 'turnRight'].includes(node.type)) throw new Error('Instrução não suportada');
+      } else if(explicitTypes.includes(node.type))validateCommand(node,mission);
+      else if (!['move', 'turnLeft', 'turnRight'].includes(node.type)) throw new Error('Instrução não suportada');
     }
   }
   return true;
@@ -38,7 +42,13 @@ export function stepExecution(mission, program, execution) {
   const activePath = [...frame.path, index], node = listAt(program, frame.path)[index];
   let state, decision = execution.decision;
   if (node.type === 'if') {
-    const result = evaluateCondition(mission, execution.state, node.condition), branch = result ? 'then' : 'else';
+    let result;
+    try { result=evaluateCondition(mission,execution.state,node.condition); }
+    catch(error) {
+      if(!(error instanceof ExecutionFault))throw error;
+      return {...execution,frames:[],activePath,decision:null,state:actionFailure({...execution.state,instructionPointer:execution.state.instructionPointer+1},error.reason,{action:'if',condition:structuredClone(node.condition),...error.details})};
+    }
+    const branch=result?'then':'else';
     decision = {path: activePath, branch, result};
     state = {...execution.state, status: 'running', instructionPointer: execution.state.instructionPointer + 1, lastEvent: 'condition', events: [{type: 'condition', result, branch, condition: structuredClone(node.condition)}]};
     frames.push({path: [...activePath, branch], index: 0});

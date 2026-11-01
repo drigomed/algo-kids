@@ -1,13 +1,14 @@
 # Instruções para Codex e agentes de desenvolvimento
 
-Leia `README.md`, `docs/PRODUCT.md`, `docs/ROADMAP.md`, `docs/MVP.md`, `docs/V02.md` e `docs/V03.md` antes de implementar.
+Leia `README.md`, `docs/PRODUCT.md`, `docs/ROADMAP.md`, `docs/MVP.md`, `docs/V02.md`, `docs/V03.md` e `docs/V04.md` antes de implementar.
 
 ## Produto
 - Jogo educativo de programação visual para criança de 6 anos, em pt-BR.
 - Conceito central: **a criança constrói um algoritmo, depois o robô executa**.
 - Preferir UX simples, agradável, visual, responsiva e acessível ao toque.
-- Preservar 01–12; V0.3 acrescenta sensores, estado, passagem dinâmica e interações nas missões 13–16. Não antecipar for, while ou switch.
+- Preservar integralmente 01–16. V0.4 prioriza memória e interação explícita; 17–19 são cenários demonstrativos, não conteúdo definitivo. Não antecipar for, while ou switch.
 - Motor genérico: ações, condições e regras de passagem não conhecem nomes de objetos. Aparência e mensagens pertencem aos dados das missões.
+- Mundo e memória são namespaces distintos. Comandos e perguntas precisam de autorização declarativa, verificada também no motor. Nenhuma falha de interação pode publicar efeitos parciais.
 
 ## Tecnologia
 - HTML/CSS/JavaScript (ES modules). Não introduzir React, backend ou serviços pagos sem justificativa explícita.

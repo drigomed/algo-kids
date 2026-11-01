@@ -1,13 +1,9 @@
+import {validVariable,scalar,record} from './data.js';
+export {validVariable,scalar,record} from './data.js';
+import {validateMemoryComparison,readMemory} from './memory.js';
 // Regras declarativas: nenhuma entidade, imagem ou variável específica do jogo.
 export const directions = ['N', 'L', 'S', 'O'];
 const vectors = [[-1, 0], [0, 1], [1, 0], [0, -1]];
-const reserved = new Set(['__proto__', 'prototype', 'constructor', 'collectedCount']);
-export function validVariable(name) {
-  return typeof name === 'string' && /^[A-Za-z][A-Za-z0-9_]{0,39}$/.test(name) && !reserved.has(name);
-}
-export function scalar(value) {
-  return ['string', 'boolean'].includes(typeof value) || (typeof value === 'number' && Number.isFinite(value));
-}
 export function frontCell(state) {
   const [dr, dc] = vectors[directions.indexOf(state.direction)];
   return {row: state.row + dr, col: state.col + dc};
@@ -24,11 +20,10 @@ export function cellProperties(mission, state, position) {
   const cell = (mission.grid.cells ?? []).find(c => c.row === position.row && c.col === position.col);
   return Object.fromEntries(Object.entries(cell?.properties ?? {}).map(([key,value]) => [key, scalar(value) ? value : state.variables[value.stateVariable]]));
 }
-export function record(value) { return value !== null && typeof value === 'object' && !Array.isArray(value); }
 function fields(value, allowed) {
   if (!record(value) || Object.keys(value).some(key => !allowed.includes(key))) throw new Error('Campos de regra inválidos');
 }
-export function validateCondition(condition, variables, depth = 0) {
+export function validateCondition(condition, variables, depth = 0, memory = {}) {
   if (!record(condition) || depth > 8) throw new Error('Condição inválida');
   switch (condition.type) {
     case 'pathClear': case 'atGoal': fields(condition, ['type']); return;
@@ -36,6 +31,9 @@ export function validateCondition(condition, variables, depth = 0) {
       fields(condition, ['type','variable','value']);
       if ((condition.variable !== 'collectedCount' && (!validVariable(condition.variable) || !Object.hasOwn(variables, condition.variable) || typeof variables[condition.variable] !== 'number')) || !Number.isFinite(condition.value)) throw new Error('Variável numérica ou limite inválido');
       return;
+    case 'memoryEquals':
+      fields(condition,['type','variable','value']);
+      validateMemoryComparison(condition,memory);return;
     case 'stateEquals':
       fields(condition, ['type','variable','value']);
       if (!validVariable(condition.variable) || !Object.hasOwn(variables, condition.variable) || !scalar(condition.value) || typeof condition.value !== typeof variables[condition.variable]) throw new Error('Comparação de estado inválida');
@@ -47,7 +45,7 @@ export function validateCondition(condition, variables, depth = 0) {
     case 'all':
       fields(condition, ['type','conditions']);
       if (!Array.isArray(condition.conditions) || !condition.conditions.length || condition.conditions.length > 20) throw new Error('Condições compostas inválidas');
-      condition.conditions.forEach(c => validateCondition(c, variables, depth + 1));
+      condition.conditions.forEach(c => validateCondition(c, variables, depth + 1, memory));
       return;
     default: throw new Error('Tipo de condição desconhecido');
   }
@@ -56,6 +54,7 @@ export function evaluateCondition(mission, state, condition) {
   switch (condition.type) {
     case 'pathClear': return pathClear(mission, state);
     case 'stateAtLeast': return (condition.variable === 'collectedCount' ? state.collectedCount : state.variables[condition.variable]) >= condition.value;
+    case 'memoryEquals': return readMemory(state,condition.variable) === condition.value;
     case 'stateEquals': return state.variables[condition.variable] === condition.value;
     case 'cellPropertyEquals': {
       const p = frontCell(state);
@@ -100,14 +99,14 @@ export function validatePassageCondition(condition, variables) {
   if (condition.type === 'all') condition.conditions.forEach(c => validatePassageCondition(c, variables));
   else if (!['stateEquals','stateAtLeast'].includes(condition.type)) throw new Error('Passagem exige condição de estado sem sensores');
 }
-export function validateEffects(effects, variables, depth = 0, budget = {count:0}) {
+export function validateEffects(effects, variables, depth = 0, budget = {count:0}, memory = {}) {
   if (!Array.isArray(effects) || depth > 8) throw new Error('Efeitos inválidos');
   for (const effect of effects) {
     if (++budget.count > 200) throw new Error('Muitos efeitos');
     if (record(effect) && Object.hasOwn(effect, 'when')) {
       fields(effect, ['when','actions']);
-      validateCondition(effect.when, variables);
-      validateEffects(effect.actions, variables, depth + 1, budget);
+      validateCondition(effect.when, variables, 0, memory);
+      validateEffects(effect.actions, variables, depth + 1, budget, memory);
     } else validateAction(effect, variables);
   }
 }
