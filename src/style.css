@@ -112,3 +112,18 @@
 }
 
 .mission.selected.completed>span{color:white}
+
+/* Mundo reativo: forma, rótulo e estado acompanham a cor. */
+.world-state{padding:9px 11px;margin-top:9px;background:#eff0fb;border-radius:10px;color:#5f5480;font-size:12px;line-height:1.6}
+.value-fields{display:block;margin-top:8px;font-size:12px;color:#705183}
+.cell-feature{position:absolute;top:2px;left:2px;z-index:2;display:flex;align-items:center;gap:2px;padding:2px 3px;border:1px solid currentColor;border-radius:4px;background:#fff;font-size:14px;line-height:1}
+.cell-feature small{font-size:8px;font-weight:bold}
+.cell-feature.green{color:#245c39}.cell-feature.red{color:#933c32}.cell-feature.amber{color:#85601d}.cell-feature.neutral{color:#655a78}
+.barrier{position:absolute;inset:8%;display:grid;place-content:center;text-align:center;border:2px dashed #659477;border-radius:6px;color:#3f7654;font-size:24px;line-height:1;background:#dfeddd80}
+.barrier.closed{border-style:solid;border-color:#a48a66;color:#7b5c3c;background:#ede0c5}
+.barrier small{font-size:8px;font-weight:bold}
+.entity.trigger{font-size:26px;color:#9b6e30;text-shadow:none;border-bottom:3px solid currentColor}
+.entity.delivery{font-size:28px;color:#4d6d9a;text-shadow:none;align-self:end;justify-self:end;z-index:1}
+.entity.collectible{color:#8660ac}
+.cell.goal:has(.delivery) .star{align-self:start;justify-self:start;font-size:22px}
+@media(max-width:720px){.cell-feature{padding:1px;gap:1px;font-size:11px}.cell-feature small{font-size:7px}.barrier{font-size:22px}.world-state{font-size:12px}.value-fields select,.value-fields input{font-size:16px}}

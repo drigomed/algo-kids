@@ -1,5 +1,6 @@
+import {validateDecision} from './condition-options.js';
 import {initialState, applyCommand, terminal, validateMission} from './world.js';
-import {validateCondition, evaluateCondition} from './rules.js';
+import {evaluateCondition} from './rules.js';
 export const MAX_NODES = 300, MAX_DEPTH = 8, DEFAULT_LIMIT = 1000;
 export function validateProgram(program, mission) {
   const pending = [{list: program, depth: 0}];
@@ -10,8 +11,7 @@ export function validateProgram(program, mission) {
     for (const node of list) {
       if (++count > MAX_NODES || !node) throw new Error('Programa muito grande ou inválido');
       if (node.type === 'if') {
-        if (!['pathClear', 'stateAtLeast'].includes(node.condition?.type)) throw new Error('Condição não disponível no editor');
-        validateCondition(node.condition, mission.initialVariables ?? {});
+        validateDecision(node.condition, mission);
         pending.push({list: node.then, depth: depth + 1}, {list: node.else, depth: depth + 1});
       } else if (!['move', 'turnLeft', 'turnRight'].includes(node.type)) throw new Error('Instrução não suportada');
     }
