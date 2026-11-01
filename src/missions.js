@@ -1,4 +1,5 @@
 import {reactiveMissions} from './reactive-missions.js';
+import {demoMissions} from './demo-missions.js';
 const make = (id,title,instructions,start,goal,obstacles,solution,hint) => ({id,title,instructions,grid:{width:5,height:5,obstacles:obstacles.map(([row,col])=>({row,col}))},start:{row:start[0],col:start[1],direction:start[2]},goal:{row:goal[0],col:goal[1]},solution:solution.split('').map(c=>({type:{A:'move',E:'turnLeft',D:'turnRight'}[c]})),hint});
 export const missions = [
 make(1,'Olá, estrela!','Leve o robô até a estrela. Um passo de cada vez!',[3,1,'L'],[3,4],[[1,1],[1,2],[1,3]],'AAA','O robô já está olhando para a estrela. Cada Avançar anda uma casa.'),
@@ -67,7 +68,8 @@ mission12.variants = [
 missions.push(mission9, mission10, mission11, mission12);
 export function missionVariants(mission) {
   const {variants, ...base} = mission;
-  return (variants ?? [{id:'principal', label:'Cenário principal'}]).map(variant => ({...base, ...structuredClone(variant), id:mission.id, variantId:variant.id, variantLabel:variant.label}));
+  return (variants ?? [{id:'principal', label:'Cenário principal'}]).map(variant => ({...base, ...structuredClone(variant), id:mission.id??variant.id, variantId:variant.id, variantLabel:variant.label??'Outro cenário'}));
 }
 
 missions.push(...reactiveMissions);
+missions.push(...demoMissions);

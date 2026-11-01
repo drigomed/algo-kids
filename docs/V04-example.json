@@ -1,0 +1,267 @@
+{
+  "id": 19,
+  "title": "Retirada e entrega",
+  "demo": true,
+  "instructions": "Guarde Sim na memória. Interaja para retirar o item e depois interaja na estação para entregá-lo.",
+  "hint": "Guardar uma intenção não muda o mundo. Retirar e entregar são duas ações explícitas diferentes.",
+  "start": {
+    "row": 4,
+    "col": 0,
+    "direction": "L"
+  },
+  "goal": {
+    "row": 4,
+    "col": 3
+  },
+  "grid": {
+    "width": 5,
+    "height": 5,
+    "obstacles": [
+      {
+        "row": 3,
+        "col": 0
+      },
+      {
+        "row": 3,
+        "col": 1
+      },
+      {
+        "row": 3,
+        "col": 2
+      },
+      {
+        "row": 3,
+        "col": 3
+      }
+    ]
+  },
+  "initialVariables": {
+    "carregando": false,
+    "entregue": false,
+    "confirmar": false
+  },
+  "robotMemory": {
+    "confirmar": {
+      "type": "boolean",
+      "initial": null
+    }
+  },
+  "entities": [
+    {
+      "id": "origem",
+      "row": 4,
+      "col": 1,
+      "collectible": false,
+      "onEnter": [],
+      "interactions": [
+        {
+          "id": "receive",
+          "relativeTo": [
+            "front"
+          ],
+          "once": true,
+          "consume": true,
+          "when": {
+            "type": "memoryEquals",
+            "variable": "confirmar",
+            "value": true
+          },
+          "effects": [
+            {
+              "type": "set",
+              "variable": "carregando",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "destino",
+      "row": 4,
+      "col": 3,
+      "collectible": false,
+      "onEnter": [],
+      "interactions": [
+        {
+          "id": "deliver",
+          "relativeTo": [
+            "here"
+          ],
+          "once": true,
+          "when": {
+            "type": "stateEquals",
+            "variable": "carregando",
+            "value": true
+          },
+          "effects": [
+            {
+              "type": "set",
+              "variable": "carregando",
+              "value": false
+            },
+            {
+              "type": "set",
+              "variable": "entregue",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "commandOptions": [
+    {
+      "id": "confirmar",
+      "label": "Guardar uma confirmação",
+      "node": {
+        "type": "setMemory",
+        "variable": "confirmar",
+        "value": true
+      },
+      "values": [
+        {
+          "value": true,
+          "label": "Sim"
+        },
+        {
+          "value": false,
+          "label": "Não"
+        }
+      ]
+    },
+    {
+      "id": "retirar",
+      "label": "Interagir para retirar à frente",
+      "node": {
+        "type": "interact",
+        "relativeTo": "front",
+        "actionId": "receive"
+      }
+    },
+    {
+      "id": "entregar",
+      "label": "Interagir para entregar aqui",
+      "node": {
+        "type": "interact",
+        "relativeTo": "here",
+        "actionId": "deliver"
+      }
+    }
+  ],
+  "conditionOptions": [
+    {
+      "id": "confirmado",
+      "label": "Guardei uma confirmação?",
+      "condition": {
+        "type": "memoryEquals",
+        "variable": "confirmar",
+        "value": true
+      },
+      "values": [
+        {
+          "value": true,
+          "label": "Sim",
+          "question": "Guardei uma confirmação?"
+        },
+        {
+          "value": false,
+          "label": "Não",
+          "question": "Guardei Não como resposta?"
+        }
+      ]
+    }
+  ],
+  "winCondition": {
+    "type": "stateEquals",
+    "variable": "entregue",
+    "value": true
+  },
+  "solution": [
+    {
+      "type": "setMemory",
+      "variable": "confirmar",
+      "value": true
+    },
+    {
+      "type": "interact",
+      "relativeTo": "front",
+      "actionId": "receive"
+    },
+    {
+      "type": "move"
+    },
+    {
+      "type": "move"
+    },
+    {
+      "type": "move"
+    },
+    {
+      "type": "interact",
+      "relativeTo": "here",
+      "actionId": "deliver"
+    }
+  ],
+  "presentation": {
+    "memory": {
+      "confirmar": {
+        "label": "Confirmação",
+        "values": [
+          {
+            "value": true,
+            "label": "Sim"
+          },
+          {
+            "value": false,
+            "label": "Não"
+          }
+        ]
+      }
+    },
+    "entities": {
+      "origem": {
+        "label": "Retirada",
+        "glyph": "▣",
+        "role": "collectible",
+        "interactionMessage": "Item retirado!"
+      },
+      "destino": {
+        "label": "Estação de entrega",
+        "glyph": "⌂",
+        "role": "delivery",
+        "interactionMessage": "Entrega concluída!"
+      }
+    },
+    "stateIndicators": [
+      {
+        "variable": "carregando",
+        "label": "Carregando",
+        "values": [
+          {
+            "value": true,
+            "label": "Sim"
+          },
+          {
+            "value": false,
+            "label": "Não"
+          }
+        ]
+      },
+      {
+        "variable": "entregue",
+        "label": "Entregue",
+        "values": [
+          {
+            "value": true,
+            "label": "Sim"
+          },
+          {
+            "value": false,
+            "label": "Não"
+          }
+        ]
+      }
+    ]
+  }
+}

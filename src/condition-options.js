@@ -1,5 +1,5 @@
 import {validateCondition, record} from './rules.js';
-export const decisionTypes = ['pathClear','stateAtLeast','stateEquals','cellPropertyEquals'];
+export const decisionTypes = ['pathClear','stateAtLeast','stateEquals','cellPropertyEquals','memoryEquals'];
 const signature = condition => JSON.stringify([condition.type,condition.variable,condition.relativeTo,condition.property]);
 export function conditionOptions(mission) {
   return mission.conditionOptions ?? [
@@ -23,13 +23,13 @@ export function validateConditionOptions(mission) {
     const key = signature(option.condition);
     if (signatures.has(key)) throw new Error('Perguntas ambíguas');
     signatures.add(key);
-    validateCondition(option.condition, mission.initialVariables ?? {});
+    validateCondition(option.condition, mission.initialVariables ?? {},0,mission.robotMemory??{});
     if (option.values !== undefined && (!Array.isArray(option.values) || !option.values.length || option.values.length > 30)) throw new Error('Opções inválidas');
     const values = valuesFor(option), seen = new Set();
     for (const value of values) {
       if (!record(value) || typeof value.label !== 'string' || typeof value.value !== typeof option.condition.value || seen.has(value.value) || (value.question !== undefined && typeof value.question !== 'string')) throw new Error('Valor de pergunta inválido');
       seen.add(value.value);
-      validateCondition({...option.condition,value:value.value}, mission.initialVariables ?? {});
+      validateCondition({...option.condition,value:value.value}, mission.initialVariables ?? {},0,mission.robotMemory??{});
     }
     if (typeof option.condition.value === 'string' && !values.length) throw new Error('Texto exige opções discretas');
     if (values.length && !values.some(value => value.value === option.condition.value)) throw new Error('Resposta padrão não está nas opções');
@@ -37,7 +37,8 @@ export function validateConditionOptions(mission) {
 }
 export function validateDecision(condition, mission) {
   if (!decisionTypes.includes(condition?.type)) throw new Error('Condição não disponível no editor');
-  validateCondition(condition, mission.initialVariables ?? {});
+  validateCondition(condition, mission.initialVariables ?? {},0,mission.robotMemory??{});
+  if(condition.type==='memoryEquals'&&!mission.conditionOptions)throw new Error('Pergunta de memória não autorizada');
   if (mission.conditionOptions) {
     const option = optionFor(mission,condition);
     if (!option || (valuesFor(option).length && !valuesFor(option).some(value=>value.value===condition.value))) throw new Error('Condição não autorizada nesta missão');

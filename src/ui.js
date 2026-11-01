@@ -1,3 +1,5 @@
+import {configureCommand} from './commands.js';
+import {renderCommandPalette,renderMemory,failureMessage,commandMessages,renderDecisionTrace} from './command-view.js';
 import {conditionOptions, valuesFor, defaultCondition, configureCondition} from './condition-options.js';
 import {missions} from './missions.js';
 import {createSession, stepSession, canStep, startVariantTests} from './session.js';
@@ -18,7 +20,9 @@ function edit(operation) {
   if (running) return;
   try {
     const next = editProgram(program, operation);
-    stop(); program = next; session = createSession(mission, program); target = [];
+    const nextSession=createSession(mission,next);
+    stop(); program=next; session=nextSession;
+    if(['remove','move'].includes(operation.type))target=[];
     editorMessage = ''; render();
   } catch (error) { editorMessage = error.message; render(); }
 }
@@ -30,10 +34,11 @@ function feedback() {
     won: session.completed ? 'Você conseguiu! Todas as versões desta missão passaram! ✨' : session.scenarioIndex === 0 ? 'Treino concluído! Agora teste o mesmo programa nas outras versões.' : 'Esta versão passou! Vamos observar a próxima.',
     collision: s.lastEvent === 'boundary' ? 'Opa, o tabuleiro acaba aqui! Que tal mudar o caminho?' : s.lastEvent === 'barrier' ? 'Esta passagem está fechada. Observe o estado e pense em outro caminho!' : 'Uma rocha no caminho! Vamos tentar contornar?',
     finished: 'Os comandos acabaram. Confira a meta e ajuste seu programa para chegar à estrela.',
+    actionFailed: failureMessage(scenario(),s),
     limit: 'Foram muitos passos! Vamos simplificar o programa e tentar de novo?'
   };
   if (session.completed && session.scenarios.length === 1) messages.won = 'Você conseguiu! A estrela é sua. Escolha outra missão! ✨';
-  const notices = eventMessages(scenario(),s);
+  const notices = [...eventMessages(scenario(),s),...commandMessages(scenario(),s)];
   if (s.events.some(e => e.type === 'goalIncomplete')) notices.push('A estrela está aqui, mas falta cumprir a meta. Você pode continuar o caminho!');
   if (!notices.length || s.status !== 'running') notices.push(messages[s.status]);
   return notices.join(' ');
@@ -43,21 +48,26 @@ function render() {
   // Preserve o foco e a rolagem dos componentes que não mudaram neste passo.
   const focus = document.activeElement;
   const focusPath = focus?.dataset.path, focusField = focus?.dataset.field;
+  const focusTarget=focus?.dataset.target, focusOption=focus?.dataset.commandOption;
   const listScroll = $('#program').scrollTop, missionScroll = $('#missions').scrollLeft;
   $('#missions').innerHTML = missions.map(m => `<button class="mission ${m === mission ? 'selected' : ''} ${completed.has(m.id) ? 'completed' : ''}" data-mission="${m.id}" aria-current="${m === mission ? 'step' : 'false'}"><span>${completed.has(m.id) ? '✓' : String(m.id).padStart(2,'0')}</span><div><small>MISSÃO ${String(m.id).padStart(2,'0')}</small><strong>${escapeHtml(m.title)}</strong></div></button>`).join('');
   $('#missions').scrollLeft = missionScroll;
-  $('#mission-number').textContent = `MISSÃO ${String(mission.id).padStart(2,'0')} / ${missions.length}`;
+  $('#mission-number').textContent = `${mission.demo?'DEMONSTRAÇÃO':'MISSÃO'} ${String(mission.id).padStart(2,'0')} / ${missions.length}`;
   $('#mission-title').textContent = mission.title;
-  $('#lesson-type').textContent = mission.id >= 13 ? 'MUNDO REATIVO' : mission.id >= 9 ? 'DECISÕES' : mission.id >= 7 ? 'COLETA' : 'SEQUÊNCIA';
+  $('#lesson-type').textContent = mission.demo ? 'CENÁRIO DEMO' : mission.id >= 13 ? 'MUNDO REATIVO' : mission.id >= 9 ? 'DECISÕES' : mission.id >= 7 ? 'COLETA' : 'SEQUÊNCIA';
   $('#instructions').textContent = mission.instructions;
   const board = $('#board');
   board.style.setProperty('--columns', current.grid.width);
   board.style.setProperty('--rows', current.grid.height);
   board.style.aspectRatio = `${current.grid.width} / ${current.grid.height}`;
-  const remaining = (current.entities ?? []).filter(e => !e.collectible || !s.collectedIds.includes(e.id));
+  const remaining = (current.entities ?? []).filter(e => !s.consumedIds.includes(e.id)&&(!e.collectible || !s.collectedIds.includes(e.id)));
   const location = p => `linha ${p.row + 1}, coluna ${p.col + 1}`;
   board.setAttribute('aria-label', `Tabuleiro ${current.grid.width} por ${current.grid.height}. Robô na ${location(s)}, olhando para ${{N:'norte',L:'leste',S:'sul',O:'oeste'}[s.direction]}. Estrela na ${location(current.goal)}. Obstáculos: ${current.grid.obstacles.map(location).join('; ') || 'nenhum'}. Objetos: ${remaining.map(location).join('; ') || 'nenhum'}. ${describeEnvironment(current,s)}.`);
-  board.innerHTML = renderBoard(current, s);
+  const activeNode=session.execution.activePath?.reduce((value,key)=>value?.[key],program);
+  board.innerHTML = renderBoard(current,s,activeNode);
+  $('#robot-memory').innerHTML=renderMemory(current,s);
+  $('#extra-commands').innerHTML=renderCommandPalette(current,running);
+  $('#decision-trace').innerHTML=renderDecisionTrace(current,s);
   const progress = current.presentation?.progress;
   $('#collection').hidden = !(current.entities?.some(entity=>entity.collectible) || progress);
   $('#world-state').textContent = worldIndicators(current,s);
@@ -76,7 +86,9 @@ function render() {
     }
   }
   if (focusField && focusPath !== undefined) document.querySelector(`[data-field="${focusField}"][data-path="${focusPath}"]`)?.focus({preventScroll:true});
-  $('#add-if').hidden = mission.id < 9;
+  if(!focusField&&focusTarget!==undefined)document.querySelector(`#program button[data-target="${focusTarget}"]`)?.focus({preventScroll:true});
+  else if(focusOption)document.querySelector(`[data-command-option="${focusOption}"]`)?.focus({preventScroll:true});
+  $('#add-if').hidden = !(mission.conditionOptions||mission.id>=9);
   $('#insertion-label').textContent = target.length ? `Adicionar em ${target.at(-1) === 'then' ? 'ENTÃO' : 'SENÃO'} · bloco ${target.filter(p => typeof p === 'number').map(n => n + 1).join(' / ')}` : 'Adicionar no programa principal';
   $('#root-target').setAttribute('aria-pressed', String(!target.length));
   $('#editor-message').textContent = editorMessage;
@@ -98,7 +110,10 @@ function step() {
   if (!canStep(session)) stop();
   render();
 }
-function tick() { step(); if (running) timer = setTimeout(tick, 700); }
+function tick() {
+  step();
+  if(running)timer=setTimeout(tick,state().events.some(event=>event.type==='condition')&&!matchMedia('(prefers-reduced-motion: reduce)').matches?1100:700);
+}
 $('#run').onclick = () => { if (!program.length) return; reset(); running = true; tick(); };
 $('#pause').onclick = () => { if (running) { stop(); render(); } else if (canStep(session)) { running = true; render(); timer = setTimeout(tick, 450); } };
 $('#step').onclick = step;
@@ -106,25 +121,37 @@ $('#reset').onclick = $('#back-training').onclick = reset;
 $('#test-variants').onclick = () => { session = startVariantTests(session); running = true; render(); timer = setTimeout(tick, 700); };
 $('#clear').onclick = () => { if (running) return; program = []; target = []; reset(); };
 $('#root-target').onclick = () => { target = []; render(); };
-$('.palette').onclick = event => {
-  const button = event.target.closest('[data-add]');
-  if (!button || button.disabled || button.hidden) return;
-  const destination = [...target];
-  edit({type:'add', path:destination, nodeType:button.dataset.add, condition:defaultCondition(mission)});
-  // Continue inserindo no ramo selecionado; remoções e reordenação voltam à raiz.
-  target = destination; render();
+function addAt(path,nodeType,optionId) {
+  const destination=[...path];
+  try {
+    const operation=optionId?{node:configureCommand(mission,optionId),mission}:{nodeType,condition:defaultCondition(mission)};
+    edit({type:'add',path:destination,...operation});target=destination;render();
+  } catch(error){editorMessage=error.message;render();}
+}
+$('.palette').onclick=event=>{
+  const button=event.target.closest('[data-add],[data-command-option]');
+  if(!button||button.disabled||button.hidden)return;
+  addAt(target,button.dataset.add,button.dataset.commandOption);
 };
 $('#program').onclick = event => {
   const button = event.target.closest('button');
   if (!button || button.disabled || running) return;
-  if (button.dataset.target !== undefined) {
+  if(button.dataset.inlineAdd||button.dataset.inlineOption) {
+    addAt(decodePath(button.dataset.target),button.dataset.inlineAdd,button.dataset.inlineOption);
+  } else if (button.dataset.target !== undefined) {
     target = decodePath(button.dataset.target); render();
-    $('.palette').scrollIntoView({block:'nearest', behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'});
+    // Os comandos ficam no próprio ramo; não levar a criança de volta ao topo.
   } else if (button.dataset.edit) edit({type:button.dataset.edit === 'remove' ? 'remove' : 'move', offset:button.dataset.edit === 'up' ? -1 : 1, path:decodePath(button.dataset.path)});
 };
 $('#program').onchange = event => {
   const input = event.target;
   if (!input.dataset.field || running) return;
+  if(input.dataset.field.startsWith('command-')) {
+    const block=input.closest('.explicit-command'),optionId=block.querySelector('[data-field="command-option"]').value;
+    try {edit({type:'command',path:decodePath(input.dataset.path),mission,node:configureCommand(mission,optionId,input.dataset.field==='command-value'?Number(input.value):undefined)});}
+    catch(error){editorMessage=error.message;render();}
+    return;
+  }
   const block = input.closest('.condition-block');
   const optionId = block.querySelector(':scope > .condition-choice select').value;
   const option = conditionOptions(mission).find(option=>option.id===optionId);
