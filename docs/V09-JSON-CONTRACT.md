@@ -12,7 +12,7 @@ Arquivo completo de referência: [V09-example.json](V09-example.json). Os testes
 
 ## Campos de runtime
 
-Identidade/texto: id (string ou número, sem substituição do catálogo), title, instructions, hint opcional, demo opcional.
+Identidade/texto: id (string ou número, sem substituição do catálogo), title, instructions, hint opcional, demo opcional. Objetos legados válidos podem omitir instructions; o Studio preserva a ausência e oferece adicionar o campo, sem migração silenciosa.
 
 Mundo: grid completo (width/height/obstacles/cells), start (row/col/direction), goal, initialVariables, robotMemory, entities, barriers, winCondition.
 
@@ -33,7 +33,7 @@ O motor aplica substituição superficial: `{...base,...variant}`. O Studio resp
 ## Fronteira de entrada
 
 1. Arquivo local .json, até **1 MiB**, verificado antes da leitura/parse; parseMission também limita bytes UTF-8 antes de JSON.parse.
-2. assertJsonData rejeita raiz incompatível, funções/getters/ciclos em APIs de dados, protótipos perigosos, listas esparsas, chaves inseguras e excesso de profundidade/contagem. JSON importado nunca é executado.
+2. assertJsonData e a validação de missão rejeitam raízes incompatíveis, funções/getters/ciclos em APIs de dados, protótipos perigosos, listas esparsas, chaves inseguras e excesso de profundidade/contagem. JSON importado nunca é executado.
 3. Metadados do contrato e configuração visual são verificados na fronteira do Studio. Apenas grupos/temas/skins/estados conhecidos; nenhuma URL/path/SVG/HTML executável pode virar recurso visual.
 4. validateMission e validadores existentes verificam física, dados, memória, efeitos, interações e autorização. validateProgram verifica a mesma solution para todas as variantes resolvidas.
 5. Erros impedem a substituição do draft. Uma importação válida ainda pede confirmação antes de substituir o rascunho atual.

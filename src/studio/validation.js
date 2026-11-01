@@ -33,7 +33,7 @@ export function diagnose(mission){
  if(!record(mission))return {valid:false,errors:[{path:[],message:'Importe um objeto de missão'}],warnings};
  check([],()=>{for(const key of Object.keys(mission))if(!Object.hasOwn(missionSchema.fields,key))throw new Error(`Campo de runtime não reconhecido: ${key}`);});
  check(['id'],()=>{if(!((typeof mission.id==='string'&&mission.id.trim())||(typeof mission.id==='number'&&Number.isFinite(mission.id))))throw new Error('Identificador de autoria ausente ou inválido');});
- for(const key of ['title','instructions','hint'])check([key],()=>{if((key!=='hint'||Object.hasOwn(mission,key))&&typeof mission[key]!=='string')throw new Error('Metadado deve ser texto');});
+ for(const key of ['title','instructions','hint'])check([key],()=>{if((key==='title'||Object.hasOwn(mission,key))&&typeof mission[key]!=='string')throw new Error('Metadado deve ser texto');});
  check(['demo'],()=>{if(Object.hasOwn(mission,'demo')&&typeof mission.demo!=='boolean')throw new Error('demo deve ser booleano');});
  check(['variants'],()=>{if(Array.isArray(mission.variants))for(const variant of mission.variants){if(!record(variant))continue;if(variant.label!==undefined&&typeof variant.label!=='string')throw new Error('Rótulo de variante deve ser texto');for(const key of Object.keys(variant))if(key!=='label'&&!Object.hasOwn(missionSchema.fields,key))throw new Error(`Override não reconhecido: ${key}`);}});
  check(['presentation','visual'],()=>validateVisual(mission.presentation?.visual));

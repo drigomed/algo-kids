@@ -137,3 +137,6 @@ test('controlador: pausa mantém estado, passo avança e edição invalida selo 
 test('controlador: recuperação de permissões inválidas não descarta programa silenciosamente',()=>{
  const c=studioHarness();c.element('#advanced').checked=true;c.field([],'loopOptions');c.item(['loopOptions']);c.click({solutionAdd:'loop:repetir'});c.value(['loopOptions',0,'times'],'number','3');assert.equal(diagnose(c.app.getDraft().mission).valid,false);assert(c.element('#program').innerHTML.includes('data-repair-root'));c.click({repairRoot:'0'});assert.equal(c.app.getDraft().mission.solution.length,0);assert.equal(diagnose(c.app.getDraft().mission).valid,true);
 });
+for(const file of ['V04-example.json','V05-example.json','V06-example.json','V07-example.json'])test(`compatibilidade de importação legada: ${file}`,async()=>{
+ const source=JSON.parse(await text('docs/'+file)),imported=parseMission(JSON.stringify(source));assert.deepEqual(imported,source);assert.deepEqual(parseMission(serializeMission(imported)),source);assert.equal(finish(createPlaytest(imported)).reports.every(r=>r.status==='won'),true);
+});
