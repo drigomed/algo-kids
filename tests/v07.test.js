@@ -93,10 +93,10 @@ test('while desconhecido falha em um check, sem converter a falso ou alterar est
  assert.equal(last.status,'actionFailed');assert.equal(last.reason,'memoryUnknown');assert.equal(last.instructionPointer,1);assert.equal(checks(states).length,0);assert.deepEqual(last.memory,states[0].memory);assert.deepEqual(last.variables,states[0].variables);assert.equal(last.col,0);
  assert.deepEqual(last.events[0].loop,{loopType:'while',path:[0],iteration:1});assert.match(failureMessage(m,last),/Ainda não sei/);assert.match(renderLoopTrace(m,statesByStep(m,p).execution,p),/não consigo decidir/);
 });
-for(const limit of [1,2,17,1000,10000])test(`while vazio infinito: orçamento ${limit} é incremental e inclui checks`,()=>{
- const m=base(),p=[until(eq('open',true))],{states,execution}=statesByStep(m,p,{instructionLimit:limit});
- assert.equal(execution.state.status,'limit');assert.equal(execution.state.instructionPointer,limit);assert.equal(checks(states).length,limit);assert.equal(states.length,limit+2);
- assert.deepEqual(execution.state.events[0],{type:'limit',loop:{loopType:'while',path:[0],iteration:limit+1},instructionLimit:limit});assert.equal(execution.state.col,0);assert.match(renderLoopTrace(m,execution,p),/Veja se algo faz a condição mudar/);
+for(const limit of [1,2,17,1000,10000])test(`while com progresso: orçamento ${limit} é incremental e inclui checks`,()=>{
+ const {m,act}=interactive(),p=[until(eq('open',true),[act('increment')])],{states,execution}=statesByStep(m,p,{instructionLimit:limit});
+ assert.equal(execution.state.status,'limit');assert.equal(execution.state.instructionPointer,limit);assert.equal(checks(states).length,Math.ceil(limit/2));assert.equal(states.length,limit+2);
+ assert.deepEqual(execution.state.events[0],{type:'limit',loop:{loopType:'while',path:[0],iteration:Math.floor(limit/2)+1},instructionLimit:limit});assert.equal(execution.state.col,0);assert.match(renderLoopTrace(m,execution,p),/Veja se algo faz a condição mudar/);
 });
 test('limite no corpo informa o controlador sem checks fictícios',()=>{
  const m=base(),p=[repeat(20,[right,left])],states=simulate(m,p,{instructionLimit:2});assert.equal(checks(states).length,1);assert.equal(states.at(-1).events[0].loop.iteration,1);assert.equal(states.at(-1).instructionPointer,2);
@@ -211,7 +211,7 @@ for(const demo of missions.filter(m=>m.id>=24))test(`demo ${demo.id}: AST única
 });
 test('UI mantém confirmação antes de remover corpos, timers incrementais e estilos restritos',async()=>{
  const ui=await readFile(new URL('../src/ui.js',import.meta.url),'utf8'),css=await readFile(new URL('../src/style.css',import.meta.url),'utf8');
- assert.match(ui,/\['if','switch','for','while'\]\.includes\(node.type\).*window.confirm/);assert.match(ui,/if\(lastLoopKey!==loopKey\)/);assert.match(ui,/\$\('\.palette'\)\.hidden=target.length>0/);assert.match(ui,/setTimeout\(tick/);assert.match(css,/@media\(prefers-reduced-motion:reduce\)\{\.loop-block/);assert.match(css,/\.loop-block .row-controls button[^}]*min-height:44px/);
+ assert.match(ui,/\['if','switch','for','while'\]\.includes\(node.type\).*window.confirm/);assert.match(ui,/if\(lastLoopKey!==loopKey\)/);assert.match(ui,/\$\('\.palette'\)\.hidden=target.length>0/);assert.match(ui,/generation===playbackGeneration/);assert.match(css,/@media\(prefers-reduced-motion:reduce\)\{\.loop-block/);assert.match(css,/\.loop-block .row-controls button[^}]*min-height:44px/);
 });
 test('exemplo JSON completo, renomeável e serializável, sem regra específica no motor',async()=>{
  const text=await readFile(new URL('../docs/V07-example.json',import.meta.url),'utf8'),m=JSON.parse(text);assert.equal(validateMission(m),true);assert.equal(end(m,m.solution).status,'won');assert.deepEqual(JSON.parse(JSON.stringify(m)),m);

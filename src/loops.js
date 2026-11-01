@@ -50,3 +50,11 @@ export function loopContext(frames) {
   const frame=frames.findLast(frame=>frame.kind==='loop');
   return frame?{loopType:frame.loopType,path:[...frame.path],iteration:frame.completed+1,...(frame.loopType==='for'?{times:frame.times,completed:frame.completed}:{})}:null;
 }
+
+export const MAX_WHILE_HISTORY=256;
+// Apenas dados que influenciam passos futuros; metadados de execução não entram.
+export function semanticSignature(state) {
+  return canonical({robot:{row:state.row,col:state.col,direction:state.direction},variables:state.variables,memory:state.memory,collectedCount:state.collectedCount,collectedIds:state.collectedIds,consumedIds:state.consumedIds,usedInteractions:state.usedInteractions});
+}
+export const stalledMessage='O robô ficou preso repetindo! Ele voltou à mesma situação e a condição continua verdadeira. Experimente mudar alguma coisa dentro do ENQUANTO para conseguir sair.';
+export const stoppedMessage='Você interrompeu o robô. Seu programa continua aqui. Toque em Executar para tentar de novo.';
