@@ -1,6 +1,6 @@
 # Missões do Robô — Pequenos Programadores
 
-V0.7.1 do motor de programação visual, em português do Brasil: repetições nativas, detecção de ciclos sem progresso e interrupção manual. Monte o programa antes de executar e leve o robô até a estrela.
+V0.8 do Algo Kids, em português do Brasil: identidade visual original, robô em quatro evoluções, ambientes temáticos e feedback evidente, preservando o motor V0.7.1. Monte o programa antes de executar e leve o robô até a estrela.
 
 ## Executar
 
@@ -27,7 +27,7 @@ URL pública esperada: **https://drigomed.github.io/algo-kids/**. O endereço s�
 
 ## Jogar
 
-As definições e soluções 01–23 continuam preservadas. As missões 01–06 mantêm seus comandos e apresentação. Os cenários 17–25 são demonstrações temporárias do motor; a V0.7 acrescenta somente as fixtures 24–25. Toque em Avançar, Virar à esquerda ou Virar à direita para adicionar comandos. As setas da lista reordenam; × remove. Executar começa do início; Pausar/Continuar controla a execução; Passo a passo executa um comando. Reiniciar mantém o programa; Limpar apaga os comandos. Alterar um programa pausado reinicia a posição do robô. A direção inicial aparece pela seta sobre o robô; norte fica no topo.
+As definições e soluções 01–23 continuam preservadas. As missões 01–06 mantêm seus comandos e jogabilidade; a V0.8 atualiza somente sua arte. Os cenários 17–25 são demonstrações temporárias do motor; a V0.7 acrescenta somente as fixtures 24–25. Toque em Avançar, Virar à esquerda ou Virar à direita para adicionar comandos. As setas da lista reordenam; × remove. Executar começa do início; Pausar/Continuar controla a execução; Passo a passo executa um comando. Reiniciar mantém o programa; Limpar apaga os comandos. Alterar um programa pausado reinicia a posição do robô. A direção inicial aparece pela seta sobre o robô; norte fica no topo.
 
 Nas missões 07–08, entrar na casa recolhe o objeto automaticamente. O contador mostra os objetos e a meta da missão. A estrela só encerra a execução quando a meta também estiver satisfeita. Reiniciar restaura todos os objetos e variáveis, preservando o programa.
 
@@ -72,13 +72,19 @@ Na V0.7, **REPITA N VEZES** executa seu CORPO exatamente N vezes (1–20 conform
 
 Selecione **Adicionar aqui** no CORPO e use sua paleta local. Volte explicitamente ao programa principal para inserir os comandos posteriores. Trocar presets da mesma categoria preserva o corpo; remover um bloco preenchido pede confirmação. Uma execução longa continua sujeita ao orçamento defensivo; a V0.7.1 também detecta ciclos sem progresso, mantendo a interface pausável. Não há expansão da AST nem mudança na física.
 
-As demos 24/25 verificam repetição contada e corredor de comprimento variável. São fixtures técnicas, não novas etapas pedagógicas definitivas. Consulte [V07.md](docs/V07.md) para contratos, eventos, orçamento, resultados e revisão no celular; [V07-example.json](docs/V07-example.json) exemplifica autoria inteiramente declarativa. **428 testes passaram**, além de build e validação do artefato estático (31 arquivos, 105 referências). A revisão visual em aparelho permanece pendente; a entrega é por PR, sem merge automático.
+As demos 24/25 verificam repetição contada e corredor de comprimento variável. São fixtures técnicas, não novas etapas pedagógicas definitivas. Consulte [V07.md](docs/V07.md) para contratos, eventos, orçamento, resultados e revisão no celular; [V07-example.json](docs/V07-example.json) exemplifica autoria inteiramente declarativa. **472 testes passaram**, além de build e validação do artefato estático (122 arquivos, 203 referências). A revisão visual em aparelho permanece pendente; a entrega é por PR, sem merge automático.
 
 Na V0.7.1, um **ENQUANTO** que reencontra a mesma situação com condição verdadeira termina como falha por falta de progresso. A comparação inclui posição, direção, mundo, memória, coleta, consumo e interações; não considera somente se o robô andou. O histórico é separado por ativação, com janela de 256 assinaturas; o orçamento continua protegendo execuções longas. REPITA finito e algoritmos que alteram estado continuam funcionando.
 
 **■ Interromper** aparece durante execução, pausa ou após passo manual. Cancela os próximos passos e conserva a posição/estado, sem contar instrução. **Pausar** permite continuar; **Reiniciar** restaura o começo; **Executar** após interrupção recomeça com o mesmo programa. Interrupção não é falha do algoritmo: mostra **Interrompido por você**. Durante variantes, conserva as vitórias anteriores e cancela o avanço pendente sem concluir a missão.
 
 Os contratos, ajustes justificados dos testes e roteiro de revisão estão em [V071.md](docs/V071.md). Nenhuma missão 01–25 mudou. Testes do controlador usam agendador simulado para provar cancelamento imediato e rejeição de callbacks antigos; revisão visual real no celular continua pendente.
+
+Na V0.8, o mesmo robô verde evolui de MK1 a MK4, com grama, trilha, pátio, fábrica e estacionamento. Os **85 SVGs originais** estão versionados e integrados: robôs cardinais, pisos, metas, obstáculos, coletáveis, objetos reativos, efeitos e ícones. A configuração visual é separada das missões e do motor; temas não alteram a física. Vitória, falha, estagnação e parada voluntária têm placas distintas, com formas e textos além da cor. Movimento reduzido preserva o feedback estático.
+
+Abra a **[galeria de revisão](docs/V08-GALLERY.html)** em `http://localhost:5173/docs/V08-GALLERY.html` após `npm run dev`. Ela mostra todos os assets em 48/64 px, sobre fundos claro/escuro, e os quatro MK lado a lado. O [guia V08](docs/V08.md) documenta catálogo, adaptação declarativa, fallbacks, segurança e roteiro de revisão. Para validar/regenerar: `node scripts/validate-assets.js` e `node scripts/generate-art.mjs`. Não há dependências a instalar.
+
+A regressão preserva as 25 definições e os traces das 43 variantes da V0.7.1. Não houve mudança no interpretador, regras, soluções ou temporizadores. Revisão estética no celular permanece pendente; não há capturas de navegador neste ambiente. A entrega é via PR, sem merge/deploy manual.
 
 ## Estrutura
 
@@ -100,7 +106,10 @@ Os contratos, ajustes justificados dos testes e roteiro de revisão estão em [V
 - `src/ui.js`, `src/view.js`, `src/command-view.js` e `src/html.js`: controles, temporização e representação visual do estado e da AST.
 - `src/style.css`: layout responsivo, controles de toque e movimento reduzido.
 - `tests/engine.test.js`, `tests/v02.test.js`, `tests/v03.test.js`, `tests/v04.test.js`, `tests/v05.test.js`, `tests/v06.test.js`, `tests/v07.test.js` e `tests/v071.test.js`: regressão, entidades, coleta, estado, condições, interpretação, editor, sessões e soluções de todas as variantes.
-- `scripts/build.js`: empacotamento estático sem dependências.
+- `src/assets/`: 85 SVGs originais locais; `src/presentation/`: registry, configuração, resolvedor, efeitos e composição da cena.
+- `tests/v08.test.js` e `tests/fixtures/v071-domain-baseline.json`: catálogo, segurança, apresentação e regressão do domínio.
+- `scripts/build.js`, `scripts/validate-assets.js` e `scripts/validate-dist.js`: empacotamento e validação estáticos, incluindo SVGs autorizados.
+- `scripts/generate-art.mjs`: geração local reproduzível da arte e da galeria.
 - `docs/V02.md`, `docs/V03.md`, `docs/V04.md`, `docs/V05.md`, `docs/V06.md`, `docs/V07.md` e `docs/V071.md`: contratos, critérios de aceite, exemplos e roteiros de revisão; `docs/` mantém o escopo original e o roadmap atualizado.
 
 Sem backend, APIs, fontes externas, anúncios, contas, telemetria ou dados pessoais. Progresso fica apenas na memória da página e reinicia ao recarregar. Os comandos são nós tipados; não há execução de código arbitrário.
@@ -135,7 +144,7 @@ Com acesso administrativo:
 
 Para republicar manualmente: **Actions → Validar e publicar no GitHub Pages → Run workflow → Branch: main**. O botão manual depende de o workflow existir na branch padrão; configure `main` como padrão após a integração para disponibilizá-lo. Selecionar outra branch nunca autoriza o deploy.
 
-O repositório é **público** e o Pages foi configurado após a entrega da infraestrutura. A V0.7.1 é entregue em PR e não faz deploy manual nem altera configurações de publicação. Após aprovação e merge na `main`, o workflow existente publica a versão. Se for necessário refazer a configuração, siga as instruções administrativas acima. O campo `private: true` do `package.json` impede publicação acidental no npm e não determina a visibilidade do GitHub. Se o repositório passar a privado, confirme a elegibilidade do Pages no plano da conta em **Settings → Pages** e nas configurações de cobrança. Repositório privado não garante site privado. Se o plano não oferecer Pages para repositórios privados, as alternativas são contratar um plano compatível ou tornar o repositório público **somente mediante aprovação do responsável**. Este workflow não altera plano, visibilidade ou branch padrão.
+O repositório é **público** e o Pages foi configurado após a entrega da infraestrutura. A V0.8 é entregue em PR e não faz deploy manual nem altera configurações de publicação. Após aprovação e merge na `main`, o workflow existente publica a versão. Se for necessário refazer a configuração, siga as instruções administrativas acima. O campo `private: true` do `package.json` impede publicação acidental no npm e não determina a visibilidade do GitHub. Se o repositório passar a privado, confirme a elegibilidade do Pages no plano da conta em **Settings → Pages** e nas configurações de cobrança. Repositório privado não garante site privado. Se o plano não oferecer Pages para repositórios privados, as alternativas são contratar um plano compatível ou tornar o repositório público **somente mediante aprovação do responsável**. Este workflow não altera plano, visibilidade ou branch padrão.
 
 Para exigir a validação antes de integrar PRs, um administrador pode criar uma regra para `main` em **Settings → Rules → Rulesets** (ou **Branches → Branch protection**), exigir Pull Request e o check **Testes e build**, e bloquear force pushes. Essa proteção depende das opções disponíveis no plano e não é criada automaticamente pelo workflow.
 

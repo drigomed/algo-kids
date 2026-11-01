@@ -46,13 +46,17 @@ For contado e while com reavaliação antes de cada iteração, frames de contro
 
 Correção incremental: detecção determinística de while por repetição de estado semântico, janela FIFO por ativação e botão contextual Interromper, distinto de pausa/reset. Cancelamento invalida timers e avanços entre variantes, preservando estado e vitórias anteriores. Mantém 01–25 sem mudanças e não amplia currículo. Contratos, resultados e limitações em [V071.md](V071.md).
 
+## V0.8 — Identidade visual e sprites
+
+Biblioteca de 85 SVGs originais, MK1–MK4, cinco temas independentes, resolvedor declarativo e feedback visual evidente. Mantém motor V0.7.1 e missões 01–25; acrescenta somente apresentação, galeria e validação segura de SVG no build. Consulte [V08.md](V08.md) e a [galeria local](V08-GALLERY.html). Revisão estética no celular pendente; sem merge/deploy manual.
+
 ## V1.0 — Missões combinadas
 
 Consolidar sequências + `for` + `if/else` + `switch` + `while`; múltiplos objetivos (entregar item, acionar interruptor, coletar energia), sensores, editor de blocos por encaixe, desbloqueio progressivo, múltiplos cenários de validação e compartilhamento opcional de programas por arquivo local, sem dados pessoais.
 
 ## Futuro (não prometer no MVP)
 
-- Robô com acessórios, animações, feedback sonoro opcional.
+- Feedback sonoro opcional (arte, acessórios e microanimações disponíveis na V0.8).
 - Editor em blocos aninhados com drag & drop adaptado ao toque.
 - Visualização de pseudocódigo ou JavaScript.
 - Criador de missões para adultos.

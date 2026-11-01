@@ -1,3 +1,6 @@
+import {installAssetFallback} from './presentation/asset-registry.js';
+import {createVisualEffects} from './presentation/visual-effects.js';
+import {renderResultBanner} from './presentation/scene-view.js';
 import {stalledMessage,stoppedMessage} from './loops.js';
 import {renderLoopPalette,renderLoopTrace} from './loop-view.js';
 import {insertionLabel} from './branch-view.js';
@@ -14,6 +17,9 @@ import {renderProgram, renderBoard, encodePath, decodePath, escapeHtml, worldInd
 
 const $ = selector => document.querySelector(selector);
 let mission = missions[0], program = [], target = [], session = createSession(mission, program);
+const visualEffects=createVisualEffects();
+let visualEpoch=0,lastBoardKey='',lastResultKey='';
+installAssetFallback(document);
 let playbackGeneration=0;
 let timer = null, running = false, editorMessage = '', lastTraceKey='', lastLoopKey='', lastFeedbackKey='';
 const completed = new Set();
@@ -25,14 +31,14 @@ function scheduleTick(delay) {
   timer=setTimeout(()=>{if(running&&generation===playbackGeneration)tick();},delay);
 }
 function reset() {
-  stopPlayback(); session = createSession(mission, program); editorMessage = ''; render();
+  stopPlayback(); visualEpoch++; session = createSession(mission, program); editorMessage = ''; render();
 }
 function edit(operation) {
   if (running) return;
   try {
     const next = editProgram(program, operation);
     const nextSession=createSession(mission,next);
-    stopPlayback(); program=next; session=nextSession;
+    stopPlayback(); visualEpoch++; program=next; session=nextSession;
     target=rebaseTarget(next,target,operation);
     editorMessage = ''; render();
   } catch (error) { editorMessage = error.message; render(); }
@@ -80,7 +86,16 @@ function render() {
   const location = p => `linha ${p.row + 1}, coluna ${p.col + 1}`;
   board.setAttribute('aria-label', `Tabuleiro ${current.grid.width} por ${current.grid.height}. Robô na ${location(s)}, olhando para ${{N:'norte',L:'leste',S:'sul',O:'oeste'}[s.direction]}. Estrela na ${location(current.goal)}. Obstáculos: ${current.grid.obstacles.map(location).join('; ') || 'nenhum'}. Objetos: ${remaining.map(location).join('; ') || 'nenhum'}. ${describeEnvironment(current,s)}.`);
   const activeNode=session.execution.activePath?.reduce((value,key)=>value?.[key],program);
-  board.innerHTML = renderBoard(current,s,activeNode);
+  const visualContext=`${visualEpoch}:${mission.id}:${session.scenarioIndex}`;
+  const visualKey=`${visualContext}:${s.instructionPointer}:${s.status}:${!!session.interrupted}`;
+  if(lastBoardKey!==visualKey) {
+    const effects=visualEffects.next(current,s,{context:visualContext,completed:session.completed,interrupted:session.interrupted});
+    board.innerHTML=renderBoard(current,s,activeNode,{...effects,completed:session.completed,interrupted:session.interrupted});
+    board.dataset.visualStatus=session.interrupted?'stopped':s.status;
+    lastBoardKey=visualKey;
+  }
+  const result=renderResultBanner(s,{completed:session.completed,interrupted:session.interrupted});
+  if(lastResultKey!==visualKey){$('#visual-result').innerHTML=result;$('#visual-result').hidden=!result;lastResultKey=visualKey;}
   $('#robot-memory').innerHTML=renderMemory(current,s);
   $('#extra-commands').innerHTML=renderCommandPalette(current,running);
   $('#extra-switches').innerHTML=renderSwitchPalette(current,running);

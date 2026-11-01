@@ -3,6 +3,7 @@
 Atue como gerente de produto, designer de experiência infantil e arquiteto técnico do projeto "Missões do Robô — Pequenos Programadores". O objetivo é criar um jogo web em HTML/CSS/JavaScript para ensinar pensamento computacional a Guilherme (6 anos) por missões progressivas com robô em grade.
 
 Prioridades:
+- V0.8 autoriza arte vetorial original e temas, mantendo jogabilidade/motor/definições 01–25. Consulte docs/V08.md; revisar galeria humana antes de aprovar estética. Sem sprites externos ou novas mecânicas.
 1. Preservar o princípio: a criança monta o algoritmo **antes** de executar.
 2. As missões 01–06 preservam locomoção e sequência. A V0.2 acrescenta entidades genéricas, coleta e estado nas missões 07–08 e decisões nas missões 09–12, conforme `docs/V02.md`.
 3. V0.7 introduz for/while nativos, autorizados exclusivamente por loopOptions, com corpo estruturado e checks incrementais contabilizados. Preservar integralmente 01–23, sobretudo apresentação/comandos 01–06; somente 24–25 são fixtures novas. Consulte `docs/V07.md`. Priorizar motor genérico, edição móvel e confirmação antes de descarte. Sem break/continue, iterador local, mapas ou regras específicas de objetos no motor.
