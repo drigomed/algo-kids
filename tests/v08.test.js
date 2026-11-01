@@ -101,7 +101,7 @@ test('movimento reduzido preserva ícones/estados; efeitos não agendam execuç�
 test('SVGs publicados são somente catálogo autorizado; artefato rejeita injeções e symlinks',async()=>{
  const temp=await mkdtemp(join(tmpdir(),'algo-v08-'));
  try {
-  await cp('src',join(temp,'src'),{recursive:true});await cp('index.html',join(temp,'index.html'));
+  await cp('src',join(temp,'src'),{recursive:true});await cp('studio',join(temp,'studio'),{recursive:true});await cp('index.html',join(temp,'index.html'));
   const validate=()=>execFileSync(process.execPath,['scripts/validate-dist.js',temp],{stdio:'pipe'});validate();assert.equal((await validateAssets(temp)).files,85);
   for(const name of ['src/bad.svg','src/bad.html','src/assets/bad.svg','src/assets/bad.js']){const path=join(temp,name);await writeFile(path,'<svg/>');assert.throws(validate);await rm(path);}
   const svg=join(temp,'src/assets/ui/success.svg'),original=await readFile(svg);await writeFile(svg,'<svg onload="alert(1)"/>');assert.throws(validate);await writeFile(svg,original);

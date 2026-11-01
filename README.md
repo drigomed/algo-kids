@@ -1,6 +1,6 @@
 # Missões do Robô — Pequenos Programadores
 
-V0.8 do Algo Kids, em português do Brasil: identidade visual original, robô em quatro evoluções, ambientes temáticos e feedback evidente, preservando o motor V0.7.1. Monte o programa antes de executar e leve o robô até a estrela.
+V0.9 do Algo Kids: jogo educativo em português e Studio local de autoria de missões, com o mesmo motor e os 85 SVGs originais da V0.8. Monte o programa antes de executar e leve o robô até a estrela.
 
 ## Executar
 
@@ -27,7 +27,7 @@ URL pública esperada: **https://drigomed.github.io/algo-kids/**. O endereço s�
 
 ## Jogar
 
-As definições e soluções 01–23 continuam preservadas. As missões 01–06 mantêm seus comandos e jogabilidade; a V0.8 atualiza somente sua arte. Os cenários 17–25 são demonstrações temporárias do motor; a V0.7 acrescenta somente as fixtures 24–25. Toque em Avançar, Virar à esquerda ou Virar à direita para adicionar comandos. As setas da lista reordenam; × remove. Executar começa do início; Pausar/Continuar controla a execução; Passo a passo executa um comando. Reiniciar mantém o programa; Limpar apaga os comandos. Alterar um programa pausado reinicia a posição do robô. A direção inicial aparece pela seta sobre o robô; norte fica no topo.
+As definições e soluções 01–25 continuam preservadas. As missões 01–06 mantêm seus comandos e jogabilidade; a V0.8 atualiza somente sua arte. Os cenários 17–25 são demonstrações temporárias do motor; a V0.7 acrescenta somente as fixtures 24–25. Toque em Avançar, Virar à esquerda ou Virar à direita para adicionar comandos. As setas da lista reordenam; × remove. Executar começa do início; Pausar/Continuar controla a execução; Passo a passo executa um comando. Reiniciar mantém o programa; Limpar apaga os comandos. Alterar um programa pausado reinicia a posição do robô. A direção inicial aparece pela seta sobre o robô; norte fica no topo.
 
 Nas missões 07–08, entrar na casa recolhe o objeto automaticamente. O contador mostra os objetos e a meta da missão. A estrela só encerra a execução quando a meta também estiver satisfeita. Reiniciar restaura todos os objetos e variáveis, preservando o programa.
 
@@ -72,7 +72,7 @@ Na V0.7, **REPITA N VEZES** executa seu CORPO exatamente N vezes (1–20 conform
 
 Selecione **Adicionar aqui** no CORPO e use sua paleta local. Volte explicitamente ao programa principal para inserir os comandos posteriores. Trocar presets da mesma categoria preserva o corpo; remover um bloco preenchido pede confirmação. Uma execução longa continua sujeita ao orçamento defensivo; a V0.7.1 também detecta ciclos sem progresso, mantendo a interface pausável. Não há expansão da AST nem mudança na física.
 
-As demos 24/25 verificam repetição contada e corredor de comprimento variável. São fixtures técnicas, não novas etapas pedagógicas definitivas. Consulte [V07.md](docs/V07.md) para contratos, eventos, orçamento, resultados e revisão no celular; [V07-example.json](docs/V07-example.json) exemplifica autoria inteiramente declarativa. **472 testes passaram**, além de build e validação do artefato estático (122 arquivos, 203 referências). A revisão visual em aparelho permanece pendente; a entrega é por PR, sem merge automático.
+As demos 24/25 verificam repetição contada e corredor de comprimento variável. São fixtures técnicas, não novas etapas pedagógicas definitivas. Consulte [V07.md](docs/V07.md) para contratos, eventos, orçamento, resultados e revisão no celular; [V07-example.json](docs/V07-example.json) exemplifica autoria inteiramente declarativa. **519 testes passaram**, além de build e validação do artefato estático (134 arquivos, 263 referências). A revisão visual em aparelho permanece pendente; a entrega é por PR, sem merge automático.
 
 Na V0.7.1, um **ENQUANTO** que reencontra a mesma situação com condição verdadeira termina como falha por falta de progresso. A comparação inclui posição, direção, mundo, memória, coleta, consumo e interações; não considera somente se o robô andou. O histórico é separado por ativação, com janela de 256 assinaturas; o orçamento continua protegendo execuções longas. REPITA finito e algoritmos que alteram estado continuam funcionando.
 
@@ -85,6 +85,16 @@ Na V0.8, o mesmo robô verde evolui de MK1 a MK4, com grama, trilha, pátio, fá
 Abra a **[galeria de revisão](docs/V08-GALLERY.html)** em `http://localhost:5173/docs/V08-GALLERY.html` após `npm run dev`. Ela mostra todos os assets em 48/64 px, sobre fundos claro/escuro, e os quatro MK lado a lado. O [guia V08](docs/V08.md) documenta catálogo, adaptação declarativa, fallbacks, segurança e roteiro de revisão. Para validar/regenerar: `node scripts/validate-assets.js` e `node scripts/generate-art.mjs`. Não há dependências a instalar.
 
 A regressão preserva as 25 definições e os traces das 43 variantes da V0.7.1. Não houve mudança no interpretador, regras, soluções ou temporizadores. Revisão estética no celular permanece pendente; não há capturas de navegador neste ambiente. A entrega é via PR, sem merge/deploy manual.
+
+## Studio de Missões (adultos/autores)
+
+Execute `npm run dev` e abra **http://localhost:5173/studio/**. Após integrar/publicar pela main, a entrada esperada é **https://drigomed.github.io/algo-kids/studio/**. A ferramenta é estática/local e a URL é pública, sem autenticação. A entrega em PR não implica publicação.
+
+Crie mapa por toque/clique/teclado, edite regras em formulários estruturados, configure variantes e monte a solução por blocos. Use Testar todas as variantes para conferir o programa de referência. Exportar gera JSON puro; importar reproduz regras/tipos/AST e não altera o catálogo. O Studio mantém um único rascunho em localStorage, com desfazer/refazer em memória. Se armazenamento falhar, continua funcionando e orienta exportar o trabalho.
+
+[Uso e limites](docs/V09.md) · [Contrato mission-json/v1](docs/V09-JSON-CONTRACT.md) · [Exemplo reativo exportado](docs/V09-example.json). O jogo infantil na raiz, suas 25 definições/soluções e os 85 SVGs permanecem preservados. Nenhuma missão é publicada automaticamente pelo Studio. Revisão real de UX no celular permanece pendente; os testes de controlador não substituem navegador.
+
+A [visão V2.0](docs/V20-PLATFORM-VISION.md) planeja níveis versionados, escolas, administradores, instrutores, alunos, turmas, matrículas, atribuições e progresso. **Não há backend, login, gestão institucional ou dados de alunos na V0.9.**
 
 ## Estrutura
 
@@ -108,6 +118,8 @@ A regressão preserva as 25 definições e os traces das 43 variantes da V0.7.1.
 - `tests/engine.test.js`, `tests/v02.test.js`, `tests/v03.test.js`, `tests/v04.test.js`, `tests/v05.test.js`, `tests/v06.test.js`, `tests/v07.test.js` e `tests/v071.test.js`: regressão, entidades, coleta, estado, condições, interpretação, editor, sessões e soluções de todas as variantes.
 - `src/assets/`: 85 SVGs originais locais; `src/presentation/`: registry, configuração, resolvedor, efeitos e composição da cena.
 - `tests/v08.test.js` e `tests/fixtures/v071-domain-baseline.json`: catálogo, segurança, apresentação e regressão do domínio.
+- `studio/index.html` e `src/studio/`: editor separado, formulários, modelo imutável, variantes, playtest, I/O e autosave.
+- `tests/v09.test.js`: fluxos de autoria/controlador, round-trip, variantes e segurança.
 - `scripts/build.js`, `scripts/validate-assets.js` e `scripts/validate-dist.js`: empacotamento e validação estáticos, incluindo SVGs autorizados.
 - `scripts/generate-art.mjs`: geração local reproduzível da arte e da galeria.
 - `docs/V02.md`, `docs/V03.md`, `docs/V04.md`, `docs/V05.md`, `docs/V06.md`, `docs/V07.md` e `docs/V071.md`: contratos, critérios de aceite, exemplos e roteiros de revisão; `docs/` mantém o escopo original e o roadmap atualizado.
@@ -116,7 +128,7 @@ Sem backend, APIs, fontes externas, anúncios, contas, telemetria ou dados pesso
 
 ## Validação e limites
 
-Testes automatizados do motor e build executados. A interface ainda precisa de validação visual em navegadores reais e de uma sessão acompanhada por adulto para confirmar legibilidade, orientação e dificuldade. Não há testes automatizados de navegador ou captura de tela nesta entrega. Som, PWA, persistência, break/continue e editor de mapas ficam para versões posteriores. A pilha do interpretador e o orçamento de instruções poderão ser reaproveitados por novos nós de controle.
+Testes automatizados do motor e build executados. A interface ainda precisa de validação visual em navegadores reais e de uma sessão acompanhada por adulto para confirmar legibilidade, orientação e dificuldade. Não há testes automatizados de navegador ou captura de tela nesta entrega. Som, PWA, progresso persistente do jogador e break/continue ficam para versões posteriores. O editor de mapas e o rascunho local de autoria estão disponíveis no Studio V0.9. A pilha do interpretador e o orçamento de instruções poderão ser reaproveitados por novos nós de controle.
 
 ## Branches e publicação
 
@@ -128,7 +140,7 @@ A `main` foi criada a partir do commit existente de `feat/mvp-v01`, preservando 
 
 O workflow [deploy-pages.yml](.github/workflows/deploy-pages.yml) executa testes, build e validação de `dist/` em PRs para `main` e pushes em `main`, com Node.js 22. Atualmente não há dependências nem lockfile, portanto a instalação é dispensada. Se forem adicionados, atualize o workflow para instalar com o gerenciador e lockfile escolhidos (por exemplo, `npm ci` com `package-lock.json`).
 
-Somente pushes em `main` e execuções manuais explicitamente iniciadas em `main` publicam o artefato validado. PRs não enviam artefatos ao Pages nem executam o job de publicação. Falhas em testes, build ou validação impedem o deploy. O upload contém exclusivamente `dist/` (`index.html` e módulos/estilos em `src/`), sem testes, documentação, credenciais ou dependências de desenvolvimento. A validação rejeita arquivos inesperados, recursos ausentes, links simbólicos, referências a localhost e caminhos incompatíveis com `/algo-kids/`.
+Somente pushes em `main` e execuções manuais explicitamente iniciadas em `main` publicam o artefato validado. PRs não enviam artefatos ao Pages nem executam o job de publicação. Falhas em testes, build ou validação impedem o deploy. O upload contém exclusivamente `dist/` (`index.html`, `studio/index.html` e módulos/estilos/SVGs autorizados em `src/`), sem testes, documentação, credenciais ou dependências de desenvolvimento. A validação rejeita arquivos inesperados, recursos ausentes, links simbólicos, referências a localhost e caminhos incompatíveis com `/algo-kids/`.
 
 O job de publicação depende do build, usa as actions oficiais do Pages e o environment `github-pages`, e expõe a URL no resultado e no resumo da execução. Apenas esse job recebe `pages: write` e `id-token: write`. O grupo de concorrência `github-pages` impede publicações simultâneas e deixa a publicação em andamento terminar. A autenticação do pipeline usa `GITHUB_TOKEN` e OIDC fornecidos pelo GitHub; não crie PATs nem secrets para este fluxo.
 
@@ -144,7 +156,7 @@ Com acesso administrativo:
 
 Para republicar manualmente: **Actions → Validar e publicar no GitHub Pages → Run workflow → Branch: main**. O botão manual depende de o workflow existir na branch padrão; configure `main` como padrão após a integração para disponibilizá-lo. Selecionar outra branch nunca autoriza o deploy.
 
-O repositório é **público** e o Pages foi configurado após a entrega da infraestrutura. A V0.8 é entregue em PR e não faz deploy manual nem altera configurações de publicação. Após aprovação e merge na `main`, o workflow existente publica a versão. Se for necessário refazer a configuração, siga as instruções administrativas acima. O campo `private: true` do `package.json` impede publicação acidental no npm e não determina a visibilidade do GitHub. Se o repositório passar a privado, confirme a elegibilidade do Pages no plano da conta em **Settings → Pages** e nas configurações de cobrança. Repositório privado não garante site privado. Se o plano não oferecer Pages para repositórios privados, as alternativas são contratar um plano compatível ou tornar o repositório público **somente mediante aprovação do responsável**. Este workflow não altera plano, visibilidade ou branch padrão.
+O repositório é **público** e o Pages foi configurado após a entrega da infraestrutura. A V0.9 é entregue em PR e não faz deploy manual nem altera configurações de publicação. Após aprovação e merge na `main`, o workflow existente publica a versão. Se for necessário refazer a configuração, siga as instruções administrativas acima. O campo `private: true` do `package.json` impede publicação acidental no npm e não determina a visibilidade do GitHub. Se o repositório passar a privado, confirme a elegibilidade do Pages no plano da conta em **Settings → Pages** e nas configurações de cobrança. Repositório privado não garante site privado. Se o plano não oferecer Pages para repositórios privados, as alternativas são contratar um plano compatível ou tornar o repositório público **somente mediante aprovação do responsável**. Este workflow não altera plano, visibilidade ou branch padrão.
 
 Para exigir a validação antes de integrar PRs, um administrador pode criar uma regra para `main` em **Settings → Rules → Rulesets** (ou **Branches → Branch protection**), exigir Pull Request e o check **Testes e build**, e bloquear force pushes. Essa proteção depende das opções disponíveis no plano e não é criada automaticamente pelo workflow.
 

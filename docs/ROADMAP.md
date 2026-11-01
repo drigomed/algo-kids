@@ -50,14 +50,26 @@ Correção incremental: detecção determinística de while por repetição de e
 
 Biblioteca de 85 SVGs originais, MK1–MK4, cinco temas independentes, resolvedor declarativo e feedback visual evidente. Mantém motor V0.7.1 e missões 01–25; acrescenta somente apresentação, galeria e validação segura de SVG no build. Consulte [V08.md](V08.md) e a [galeria local](V08-GALLERY.html). Revisão estética no celular pendente; sem merge/deploy manual.
 
-## V1.0 — Missões combinadas
+## V0.9 — Studio de Missões
 
-Consolidar sequências + `for` + `if/else` + `switch` + `while`; múltiplos objetivos (entregar item, acionar interruptor, coletar energia), sensores, editor de blocos por encaixe, desbloqueio progressivo, múltiplos cenários de validação e compartilhamento opcional de programas por arquivo local, sem dados pessoais.
+Editor visual separado em `/algo-kids/studio/`: mapas, entidades, barreiras/sensores, variáveis/memória, efeitos/interações, condições, comandos e estruturas autorizadas, variantes por substituição superficial e aparência V0.8. Solução de referência e playtest pelo mesmo motor, importação/exportação JSON puro e rascunho local. Sem login/backend/escolas ou publicação automática. Contratos e limites em [V09.md](V09.md) e [mission-json/v1](V09-JSON-CONTRACT.md).
+
+## V1.0 — Produto educativo local consolidado (planejamento)
+
+Organizar currículo definitivo em capítulos, progressão clara, revisão acompanhada com crianças, ajuda contextual, acessibilidade e UX mobile. Consolidar experiência do jogador e progresso local sem dados pessoais. O Studio permanece separado; demos técnicas não viram currículo sem revisão. Preparar convenções de versão/compatibilidade para conteúdo futuro, sem backend institucional nesta fase.
+
+## V2.0 — Plataforma educacional multi-escola (visão futura)
+
+Gestão central de níveis, escolas, usuários/papéis, administradores, instrutores, alunos, turmas e matrículas; vínculos aluno–turma–instrutor, atribuições de missões/trilhas e acompanhamento por aluno/turma/escola. Exige backend, autenticação, autorização por perfil/tenant/turma, níveis imutáveis versionados, auditoria, definições de progresso e privacidade infantil.
+
+O JSON atual será conteúdo de LevelVersion; metadados escolares/autorais ficam no envelope do backend, não na física/condições. Planejar governança e descobrir necessidades com instituições antes de escolher banco/cloud/framework ou cobrança. **Nada disso foi implementado na V0.9.**
+
+Ver [V20-PLATFORM-VISION.md](V20-PLATFORM-VISION.md) para papéis, modelo conceitual, fluxo editorial, atribuições, indicadores, transferências, segurança e etapas candidatas V2.0-A (fundação/identidade), B (turmas/matrículas/catálogo), C (atribuições/tentativas) e D (painéis/relatórios).
 
 ## Futuro (não prometer no MVP)
 
 - Feedback sonoro opcional (arte, acessórios e microanimações disponíveis na V0.8).
 - Editor em blocos aninhados com drag & drop adaptado ao toque.
 - Visualização de pseudocódigo ou JavaScript.
-- Criador de missões para adultos.
+- Integração institucional do Studio somente no planejamento V2.0 (o criador local existe na V0.9).
 - PWA offline e instalação na tela inicial.

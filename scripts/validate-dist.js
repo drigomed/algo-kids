@@ -16,7 +16,7 @@ async function walk(directory) {
     else {
       assert(stat.isFile(), `Entrada não regular: ${path}`);
       const local = relative(root, path).split('\\').join('/');
-      assert(local === 'index.html' || (/^src\/.+\.(js|css)$/.test(local)&&!local.startsWith('src/assets/')) || assets.has(local), `Arquivo inesperado no artefato: ${local}`);
+      assert(local === 'index.html' || local === 'studio/index.html' || (/^src\/.+\.(js|css)$/.test(local)&&!local.startsWith('src/assets/')) || assets.has(local), `Arquivo inesperado no artefato: ${local}`);
       assert(stat.size > 0, `Arquivo vazio: ${local}`);
       files.add(local);
     }
@@ -24,7 +24,7 @@ async function walk(directory) {
 }
 await walk(root);
 await validateAssets(root);
-for (const required of ['index.html', 'src/style.css', 'src/ui.js', 'src/engine.js', 'src/missions.js']) {
+for (const required of ['index.html', 'studio/index.html', 'src/studio/app.js', 'src/style.css', 'src/ui.js', 'src/engine.js', 'src/missions.js']) {
   assert(files.has(required), `Recurso obrigatório ausente: ${required}`);
 }
 const origin = 'https://drigomed.github.io';

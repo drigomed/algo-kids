@@ -1,0 +1,130 @@
+{
+  "barriers": [
+    {
+      "col": 2,
+      "id": "objeto2",
+      "passableWhen": {
+        "type": "stateEquals",
+        "value": true,
+        "variable": "liberada"
+      },
+      "row": 4
+    }
+  ],
+  "commandOptions": [
+    {
+      "id": "comando",
+      "label": "Comando",
+      "node": {
+        "actionId": "acionar",
+        "relativeTo": "front",
+        "type": "interact"
+      }
+    }
+  ],
+  "entities": [
+    {
+      "col": 1,
+      "collectible": false,
+      "id": "objeto1",
+      "interactions": [
+        {
+          "effects": [
+            {
+              "type": "set",
+              "value": true,
+              "variable": "liberada"
+            }
+          ],
+          "id": "acionar",
+          "relativeTo": [
+            "front"
+          ]
+        }
+      ],
+      "onEnter": [],
+      "row": 4
+    }
+  ],
+  "goal": {
+    "col": 3,
+    "row": 4
+  },
+  "grid": {
+    "height": 5,
+    "obstacles": [],
+    "width": 5
+  },
+  "hint": "Observe a direção do robô.",
+  "id": "studio-reativa",
+  "initialVariables": {
+    "liberada": false
+  },
+  "instructions": "Chegue até a meta.",
+  "presentation": {
+    "visual": {
+      "barrierDefaults": {
+        "assetGroup": "door"
+      },
+      "chapter": "reactive",
+      "entities": {
+        "objeto1": {
+          "assetGroup": "button",
+          "state": {
+            "name": "liberada",
+            "source": "variable",
+            "values": [
+              {
+                "state": "on",
+                "value": true
+              },
+              {
+                "state": "off",
+                "value": false
+              }
+            ]
+          }
+        }
+      },
+      "environmentTheme": "yard",
+      "goalSkin": "star",
+      "obstacleSkin": "rock",
+      "robotSkin": "mk3"
+    }
+  },
+  "solution": [
+    {
+      "actionId": "acionar",
+      "relativeTo": "front",
+      "type": "interact"
+    },
+    {
+      "type": "move"
+    },
+    {
+      "type": "move"
+    },
+    {
+      "type": "move"
+    }
+  ],
+  "start": {
+    "col": 0,
+    "direction": "L",
+    "row": 4
+  },
+  "title": "Controle e passagem",
+  "variants": [
+    {
+      "id": "cenario1",
+      "label": "Treino: passagem fechada"
+    },
+    {
+      "id": "cenario2",
+      "initialVariables": {
+        "liberada": true
+      },
+      "label": "Teste: passagem já liberada"
+    }
+  ]
+}

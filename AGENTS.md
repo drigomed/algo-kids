@@ -1,6 +1,6 @@
 # Instruções para Codex e agentes de desenvolvimento
 
-Leia `README.md`, `docs/PRODUCT.md`, `docs/ROADMAP.md`, `docs/MVP.md`, `docs/V02.md`, `docs/V03.md`, `docs/V04.md`, `docs/V05.md`, `docs/V06.md`, `docs/V07.md`, `docs/V071.md` e `docs/V08.md` antes de implementar.
+Leia `README.md`, `docs/PRODUCT.md`, `docs/ROADMAP.md`, `docs/MVP.md`, `docs/V02.md`, `docs/V03.md`, `docs/V04.md`, `docs/V05.md`, `docs/V06.md`, `docs/V07.md`, `docs/V071.md`, `docs/V08.md`, `docs/V09.md` e `docs/V09-JSON-CONTRACT.md` antes de implementar.
 
 ## Produto
 - Jogo educativo de programação visual para criança de 6 anos, em pt-BR.
@@ -19,6 +19,14 @@ Leia `README.md`, `docs/PRODUCT.md`, `docs/ROADMAP.md`, `docs/MVP.md`, `docs/V02
 - Aparência do robô, capítulo e tema são independentes em src/presentation. Não reescrever missões ou inferir regras por imagens/onEnter.
 - A arte pode mudar na V0.8, mas mapas, objetivos, soluções, motor e relógio de execução permanecem intactos.
 - Validar assets e dist; SVG somente no catálogo, sem conteúdo ativo/referências externas. Manter galeria e movimento reduzido. Não afirmar revisão visual sem navegador.
+
+## V0.9 — Studio
+- Studio independente em studio/index.html; código em src/studio. Reutilizar engine/sessões/program/tree/visuais, sem copiar regras ou src/ui.js.
+- Missões 01–25 e 85 SVGs permanecem intactos. Drafts não publicam no catálogo nem registram progresso infantil.
+- Variantes são shallow overrides completos; não deep merge. Solução única testada em todos os cenários; edição invalida o selo.
+- JSON padrão é missão pura mission-json/v1, com tipos preservados, limite de 1 MiB, validação e confirmação antes de substituir draft.
+- Autosave local degradável, desfazer/refazer de dados, strings escapadas e recursos gráficos whitelisted. Sem backend/contas/dados institucionais.
+- V2.0 multi-escola somente em docs/ROADMAP.md e docs/V20-PLATFORM-VISION.md. Não antecipar implementação.
 
 ## Tecnologia
 - HTML/CSS/JavaScript (ES modules). Não introduzir React, backend ou serviços pagos sem justificativa explícita.
