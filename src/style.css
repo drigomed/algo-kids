@@ -186,3 +186,9 @@
 .loop-trace{margin:12px 0}
 .loop-palette-button span{min-width:0;overflow-wrap:anywhere;white-space:normal}
 @media(prefers-reduced-motion:reduce){.loop-block,.loop-body,.loop-trace{animation:none;transition:none}}
+
+/* Interrupção contextual; controles e layout inicial anteriores permanecem. */
+#stop{min-width:44px;min-height:44px}
+#stop[hidden]{display:none}
+#feedback.stalled{background:#f8e7d8;color:#6e4935}
+#feedback.stopped{background:#edf0f4;color:#3e5165}

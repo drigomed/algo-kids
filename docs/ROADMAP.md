@@ -42,6 +42,10 @@ Switch/case/default nativo com seleção estrita, snapshot de memória/mundo, re
 
 For contado e while com reavaliação antes de cada iteração, frames de controle sem expansão, checks incluídos no orçamento e autorização opt-in por loopOptions. Editor compartilha o ramo CORPO, mantém seleção e protege comandos ao reconfigurar. Somente as fixtures 24–25 foram adicionadas; 01–23 permanecem preservadas, especialmente a experiência de locomoção 01–06. Contratos, exemplo e resultados em [V07.md](V07.md). Entrega em PR para revisão, sem merge/deploy manual; validação visual no celular permanece pendente. Sem detector de ausência de progresso, break/continue, iterador local, currículo novo ou mudanças de publicação.
 
+## V0.7.1 — Recuperação e execução segura
+
+Correção incremental: detecção determinística de while por repetição de estado semântico, janela FIFO por ativação e botão contextual Interromper, distinto de pausa/reset. Cancelamento invalida timers e avanços entre variantes, preservando estado e vitórias anteriores. Mantém 01–25 sem mudanças e não amplia currículo. Contratos, resultados e limitações em [V071.md](V071.md).
+
 ## V1.0 — Missões combinadas
 
 Consolidar sequências + `for` + `if/else` + `switch` + `while`; múltiplos objetivos (entregar item, acionar interruptor, coletar energia), sensores, editor de blocos por encaixe, desbloqueio progressivo, múltiplos cenários de validação e compartilhamento opcional de programas por arquivo local, sem dados pessoais.

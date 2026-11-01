@@ -7,7 +7,7 @@ import {explicitTypes,validateCommandOptions,validateInteractions,executeExplici
 import {validateConditionOptions} from './condition-options.js';
 import {directions, frontCell, passage, victory, validVariable, scalar, record, validateEffects, validateCondition, validatePassageCondition, applyEffects, barrierChanges} from './rules.js';
 export {directions} from './rules.js';
-export const terminal = state => ['won', 'collision', 'finished', 'limit', 'actionFailed'].includes(state.status);
+export const terminal = state => ['won', 'collision', 'finished', 'limit', 'actionFailed', 'stalled', 'stopped'].includes(state.status);
 export function validateMission(m, {checkVariants=true} = {}) {
   assertJsonData(m, 'mission');
   validateMemory(m.robotMemory);
@@ -123,7 +123,8 @@ export function applyCommand(m, state, command) {
 
 export function classifyResult(state) {
   if(state.status==='won')return 'success';
-  if(['collision','actionFailed','limit'].includes(state.status))return 'failure';
+  if(['collision','actionFailed','limit','stalled'].includes(state.status))return 'failure';
+  if(state.status==='stopped')return 'interrupted';
   if(state.status==='finished')return 'incomplete';
   if(['ready','running'].includes(state.status))return 'inProgress';
   throw new Error('Estado de resultado desconhecido');

@@ -1,4 +1,4 @@
-import {validateLoopNode,loopContext} from './loops.js';
+import {validateLoopNode,loopContext,semanticSignature,MAX_WHILE_HISTORY} from './loops.js';
 import {validateSwitchNode,evaluateSwitch,switchBranchPath} from './switches.js';
 import {nodeAt,sequenceAt,MAX_NODES,MAX_DEPTH} from './tree.js';
 export {MAX_NODES,MAX_DEPTH} from './tree.js';
@@ -53,6 +53,11 @@ function checkLoop(mission,program,execution,frames) {
     if(!(error instanceof ExecutionFault))throw error;
     return {...execution,frames:[],activePath,decision:execution.decision,state:actionFailure({...execution.state,instructionPointer:execution.state.instructionPointer+1},error.reason,{action:node.type,loop:context,condition:structuredClone(node.condition),...error.details})};
   }
+  if(node.type==='while'&&result) {
+    const signature=semanticSignature(execution.state);
+    if(frame.history.includes(signature))return {...execution,frames:[],activePath,state:{...execution.state,status:'stalled',reason:'noProgress',lastEvent:'loopStalled',instructionPointer:execution.state.instructionPointer+1,events:[{type:'loopStalled',reason:'noProgress',loop:{...context,completed:frame.completed}}]}};
+    frame.history=[...frame.history,signature].slice(-MAX_WHILE_HISTORY);
+  }
   const event={type:'loopCheck',...context,result,...(node.type==='while'?{condition:structuredClone(node.condition)}:{})};
   let state={...execution.state,status:'running',instructionPointer:execution.state.instructionPointer+1,lastEvent:'loopCheck',events:[event]};
   if(result)frames.push({path:[...activePath,'body'],index:0});else frames.pop();
@@ -74,7 +79,7 @@ export function stepExecution(mission, program, execution) {
   const frame = frames.at(-1), index = frame.index++;
   const activePath = [...frame.path, index], node = listAt(program, frame.path)[index];
   if(['for','while'].includes(node.type)) {
-    frames.push({kind:'loop',loopType:node.type,path:activePath,completed:0,...(node.type==='for'?{times:node.times}:{})});
+    frames.push({kind:'loop',loopType:node.type,path:activePath,completed:0,...(node.type==='for'?{times:node.times}:{history:[]})});
     return checkLoop(mission,program,execution,frames);
   }
   let state, decision = execution.decision;
@@ -114,4 +119,11 @@ export function simulate(mission, program, options) {
     states.push(execution.state);
   }
   return states;
+}
+
+// Interromper não conta como instrução e preserva todo o estado semântico.
+export function interruptExecution(execution) {
+  if(execution.state.status!=='running')return execution;
+  const loop=loopContext(execution.frames);
+  return {...execution,frames:[],state:{...execution.state,status:'stopped',reason:'userStopped',lastEvent:'stopped',events:[{type:'userStopped',path:execution.activePath?[...execution.activePath]:null,...(loop?{loop}:{})}]}};
 }

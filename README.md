@@ -1,6 +1,6 @@
 # Missões do Robô — Pequenos Programadores
 
-V0.7 do motor de programação visual, em português do Brasil: repetições nativas REPITA/ENQUANTO e edição de corpos aninhados. Monte o programa antes de executar e leve o robô até a estrela.
+V0.7.1 do motor de programação visual, em português do Brasil: repetições nativas, detecção de ciclos sem progresso e interrupção manual. Monte o programa antes de executar e leve o robô até a estrela.
 
 ## Executar
 
@@ -70,9 +70,15 @@ A demo 22 mantém a inspeção e as três chaves da 21, mas usa um switch real. 
 
 Na V0.7, **REPITA N VEZES** executa seu CORPO exatamente N vezes (1–20 conforme as opções da missão). **ENQUANTO** consulta novamente a pergunta antes de cada iteração; falso segue após o bloco, e informação desconhecida interrompe com uma explicação. Cada check é um passo, inclusive o falso de saída: quatro avanços no REPITA custam 5 checks + 4 movimentos. Pausar/Continuar preserva o contador; Reiniciar restaura a execução.
 
-Selecione **Adicionar aqui** no CORPO e use sua paleta local. Volte explicitamente ao programa principal para inserir os comandos posteriores. Trocar presets da mesma categoria preserva o corpo; remover um bloco preenchido pede confirmação. Um programa que repete muitas vezes termina pelo orçamento defensivo, mantendo a interface pausável. Não há expansão da AST nem mudança na física.
+Selecione **Adicionar aqui** no CORPO e use sua paleta local. Volte explicitamente ao programa principal para inserir os comandos posteriores. Trocar presets da mesma categoria preserva o corpo; remover um bloco preenchido pede confirmação. Uma execução longa continua sujeita ao orçamento defensivo; a V0.7.1 também detecta ciclos sem progresso, mantendo a interface pausável. Não há expansão da AST nem mudança na física.
 
-As demos 24/25 verificam repetição contada e corredor de comprimento variável. São fixtures técnicas, não novas etapas pedagógicas definitivas. Consulte [V07.md](docs/V07.md) para contratos, eventos, orçamento, resultados e revisão no celular; [V07-example.json](docs/V07-example.json) exemplifica autoria inteiramente declarativa. **353 testes passaram**, além de build e validação do artefato estático (31 arquivos, 103 referências). A revisão visual em aparelho permanece pendente; a entrega é por PR, sem merge automático.
+As demos 24/25 verificam repetição contada e corredor de comprimento variável. São fixtures técnicas, não novas etapas pedagógicas definitivas. Consulte [V07.md](docs/V07.md) para contratos, eventos, orçamento, resultados e revisão no celular; [V07-example.json](docs/V07-example.json) exemplifica autoria inteiramente declarativa. **428 testes passaram**, além de build e validação do artefato estático (31 arquivos, 105 referências). A revisão visual em aparelho permanece pendente; a entrega é por PR, sem merge automático.
+
+Na V0.7.1, um **ENQUANTO** que reencontra a mesma situação com condição verdadeira termina como falha por falta de progresso. A comparação inclui posição, direção, mundo, memória, coleta, consumo e interações; não considera somente se o robô andou. O histórico é separado por ativação, com janela de 256 assinaturas; o orçamento continua protegendo execuções longas. REPITA finito e algoritmos que alteram estado continuam funcionando.
+
+**■ Interromper** aparece durante execução, pausa ou após passo manual. Cancela os próximos passos e conserva a posição/estado, sem contar instrução. **Pausar** permite continuar; **Reiniciar** restaura o começo; **Executar** após interrupção recomeça com o mesmo programa. Interrupção não é falha do algoritmo: mostra **Interrompido por você**. Durante variantes, conserva as vitórias anteriores e cancela o avanço pendente sem concluir a missão.
+
+Os contratos, ajustes justificados dos testes e roteiro de revisão estão em [V071.md](docs/V071.md). Nenhuma missão 01–25 mudou. Testes do controlador usam agendador simulado para provar cancelamento imediato e rejeição de callbacks antigos; revisão visual real no celular continua pendente.
 
 ## Estrutura
 
@@ -93,9 +99,9 @@ As demos 24/25 verificam repetição contada e corredor de comprimento variável
 - `src/condition-options.js`: autorização, seleção guiada e rótulos das condições.
 - `src/ui.js`, `src/view.js`, `src/command-view.js` e `src/html.js`: controles, temporização e representação visual do estado e da AST.
 - `src/style.css`: layout responsivo, controles de toque e movimento reduzido.
-- `tests/engine.test.js`, `tests/v02.test.js`, `tests/v03.test.js`, `tests/v04.test.js`, `tests/v05.test.js`, `tests/v06.test.js` e `tests/v07.test.js`: regressão, entidades, coleta, estado, condições, interpretação, editor, sessões e soluções de todas as variantes.
+- `tests/engine.test.js`, `tests/v02.test.js`, `tests/v03.test.js`, `tests/v04.test.js`, `tests/v05.test.js`, `tests/v06.test.js`, `tests/v07.test.js` e `tests/v071.test.js`: regressão, entidades, coleta, estado, condições, interpretação, editor, sessões e soluções de todas as variantes.
 - `scripts/build.js`: empacotamento estático sem dependências.
-- `docs/V02.md`, `docs/V03.md`, `docs/V04.md`, `docs/V05.md`, `docs/V06.md` e `docs/V07.md`: contratos, critérios de aceite, exemplos e roteiros de revisão; `docs/` mantém o escopo original e o roadmap atualizado.
+- `docs/V02.md`, `docs/V03.md`, `docs/V04.md`, `docs/V05.md`, `docs/V06.md`, `docs/V07.md` e `docs/V071.md`: contratos, critérios de aceite, exemplos e roteiros de revisão; `docs/` mantém o escopo original e o roadmap atualizado.
 
 Sem backend, APIs, fontes externas, anúncios, contas, telemetria ou dados pessoais. Progresso fica apenas na memória da página e reinicia ao recarregar. Os comandos são nós tipados; não há execução de código arbitrário.
 
@@ -129,7 +135,7 @@ Com acesso administrativo:
 
 Para republicar manualmente: **Actions → Validar e publicar no GitHub Pages → Run workflow → Branch: main**. O botão manual depende de o workflow existir na branch padrão; configure `main` como padrão após a integração para disponibilizá-lo. Selecionar outra branch nunca autoriza o deploy.
 
-O repositório é **público** e o Pages foi configurado após a entrega da infraestrutura. A V0.7 é entregue em PR e não faz deploy manual nem altera configurações de publicação. Após aprovação e merge na `main`, o workflow existente publica a versão. Se for necessário refazer a configuração, siga as instruções administrativas acima. O campo `private: true` do `package.json` impede publicação acidental no npm e não determina a visibilidade do GitHub. Se o repositório passar a privado, confirme a elegibilidade do Pages no plano da conta em **Settings → Pages** e nas configurações de cobrança. Repositório privado não garante site privado. Se o plano não oferecer Pages para repositórios privados, as alternativas são contratar um plano compatível ou tornar o repositório público **somente mediante aprovação do responsável**. Este workflow não altera plano, visibilidade ou branch padrão.
+O repositório é **público** e o Pages foi configurado após a entrega da infraestrutura. A V0.7.1 é entregue em PR e não faz deploy manual nem altera configurações de publicação. Após aprovação e merge na `main`, o workflow existente publica a versão. Se for necessário refazer a configuração, siga as instruções administrativas acima. O campo `private: true` do `package.json` impede publicação acidental no npm e não determina a visibilidade do GitHub. Se o repositório passar a privado, confirme a elegibilidade do Pages no plano da conta em **Settings → Pages** e nas configurações de cobrança. Repositório privado não garante site privado. Se o plano não oferecer Pages para repositórios privados, as alternativas são contratar um plano compatível ou tornar o repositório público **somente mediante aprovação do responsável**. Este workflow não altera plano, visibilidade ou branch padrão.
 
 Para exigir a validação antes de integrar PRs, um administrador pode criar uma regra para `main` em **Settings → Rules → Rulesets** (ou **Branches → Branch protection**), exigir Pull Request e o check **Testes e build**, e bloquear force pushes. Essa proteção depende das opções disponíveis no plano e não é criada automaticamente pelo workflow.
 

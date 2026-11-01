@@ -1,6 +1,6 @@
 // Orquestra treino e validação sem depender da interface ou de temporizadores.
 import {missionVariants} from './missions.js';
-import {createExecution, stepExecution, terminal, validateMission, validateProgram} from './engine.js';
+import {createExecution, stepExecution, interruptExecution, terminal, validateMission, validateProgram} from './engine.js';
 export function createSession(mission, program, options) {
   validateMission(mission);
   const scenarios = missionVariants(mission), snapshot = structuredClone(program);
@@ -11,7 +11,7 @@ export function createSession(mission, program, options) {
     completed: passed.length === scenarios.length, execution};
 }
 export function canStep(session) {
-  return !terminal(session.execution.state) || (session.testing && session.execution.state.status === 'won' && session.scenarioIndex < session.scenarios.length - 1);
+  return !session.interrupted&&(!terminal(session.execution.state) || (session.testing && session.execution.state.status === 'won' && session.scenarioIndex < session.scenarios.length - 1));
 }
 export function stepSession(session) {
   if (!canStep(session)) return session;
@@ -24,7 +24,16 @@ export function stepSession(session) {
   return {...session, execution, passed, completed: passed.length === session.scenarios.length};
 }
 export function startVariantTests(session) {
-  if (session.scenarioIndex !== 0 || session.execution.state.status !== 'won' || !session.passed.includes(0) || session.scenarios.length < 2) throw new Error('Conclua primeiro o treino com este programa.');
+  if (session.interrupted || session.scenarioIndex !== 0 || session.execution.state.status !== 'won' || !session.passed.includes(0) || session.scenarios.length < 2) throw new Error('Conclua primeiro o treino com este programa.');
   return {...session, testing: true, scenarioIndex: 1, passed: [0], completed: false,
     execution: createExecution(session.scenarios[1], session.program, session.options)};
+}
+
+export function canInterruptSession(session) {
+  return !session.interrupted&&(session.execution.state.status==='running'||(session.testing&&session.execution.state.status==='won'&&session.scenarioIndex<session.scenarios.length-1));
+}
+export function interruptSession(session) {
+  if(!canInterruptSession(session))return session;
+  // A vitória já registrada permanece; somente a continuação da sessão é cancelada.
+  return {...session,execution:interruptExecution(session.execution),testing:false,interrupted:true,completed:false};
 }

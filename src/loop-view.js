@@ -1,5 +1,5 @@
 import {escapeHtml as h} from './html.js';
-import {loopOption,loopContext} from './loops.js';
+import {loopOption,loopContext,stalledMessage,stoppedMessage} from './loops.js';
 import {conditionQuestion} from './condition-options.js';
 import {nodeAt} from './tree.js';
 export function loopTitle(mission,node) {return node.type==='for'?`REPITA ${node.times} VEZES`:`ENQUANTO ${loopOption(mission,node)?.label??'a condição for verdadeira'}`;}
@@ -24,10 +24,12 @@ export function renderLoop({mission,node,path,key,controls,execution,target,disa
 }
 export function renderLoopTrace(mission,execution,program) {
   if(!mission.loopOptions?.length)return '';
-  const event=execution.state.events.find(event=>event.type==='loopCheck'||event.type==='limit'&&event.loop||event.type==='actionFailed'&&event.loop);
+  const event=execution.state.events.find(event=>event.type==='loopCheck'||event.type==='loopStalled'||event.type==='userStopped'&&event.loop||event.type==='limit'&&event.loop||event.type==='actionFailed'&&event.loop);
   const context=loopContext(execution.frames);
   let message='';
-  if(event?.type==='loopCheck')message=loopMessage(mission,event);
+  if(event?.type==='loopStalled')message=stalledMessage;
+  else if(event?.type==='userStopped')message=stoppedMessage;
+  else if(event?.type==='loopCheck')message=loopMessage(mission,event);
   else if(event?.type==='limit')message=`O robô está repetindo muitas vezes. Veja se algo faz a condição mudar. Repetição ${event.loop.iteration}; limite de ${event.instructionLimit} passos.`;
   else if(event?.type==='actionFailed')message=event.reason==='memoryUnknown'?'Ainda não sei essa informação; não consigo decidir se devo continuar.':'A ação não pôde terminar nesta repetição. O programa parou.';
   else if(context&&['won','collision'].includes(execution.state.status))message=execution.state.status==='won'?`Objetivo alcançado na repetição ${context.iteration}!`:`O movimento foi bloqueado na repetição ${context.iteration}. O programa parou.`;

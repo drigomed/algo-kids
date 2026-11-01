@@ -1,3 +1,4 @@
+import {stalledMessage,stoppedMessage} from './loops.js';
 import {renderLoopPalette,loopMessage} from './loop-view.js';
 import {switchNarrative,selectorLabel} from './switch-copy.js';
 import {objectProperties} from './properties.js';
@@ -37,6 +38,8 @@ export function failureMessage(mission,state) {
 }
 export function commandMessages(mission,state) {
  return state.events.flatMap(event=>{
+  if(event.type==='loopStalled')return [stalledMessage];
+  if(event.type==='userStopped')return [stoppedMessage];
   if(event.type==='loopCheck')return [loopMessage(mission,event)];
   if(event.type==='switch'){const n=switchNarrative(mission,event);return [`${n.source}. ${n.comparison}. ${n.branch}.`];}
   if(event.type==='inspected'&&event.success)return [`Observei ${sourceLabels(mission,{type:'inspect',source:event.source,into:event.variable}).target} na casa ${event.source.relativeTo==='here'?'atual':'à frente'} e guardei ${memoryValueLabel(mission,event.variable,event.value)} em ${memoryName(mission,event.variable)}.`];
@@ -82,7 +85,7 @@ export function collisionMessage(mission,state) {
 export function passageIndicators(mission,state) {
   return (mission.barriers??[]).flatMap(barrier=>Object.entries(objectProperties(barrier,state)).map(([name,value])=>`${mission.presentation?.barriers?.[barrier.id]?.label??'Passagem'} · ${mission.presentation?.barriers?.[barrier.id]?.propertyLabels?.[name]??'Informação'}: ${typeof value==='boolean'?(value?'Sim':'Não'):value}`)).join(' | ');
 }
-export function resultLabel(category) {return {success:'Objetivo concluído',failure:'Programa interrompido',incomplete:'Programa incompleto',inProgress:'Em andamento'}[category];}
+export function resultLabel(category) {return {interrupted:'Interrompido por você',success:'Objetivo concluído',failure:'Programa interrompido',incomplete:'Programa incompleto',inProgress:'Em andamento'}[category];}
 
 export function renderSwitchPalette(mission,disabled=false,inlinePath) {
   return (mission.switchOptions??[]).map(option=>`<button ${inlinePath===undefined?'data-switch-option':'data-inline-switch'}="${h(option.id)}" ${inlinePath===undefined?'':`data-target="${inlinePath}"`} ${disabled?'disabled':''}><b>◇</b><span>ESCOLHA<small>${h(option.label)}</small></span></button>`).join('');

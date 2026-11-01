@@ -1,3 +1,4 @@
+import {stalledMessage,stoppedMessage} from './loops.js';
 import {renderLoopPalette,renderLoopTrace} from './loop-view.js';
 import {insertionLabel} from './branch-view.js';
 import {nodeAt,rebaseTarget} from './tree.js';
@@ -7,33 +8,42 @@ import {configureCommand} from './commands.js';
 import {renderCommandPalette,renderMemory,failureMessage,commandMessages,renderDecisionTrace,renderSwitchPalette,collisionMessage,passageIndicators,resultLabel} from './command-view.js';
 import {conditionOptions, valuesFor, defaultCondition, configureCondition} from './condition-options.js';
 import {missions} from './missions.js';
-import {createSession, stepSession, canStep, startVariantTests} from './session.js';
+import {createSession, stepSession, canStep, startVariantTests, interruptSession, canInterruptSession} from './session.js';
 import {countNodes, editProgram} from './program.js';
 import {renderProgram, renderBoard, encodePath, decodePath, escapeHtml, worldIndicators, eventMessages, describeEnvironment} from './view.js';
 
 const $ = selector => document.querySelector(selector);
 let mission = missions[0], program = [], target = [], session = createSession(mission, program);
+let playbackGeneration=0;
 let timer = null, running = false, editorMessage = '', lastTraceKey='', lastLoopKey='', lastFeedbackKey='';
 const completed = new Set();
 const state = () => session.execution.state;
 const scenario = () => session.scenarios[session.scenarioIndex];
-function stop() { clearTimeout(timer); timer = null; running = false; }
+function stopPlayback() { clearTimeout(timer); timer = null; running = false; playbackGeneration++; }
+function scheduleTick(delay) {
+  const generation=playbackGeneration;
+  timer=setTimeout(()=>{if(running&&generation===playbackGeneration)tick();},delay);
+}
 function reset() {
-  stop(); session = createSession(mission, program); editorMessage = ''; render();
+  stopPlayback(); session = createSession(mission, program); editorMessage = ''; render();
 }
 function edit(operation) {
   if (running) return;
   try {
     const next = editProgram(program, operation);
     const nextSession=createSession(mission,next);
-    stop(); program=next; session=nextSession;
+    stopPlayback(); program=next; session=nextSession;
     target=rebaseTarget(next,target,operation);
     editorMessage = ''; render();
   } catch (error) { editorMessage = error.message; render(); }
 }
 function feedback() {
   const s = state();
+  if(session.interrupted)return stoppedMessage;
+  if(s.status==='stalled')return stalledMessage;
   const messages = {
+    stalled: stalledMessage,
+    stopped: stoppedMessage,
     ready: 'Monte seu caminho e toque em Executar. Você consegue!',
     running: running ? 'Lá vai o robô! Acompanhe cada comando.' : 'Robô pausado. Observe o caminho e continue.',
     won: session.completed ? 'Você conseguiu! Todas as versões desta missão passaram! ✨' : session.scenarioIndex === 0 ? 'Treino concluído! Agora teste o mesmo programa nas outras versões.' : 'Esta versão passou! Vamos observar a próxima.',
@@ -120,35 +130,40 @@ function render() {
   const message=feedback();
   const feedbackKey=`${session.scenarioIndex}:${s.instructionPointer}:${s.status}:${message}`;
   if(lastFeedbackKey!==feedbackKey){$('#feedback').textContent=message;lastFeedbackKey=feedbackKey;}
-  $('#feedback').className = s.status;
-  $('#feedback').dataset.result=classifyResult(s);
-  $('#outcome-label').textContent=resultLabel(classifyResult(s));
+  const category=session.interrupted?'interrupted':classifyResult(s);
+  $('#feedback').className = session.interrupted?'stopped':s.status;
+  $('#feedback').dataset.result=category;
+  $('#outcome-label').textContent=resultLabel(category);
   $('#run').disabled = running || !program.length;
-  $('#pause').disabled = s.status !== 'running' && !(session.testing && canStep(session));
+  $('#stop').hidden=!canInterruptSession(session);
+  $('#stop').disabled=!canInterruptSession(session);
+  $('#pause').disabled = !canStep(session)||s.status !== 'running' && !(session.testing && canStep(session));
   $('#pause').textContent = running ? 'Ⅱ Pausar' : '▶ Continuar';
   $('#step').disabled = running || !program.length || !canStep(session);
   document.querySelectorAll('[data-add],#clear,#root-target').forEach(button => button.disabled = running);
   $('#variant-tests').hidden = session.scenarios.length < 2;
   $('#variant-status').textContent = `${session.scenarioIndex === 0 ? 'Treino' : 'Teste'} ${session.scenarioIndex + 1}/${session.scenarios.length}: ${current.variantLabel}. ${session.completed ? 'Todas as versões passaram!' : `${session.passed.length}/${session.scenarios.length} versões concluídas.`}`;
-  $('#test-variants').disabled = running || session.scenarioIndex !== 0 || !session.passed.includes(0);
+  $('#test-variants').disabled = running || session.interrupted || s.status!=='won' || session.scenarioIndex !== 0 || !session.passed.includes(0);
   $('#back-training').disabled = running || session.scenarioIndex === 0;
 }
 function step() {
   if (!canStep(session)) return;
   session = stepSession(session);
   if (session.completed) completed.add(mission.id);
-  if (!canStep(session)) stop();
+  if (!canStep(session)) stopPlayback();
   render();
 }
 function tick() {
+  if(!running)return;
   step();
-  if(running)timer=setTimeout(tick,state().events.some(event=>['condition','switch','loopCheck'].includes(event.type))&&!matchMedia('(prefers-reduced-motion: reduce)').matches?1100:700);
+  if(running)scheduleTick(state().events.some(event=>['condition','switch','loopCheck'].includes(event.type))&&!matchMedia('(prefers-reduced-motion: reduce)').matches?1100:700);
 }
 $('#run').onclick = () => { if (!program.length) return; reset(); running = true; tick(); };
-$('#pause').onclick = () => { if (running) { stop(); render(); } else if (canStep(session)) { running = true; render(); timer = setTimeout(tick, 450); } };
+$('#pause').onclick = () => { if (running) { stopPlayback(); render(); } else if (canStep(session)) { running = true; render(); scheduleTick(450); } };
 $('#step').onclick = step;
 $('#reset').onclick = $('#back-training').onclick = reset;
-$('#test-variants').onclick = () => { session = startVariantTests(session); running = true; render(); timer = setTimeout(tick, 700); };
+$('#stop').onclick = () => {stopPlayback();session=interruptSession(session);render();};
+$('#test-variants').onclick = () => { stopPlayback();session = startVariantTests(session); running = true; render(); scheduleTick(700); };
 $('#clear').onclick = () => { if (running) return; program = []; target = []; reset(); };
 $('#root-target').onclick = () => { target = []; render(); };
 function addAt(path,nodeType,optionId,switchId,loopId) {

@@ -1,12 +1,13 @@
 # Instruções para Codex e agentes de desenvolvimento
 
-Leia `README.md`, `docs/PRODUCT.md`, `docs/ROADMAP.md`, `docs/MVP.md`, `docs/V02.md`, `docs/V03.md`, `docs/V04.md`, `docs/V05.md`, `docs/V06.md` e `docs/V07.md` antes de implementar.
+Leia `README.md`, `docs/PRODUCT.md`, `docs/ROADMAP.md`, `docs/MVP.md`, `docs/V02.md`, `docs/V03.md`, `docs/V04.md`, `docs/V05.md`, `docs/V06.md`, `docs/V07.md` e `docs/V071.md` antes de implementar.
 
 ## Produto
 - Jogo educativo de programação visual para criança de 6 anos, em pt-BR.
 - Conceito central: **a criança constrói um algoritmo, depois o robô executa**.
 - Preferir UX simples, agradável, visual, responsiva e acessível ao toque.
 - Preservar integralmente definições e soluções 01–23, especialmente apresentação e comandos infantis 01–06. V0.7 acrescenta for/while nativos autorizados por loopOptions; 24–25 são somente fixtures técnicas. Sem expansão da AST, break/continue ou iterador local.
+- V0.7.1 detecta ciclos semânticos por ativação de while (FIFO 256); for finito não estagna. Preservar 01–25. Interromper é terminal sem consumir instrução; pausa só suspende playback. Não reclassificar vitórias anteriores ao cancelar variantes.
 - Trocar presets de laço na mesma categoria preserva body; trocar de categoria não é edição silenciosa. Checks consomem orçamento, inclusive saída; while reavalia o estado atual.
 - Nunca descartar corpos de casos silenciosamente ao trocar configuração. Validar caminhos cases/body/default e body de for/while, profundidade estrutural e permissões também no motor.
 - Motor genérico: ações, condições e regras de passagem não conhecem nomes de objetos. Aparência e mensagens pertencem aos dados das missões.
