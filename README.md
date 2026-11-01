@@ -1,6 +1,6 @@
 # Missões do Robô — Pequenos Programadores
 
-V0.4 do motor de programação visual, em português do Brasil: interação explícita, memória do robô e mundo reativo. Monte o programa antes de executar e leve o robô até a estrela.
+V0.5 do motor de programação visual, em português do Brasil: restrições físicas, comparações numéricas e seleção explícita de alvos. Monte o programa antes de executar e leve o robô até a estrela.
 
 ## Executar
 
@@ -27,7 +27,7 @@ URL pública esperada: **https://drigomed.github.io/algo-kids/**. O endereço s�
 
 ## Jogar
 
-As dezesseis missões existentes continuam disponíveis. Os cenários 17–19 são demonstrações temporárias para validar o motor. Toque em Avançar, Virar à esquerda ou Virar à direita para adicionar comandos. As setas da lista reordenam; × remove. Executar começa do início; Pausar/Continuar controla a execução; Passo a passo executa um comando. Reiniciar mantém o programa; Limpar apaga os comandos. Alterar um programa pausado reinicia a posição do robô. A direção inicial aparece pela seta sobre o robô; norte fica no topo.
+As definições e soluções 01–19 continuam disponíveis e preservadas. Os cenários 17–21 são demonstrações temporárias do motor; a V0.5 acrescenta somente 20–21. Toque em Avançar, Virar à esquerda ou Virar à direita para adicionar comandos. As setas da lista reordenam; × remove. Executar começa do início; Pausar/Continuar controla a execução; Passo a passo executa um comando. Reiniciar mantém o programa; Limpar apaga os comandos. Alterar um programa pausado reinicia a posição do robô. A direção inicial aparece pela seta sobre o robô; norte fica no topo.
 
 Nas missões 07–08, entrar na casa recolhe o objeto automaticamente. O contador mostra os objetos e a meta da missão. A estrela só encerra a execução quando a meta também estiver satisfeita. Reiniciar restaura todos os objetos e variáveis, preservando o programa.
 
@@ -54,22 +54,31 @@ Ao selecionar ENTÃO ou SENÃO, use a paleta do próprio ramo para inserir vári
 
 O exemplo completo [V04-example.json](docs/V04-example.json) pode ser carregado, validado e executado sem modificar o motor. Os contratos, falhas, eventos e roteiro manual estão em [V04.md](docs/V04.md). Uma interação malsucedida não deixa efeitos parciais; reiniciar restaura mundo, memória, consumo e ações de uso único. A coleta e os efeitos automáticos antigos continuam funcionando como antes.
 
+Na V0.5, condições numéricas comparam números do mundo ou da memória com tipos estritos. As regras físicas também podem consultar propriedades da própria passagem. Uma capacidade declarada é a mesma usada na regra, na inspeção e na apresentação.
+
+**Um programa pode tentar atravessar uma passagem proibida.** O editor aceita esse movimento; na tentativa de entrada, o motor bloqueia a passagem, interrompe o programa e informa o motivo e os valores relevantes. Não há correção automática da rota nem descarte de carga. Conhecer ou desconhecer a capacidade não altera a física. Término sem objetivo aparece como programa incompleto; colisão, falha de ação e limite aparecem como falha.
+
+Inspecionar também pode ler propriedades de objetos e barreiras à frente ou na casa atual, nos alcances autorizados. Quando há vários objetos no mesmo local, escolha a opção que identifica o alvo. Objetos consumidos/coletados deixam de estar disponíveis. As guardas de interação podem usar comparações numéricas; uma pré-condição falsa é uma falha de execução, sem efeitos parciais.
+
+O exemplo completo [V05-example.json](docs/V05-example.json) e os contratos de [V05.md](docs/V05.md) mostram a autoria por configuração. A demo 20 testa cargas e capacidades (incluindo tentativas negativas nos testes); a 21 testa inspeção de um objeto e escolha entre três alvos, sem switch.
+
 ## Estrutura
 
 - `src/engine.js`: API pública do motor, sem DOM.
-- `src/rules.js`: condições e sensores, regra centralizada de passagem e efeitos declarativos sobre variáveis genéricas.
+- `src/rules.js`, `src/numbers.js` e `src/properties.js`: condições, operandos tipados, propriedades observáveis, passagem centralizada e efeitos declarativos.
 - `src/world.js`: movimento, entidades, eventos, estado e vitória.
 - `src/data.js`, `src/memory.js` e `src/commands.js`: validação JSON, memória tipada, autorização de comandos e execução transacional de interações.
 - `src/interpreter.js`: AST, pilha de frames, caminhos ativos, orçamento e simulação.
 - `src/program.js`: operações imutáveis da árvore do editor.
 - `src/session.js`: treino e validação determinística em múltiplos cenários.
 - `src/missions.js`: mantém as missões 01–12 e agrega as missões 13–16 de `src/reactive-missions.js`, com variantes, metadados, dicas e soluções de referência.
+- `src/demo-missions-v05.js`: apenas as duas demonstrações novas de física e seleção de alvos.
 - `src/condition-options.js`: autorização, seleção guiada e rótulos das condições.
 - `src/ui.js`, `src/view.js`, `src/command-view.js` e `src/html.js`: controles, temporização e representação visual do estado e da AST.
 - `src/style.css`: layout responsivo, controles de toque e movimento reduzido.
-- `tests/engine.test.js`, `tests/v02.test.js`, `tests/v03.test.js` e `tests/v04.test.js`: regressão, entidades, coleta, estado, condições, interpretação, editor, sessões e soluções de todas as variantes.
+- `tests/engine.test.js`, `tests/v02.test.js`, `tests/v03.test.js`, `tests/v04.test.js` e `tests/v05.test.js`: regressão, entidades, coleta, estado, condições, interpretação, editor, sessões e soluções de todas as variantes.
 - `scripts/build.js`: empacotamento estático sem dependências.
-- `docs/V02.md`, `docs/V03.md` e `docs/V04.md`: contratos, critérios de aceite, exemplos e roteiros de revisão; `docs/` mantém o escopo original e o roadmap atualizado.
+- `docs/V02.md`, `docs/V03.md`, `docs/V04.md` e `docs/V05.md`: contratos, critérios de aceite, exemplos e roteiros de revisão; `docs/` mantém o escopo original e o roadmap atualizado.
 
 Sem backend, APIs, fontes externas, anúncios, contas, telemetria ou dados pessoais. Progresso fica apenas na memória da página e reinicia ao recarregar. Os comandos são nós tipados; não há execução de código arbitrário.
 
@@ -103,7 +112,7 @@ Com acesso administrativo:
 
 Para republicar manualmente: **Actions → Validar e publicar no GitHub Pages → Run workflow → Branch: main**. O botão manual depende de o workflow existir na branch padrão; configure `main` como padrão após a integração para disponibilizá-lo. Selecionar outra branch nunca autoriza o deploy.
 
-O repositório é **público** e o Pages foi configurado após a entrega da infraestrutura. A V0.4 é entregue em PR e não faz deploy manual nem altera configurações de publicação. Após aprovação e merge na `main`, o workflow existente publica a versão. Se for necessário refazer a configuração, siga as instruções administrativas acima. O campo `private: true` do `package.json` impede publicação acidental no npm e não determina a visibilidade do GitHub. Se o repositório passar a privado, confirme a elegibilidade do Pages no plano da conta em **Settings → Pages** e nas configurações de cobrança. Repositório privado não garante site privado. Se o plano não oferecer Pages para repositórios privados, as alternativas são contratar um plano compatível ou tornar o repositório público **somente mediante aprovação do responsável**. Este workflow não altera plano, visibilidade ou branch padrão.
+O repositório é **público** e o Pages foi configurado após a entrega da infraestrutura. A V0.5 é entregue em PR e não faz deploy manual nem altera configurações de publicação. Após aprovação e merge na `main`, o workflow existente publica a versão. Se for necessário refazer a configuração, siga as instruções administrativas acima. O campo `private: true` do `package.json` impede publicação acidental no npm e não determina a visibilidade do GitHub. Se o repositório passar a privado, confirme a elegibilidade do Pages no plano da conta em **Settings → Pages** e nas configurações de cobrança. Repositório privado não garante site privado. Se o plano não oferecer Pages para repositórios privados, as alternativas são contratar um plano compatível ou tornar o repositório público **somente mediante aprovação do responsável**. Este workflow não altera plano, visibilidade ou branch padrão.
 
 Para exigir a validação antes de integrar PRs, um administrador pode criar uma regra para `main` em **Settings → Rules → Rulesets** (ou **Branches → Branch protection**), exigir Pull Request e o check **Testes e build**, e bloquear force pushes. Essa proteção depende das opções disponíveis no plano e não é criada automaticamente pelo workflow.
 

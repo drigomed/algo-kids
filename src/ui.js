@@ -1,5 +1,6 @@
+import {classifyResult} from './engine.js';
 import {configureCommand} from './commands.js';
-import {renderCommandPalette,renderMemory,failureMessage,commandMessages,renderDecisionTrace} from './command-view.js';
+import {renderCommandPalette,renderMemory,failureMessage,commandMessages,renderDecisionTrace,collisionMessage,passageIndicators,resultLabel} from './command-view.js';
 import {conditionOptions, valuesFor, defaultCondition, configureCondition} from './condition-options.js';
 import {missions} from './missions.js';
 import {createSession, stepSession, canStep, startVariantTests} from './session.js';
@@ -32,7 +33,7 @@ function feedback() {
     ready: 'Monte seu caminho e toque em Executar. Você consegue!',
     running: running ? 'Lá vai o robô! Acompanhe cada comando.' : 'Robô pausado. Observe o caminho e continue.',
     won: session.completed ? 'Você conseguiu! Todas as versões desta missão passaram! ✨' : session.scenarioIndex === 0 ? 'Treino concluído! Agora teste o mesmo programa nas outras versões.' : 'Esta versão passou! Vamos observar a próxima.',
-    collision: s.lastEvent === 'boundary' ? 'Opa, o tabuleiro acaba aqui! Que tal mudar o caminho?' : s.lastEvent === 'barrier' ? 'Esta passagem está fechada. Observe o estado e pense em outro caminho!' : 'Uma rocha no caminho! Vamos tentar contornar?',
+    collision: collisionMessage(scenario(),s),
     finished: 'Os comandos acabaram. Confira a meta e ajuste seu programa para chegar à estrela.',
     actionFailed: failureMessage(scenario(),s),
     limit: 'Foram muitos passos! Vamos simplificar o programa e tentar de novo?'
@@ -72,6 +73,8 @@ function render() {
   $('#collection').hidden = !(current.entities?.some(entity=>entity.collectible) || progress);
   $('#world-state').textContent = worldIndicators(current,s);
   $('#world-state').hidden = !$('#world-state').textContent;
+  $('#passage-properties').textContent=passageIndicators(current,s);
+  $('#passage-properties').hidden=!$('#passage-properties').textContent;
   $('#collection').textContent = `● Objetos coletados: ${s.collectedCount}${progress ? ` · ${current.presentation.variables[progress.variable]}: ${s.variables[progress.variable]} / ${progress.target}` : ''}`;
   const count = countNodes(program);
   $('#count').textContent = `${count} ${count === 1 ? 'bloco' : 'blocos'}`;
@@ -93,6 +96,8 @@ function render() {
   $('#root-target').setAttribute('aria-pressed', String(!target.length));
   $('#editor-message').textContent = editorMessage;
   $('#feedback').textContent = feedback(); $('#feedback').className = s.status;
+  $('#feedback').dataset.result=classifyResult(s);
+  $('#outcome-label').textContent=resultLabel(classifyResult(s));
   $('#run').disabled = running || !program.length;
   $('#pause').disabled = s.status !== 'running' && !(session.testing && canStep(session));
   $('#pause').textContent = running ? 'Ⅱ Pausar' : '▶ Continuar';

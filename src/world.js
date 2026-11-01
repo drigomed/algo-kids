@@ -1,3 +1,4 @@
+import {validateProperties} from './properties.js';
 import {assertJsonData,ExecutionFault,actionFailure} from './data.js';
 import {validateMemory,initialMemory} from './memory.js';
 import {explicitTypes,validateCommandOptions,validateInteractions,executeExplicit} from './commands.js';
@@ -27,6 +28,7 @@ export function validateMission(m, {checkVariants=true} = {}) {
     ids.add(entity.id);
     validateEffects(entity.onEnter, variables, 0, {count:0}, m.robotMemory??{});
     validateInteractions(entity,m);
+    validateProperties(entity.properties,variables,`entities.${entity.id}.properties`);
   }
   if (m.barriers !== undefined && !Array.isArray(m.barriers)) throw new Error('Barreiras inválidas');
   const barrierCells = new Set();
@@ -34,7 +36,9 @@ export function validateMission(m, {checkVariants=true} = {}) {
     if (!barrier || typeof barrier.id !== 'string' || !barrier.id || ids.has(barrier.id) || !inside(barrier) || blocked.has(`${barrier.row},${barrier.col}`) || barrierCells.has(`${barrier.row},${barrier.col}`)) throw new Error('Barreira inválida');
     barrierCells.add(`${barrier.row},${barrier.col}`);
     ids.add(barrier.id);
-    validatePassageCondition(barrier.passableWhen, variables);
+    validateProperties(barrier.properties,variables,`barriers.${barrier.id}.properties`);
+    if(barrier.failureCode!==undefined&&!validVariable(barrier.failureCode))throw new Error('barriers: failureCode inválido');
+    validatePassageCondition(barrier.passableWhen, variables, barrier);
   }
   if (m.grid.cells !== undefined && !Array.isArray(m.grid.cells)) throw new Error('Casas observáveis inválidas');
   const cells = new Set();
@@ -42,10 +46,7 @@ export function validateMission(m, {checkVariants=true} = {}) {
     const key = `${cell?.row},${cell?.col}`;
     if (!inside(cell) || cells.has(key) || !record(cell.properties)) throw new Error('Casa observável inválida');
     cells.add(key);
-    for (const [property,value] of Object.entries(cell.properties)) {
-      if (!validVariable(property)) throw new Error('Nome de propriedade inválido');
-      if (!scalar(value) && (!record(value) || Object.keys(value).length !== 1 || !validVariable(value.stateVariable) || !Object.hasOwn(variables,value.stateVariable))) throw new Error('Valor observável inválido');
-    }
+    validateProperties(cell.properties,variables,'grid.cells.properties');
   }
   validateCommandOptions(m);
   validateConditionOptions(m);
@@ -81,7 +82,11 @@ export function applyCommand(m, state, command) {
   } else if (command.type === 'move') {
     const p = frontCell(state);
     const access = passage(m, state, p);
-    if (!access.passable) return {...next, status:'collision', lastEvent:access.reason, events:[{type:'collision', reason:access.reason, ...(access.barrierId ? {barrierId:access.barrierId} : {})}]};
+    if (!access.passable) {
+      const reason=access.failureCode??access.reason;
+      const extra={...(access.barrierId?{barrierId:access.barrierId}:{}),...(access.failureCode?{failureCode:access.failureCode}:{}),...(access.actual!==undefined?{actual:access.actual,limit:access.limit,operator:access.operator}:{}),...(access.failureCode||access.actual!==undefined?{target:p}:{})};
+      return {...next,status:'collision',lastEvent:access.reason,reason,...(access.barrierId?{barrierId:access.barrierId}:{}),events:[{type:'collision',reason,...extra}]};
+    }
     Object.assign(next, p, {lastEvent: 'move'});
     next.events.push({type: 'moved', ...p});
     for (const entity of m.entities ?? []) {
@@ -108,4 +113,12 @@ export function applyCommand(m, state, command) {
     next.status = 'won'; next.lastEvent = 'won'; next.events.push({type: 'won'});
   } else if (next.row === m.goal.row && next.col === m.goal.col) next.events.push({type: 'goalIncomplete'});
   return next;
+}
+
+export function classifyResult(state) {
+  if(state.status==='won')return 'success';
+  if(['collision','actionFailed','limit'].includes(state.status))return 'failure';
+  if(state.status==='finished')return 'incomplete';
+  if(['ready','running'].includes(state.status))return 'inProgress';
+  throw new Error('Estado de resultado desconhecido');
 }

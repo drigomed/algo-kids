@@ -1,3 +1,5 @@
+import {objectProperties} from './properties.js';
+import {validateNumberCompare,evaluateNumberCompare,comparisonValues} from './numbers.js';
 import {validVariable,scalar,record} from './data.js';
 export {validVariable,scalar,record} from './data.js';
 import {validateMemoryComparison,readMemory} from './memory.js';
@@ -12,18 +14,18 @@ export function passage(mission, state, position) {
   const p = position;
   if (p.row < 0 || p.col < 0 || p.row >= mission.grid.height || p.col >= mission.grid.width) return {passable:false, reason:'boundary'};
   if (mission.grid.obstacles.some(o => o.row === p.row && o.col === p.col)) return {passable:false, reason:'obstacle'};
-  const barrier = (mission.barriers ?? []).find(b => b.row === p.row && b.col === p.col && !evaluateCondition(mission, state, b.passableWhen));
-  return barrier ? {passable:false, reason:'barrier', barrierId:barrier.id} : {passable:true};
+  const barrier = (mission.barriers ?? []).find(b => b.row === p.row && b.col === p.col && !evaluateCondition(mission, state, b.passableWhen,{barrier:b,physical:true}));
+  return barrier ? {passable:false,reason:'barrier',barrierId:barrier.id,...(barrier.failureCode?{failureCode:barrier.failureCode}:{}),...passageFailure(mission,state,barrier.passableWhen,{barrier,physical:true})} : {passable:true};
 }
 export function pathClear(mission, state) { return passage(mission, state, frontCell(state)).passable; }
 export function cellProperties(mission, state, position) {
   const cell = (mission.grid.cells ?? []).find(c => c.row === position.row && c.col === position.col);
-  return Object.fromEntries(Object.entries(cell?.properties ?? {}).map(([key,value]) => [key, scalar(value) ? value : state.variables[value.stateVariable]]));
+  return objectProperties(cell,state);
 }
 function fields(value, allowed) {
   if (!record(value) || Object.keys(value).some(key => !allowed.includes(key))) throw new Error('Campos de regra inválidos');
 }
-export function validateCondition(condition, variables, depth = 0, memory = {}) {
+export function validateCondition(condition, variables, depth = 0, memory = {}, context = {}) {
   if (!record(condition) || depth > 8) throw new Error('Condição inválida');
   switch (condition.type) {
     case 'pathClear': case 'atGoal': fields(condition, ['type']); return;
@@ -31,6 +33,9 @@ export function validateCondition(condition, variables, depth = 0, memory = {}) 
       fields(condition, ['type','variable','value']);
       if ((condition.variable !== 'collectedCount' && (!validVariable(condition.variable) || !Object.hasOwn(variables, condition.variable) || typeof variables[condition.variable] !== 'number')) || !Number.isFinite(condition.value)) throw new Error('Variável numérica ou limite inválido');
       return;
+    case 'numberCompare':
+      fields(condition,['type','left','operator','right']);
+      validateNumberCompare(condition,variables,memory,context);return;
     case 'memoryEquals':
       fields(condition,['type','variable','value']);
       validateMemoryComparison(condition,memory);return;
@@ -45,15 +50,16 @@ export function validateCondition(condition, variables, depth = 0, memory = {}) 
     case 'all':
       fields(condition, ['type','conditions']);
       if (!Array.isArray(condition.conditions) || !condition.conditions.length || condition.conditions.length > 20) throw new Error('Condições compostas inválidas');
-      condition.conditions.forEach(c => validateCondition(c, variables, depth + 1, memory));
+      condition.conditions.forEach(c => validateCondition(c, variables, depth + 1, memory, context));
       return;
     default: throw new Error('Tipo de condição desconhecido');
   }
 }
-export function evaluateCondition(mission, state, condition) {
+export function evaluateCondition(mission, state, condition, context = {}) {
   switch (condition.type) {
     case 'pathClear': return pathClear(mission, state);
     case 'stateAtLeast': return (condition.variable === 'collectedCount' ? state.collectedCount : state.variables[condition.variable]) >= condition.value;
+    case 'numberCompare': return evaluateNumberCompare(mission,state,condition,context);
     case 'memoryEquals': return readMemory(state,condition.variable) === condition.value;
     case 'stateEquals': return state.variables[condition.variable] === condition.value;
     case 'cellPropertyEquals': {
@@ -63,7 +69,7 @@ export function evaluateCondition(mission, state, condition) {
       return Object.hasOwn(properties, condition.property) && properties[condition.property] === condition.value;
     }
     case 'atGoal': return state.row === mission.goal.row && state.col === mission.goal.col;
-    case 'all': return condition.conditions.every(c => evaluateCondition(mission, state, c));
+    case 'all': return condition.conditions.every(c => evaluateCondition(mission, state, c, context));
     default: throw new Error('Tipo de condição desconhecido');
   }
 }
@@ -94,10 +100,10 @@ export function victory(mission, state) {
     (!mission.winCondition || evaluateCondition(mission, state, mission.winCondition));
 }
 
-export function validatePassageCondition(condition, variables) {
-  validateCondition(condition, variables);
-  if (condition.type === 'all') condition.conditions.forEach(c => validatePassageCondition(c, variables));
-  else if (!['stateEquals','stateAtLeast'].includes(condition.type)) throw new Error('Passagem exige condição de estado sem sensores');
+export function validatePassageCondition(condition, variables, barrier) {
+  validateCondition(condition, variables, 0, {}, {barrier,physical:true});
+  if (condition.type === 'all') condition.conditions.forEach(c => validatePassageCondition(c, variables, barrier));
+  else if (!['stateEquals','stateAtLeast','numberCompare'].includes(condition.type)) throw new Error('Passagem exige condição de estado sem sensores');
 }
 export function validateEffects(effects, variables, depth = 0, budget = {count:0}, memory = {}) {
   if (!Array.isArray(effects) || depth > 8) throw new Error('Efeitos inválidos');
@@ -133,7 +139,15 @@ export function applyEffects(mission, state, effects) {
 }
 export function barrierChanges(mission, before, after) {
   return (mission.barriers ?? []).flatMap(barrier => {
-    const passable = evaluateCondition(mission,after,barrier.passableWhen);
-    return passable === evaluateCondition(mission,before,barrier.passableWhen) ? [] : [{type:'barrierChanged',barrierId:barrier.id,passable}];
+    const passable = evaluateCondition(mission,after,barrier.passableWhen,{barrier,physical:true});
+    return passable === evaluateCondition(mission,before,barrier.passableWhen,{barrier,physical:true}) ? [] : [{type:'barrierChanged',barrierId:barrier.id,passable}];
   });
+}
+
+function passageFailure(mission,state,condition,context) {
+  if(condition.type==='all') {
+    const failed=condition.conditions.find(c=>!evaluateCondition(mission,state,c,context));
+    return failed?passageFailure(mission,state,failed,context):{};
+  }
+  return condition.type==='numberCompare'?comparisonValues(mission,state,condition,context):{};
 }

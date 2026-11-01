@@ -1,3 +1,4 @@
+import {objectProperties} from './properties.js';
 import {record,validVariable,ExecutionFault,actionFailure} from './data.js';
 import {memoryValue,validateMemoryComparison} from './memory.js';
 import {frontCell,cellProperties,evaluateCondition,validateCondition,validateEffects,applyEffects} from './rules.js';
@@ -9,17 +10,19 @@ export function commandReach(state,node) {
 function fields(node,keys) { if(!record(node)||Object.keys(node).some(key=>!keys.includes(key)))throw new Error('Comando: campos inválidos'); }
 export function validateCommandShape(node,mission) {
   if(node?.type==='inspect') {
-    fields(node,['type','source','into']);fields(node.source,['type','relativeTo','property']);
-    if(node.source.type!=='cellProperty'||node.source.relativeTo!=='front'||!validVariable(node.source.property)||!validVariable(node.into)||!Object.hasOwn(mission.robotMemory??{},node.into))throw new Error('inspect: fonte ou memória inválida');
+    fields(node,['type','source','into']);fields(node.source,['type','relativeTo','property','entityId','barrierId']);
+    const source=node.source;
+    if(!['cellProperty','entityProperty','barrierProperty'].includes(source.type)||!['front','here'].includes(source.relativeTo)||(source.type==='cellProperty'&&source.relativeTo!=='front')||!validVariable(source.property)||!validVariable(node.into)||!Object.hasOwn(mission.robotMemory??{},node.into))throw new Error('inspect: fonte ou memória inválida');
+    if((source.entityId!==undefined&&(source.type!=='entityProperty'||!validSelector(source.entityId)))||(source.barrierId!==undefined&&(source.type!=='barrierProperty'||!validSelector(source.barrierId))))throw new Error('inspect: seletor inválido');
   } else if(node?.type==='setMemory') {
     fields(node,['type','variable','value']);validateMemoryComparison(node,mission.robotMemory??{});
   } else if(node?.type==='interact') {
-    fields(node,['type','relativeTo','actionId']);
-    if(!['front','here'].includes(node.relativeTo)||!validVariable(node.actionId))throw new Error('interact: alcance ou ação inválida');
+    fields(node,['type','relativeTo','actionId','entityId']);
+    if(!['front','here'].includes(node.relativeTo)||!validVariable(node.actionId)||(node.entityId!==undefined&&!validSelector(node.entityId)))throw new Error('interact: alcance ou ação inválida');
   } else throw new Error('Comando explícito desconhecido');
 }
 function matches(node,template) {
-  return node.type===template.type && (node.type==='inspect' ? node.into===template.into&&node.source.type===template.source.type&&node.source.relativeTo===template.source.relativeTo&&node.source.property===template.source.property : node.type==='setMemory' ? node.variable===template.variable : node.relativeTo===template.relativeTo&&node.actionId===template.actionId);
+  return node.type===template.type && (node.type==='inspect' ? node.into===template.into&&node.source.type===template.source.type&&node.source.relativeTo===template.source.relativeTo&&node.source.property===template.source.property&&node.source.entityId===template.source.entityId&&node.source.barrierId===template.source.barrierId : node.type==='setMemory' ? node.variable===template.variable : node.relativeTo===template.relativeTo&&node.actionId===template.actionId&&node.entityId===template.entityId);
 }
 export function commandOption(mission,node) { return (mission.commandOptions??[]).find(option=>matches(node,option.node)&&(node.type!=='setMemory'||(option.values??[{value:option.node.value}]).some(item=>item.value===node.value))); }
 export function validateCommand(node,mission) {
@@ -44,7 +47,7 @@ export function validateCommandOptions(mission) {
       if(!values.has(option.node.value))throw new Error('commandOptions: valor inicial não autorizado');
     }
     for(const node of option.node.type==='setMemory'?(option.values??[{value:option.node.value}]).map(item=>({...option.node,value:item.value})):[option.node]) {
-      const key=JSON.stringify([node.type,node.variable,node.value,node.into,node.source?.type,node.source?.relativeTo,node.source?.property,node.relativeTo,node.actionId]);
+      const key=JSON.stringify([node.type,node.variable,node.value,node.into,node.source?.type,node.source?.relativeTo,node.source?.property,node.relativeTo,node.actionId,node.entityId,node.source?.entityId,node.source?.barrierId]);
       if(commands.has(key))throw new Error('commandOptions: comandos ambíguos');
       commands.add(key);
     }
@@ -72,17 +75,45 @@ export function validateInteractions(entity,mission) {
     validateEffects(action.effects,mission.initialVariables??{},0,{count:0},mission.robotMemory??{});
   }
 }
-export function resolveTarget(mission,state,node) {
+function validSelector(value) {return typeof value==='string'&&value.length>0&&value.length<=128;}
+export function entityAvailable(state,entity) {return !state.consumedIds?.includes(entity.id)&&!state.collectedIds.includes(entity.id);}
+export function objectsInReach(mission,state,node,kind='entity',selector) {
   const position=commandReach(state,node);
-  if(position.row<0||position.col<0||position.row>=mission.grid.height||position.col>=mission.grid.width)throw new ExecutionFault('outOfReach');
-  const entities=(mission.entities??[]).filter(e=>e.row===position.row&&e.col===position.col);
-  const candidates=entities.flatMap(entity=>(entity.interactions??[]).filter(action=>action.id===node.actionId&&action.relativeTo.includes(node.relativeTo)).map(action=>({entity,action})));
+  if(!position||position.row<0||position.col<0||position.row>=mission.grid.height||position.col>=mission.grid.width)throw new ExecutionFault('outOfReach');
+  const all=(kind==='barrier'?mission.barriers:mission.entities)??[];
+  const selected=all.filter(object=>selector===undefined||object.id===selector);
+  const nearby=selected.filter(object=>object.row===position.row&&object.col===position.col);
+  const available=nearby.filter(object=>kind==='barrier'||entityAvailable(state,object));
+  return {position,selected,nearby,available};
+}
+export function resolveInspection(mission,state,node) {
+  if(node.source.type==='cellProperty') {
+    const position=commandReach(state,node);
+    if(position.row<0||position.col<0||position.row>=mission.grid.height||position.col>=mission.grid.width)throw new ExecutionFault('outOfReach');
+    return {position,properties:cellProperties(mission,state,position)};
+  }
+  const barrier=node.source.type==='barrierProperty';
+  const found=objectsInReach(mission,state,node,barrier?'barrier':'entity',barrier?node.source.barrierId:node.source.entityId);
+  if(found.available.length>1)throw new ExecutionFault('ambiguousTarget');
+  if(!found.available.length)throw new ExecutionFault(found.nearby.length?'targetConsumed':found.selected.length?'outOfReach':'targetMissing');
+  const object=found.available[0];
+  return {position:found.position,properties:objectProperties(object,state),...(barrier?{barrierId:object.id}:{entityId:object.id})};
+}
+export function resolveTarget(mission,state,node) {
+  const found=objectsInReach(mission,state,node,'entity',node.entityId);
+  const matching=entities=>entities.flatMap(entity=>(entity.interactions??[]).filter(action=>action.id===node.actionId&&action.relativeTo.includes(node.relativeTo)).map(action=>({entity,action})));
+  const candidates=matching(found.available);
   if(candidates.length>1)throw new ExecutionFault('ambiguousTarget');
   if(!candidates.length) {
-    const elsewhere=(mission.entities??[]).some(e=>e.interactions?.some(action=>action.id===node.actionId));
-    throw new ExecutionFault(entities.length?'incompatibleTarget':elsewhere?'outOfReach':'targetMissing');
+    const unavailable=matching(found.nearby.filter(entity=>!entityAvailable(state,entity)));
+    if(unavailable.length===1) {
+      const {entity,action}=unavailable[0],key=JSON.stringify([entity.id,action.id]);
+      throw new ExecutionFault(action.once&&state.usedInteractions.includes(key)?'alreadyUsed':'targetConsumed',{entityId:entity.id});
+    }
+    const elsewhere=found.selected.some(entity=>entity.interactions?.some(action=>action.id===node.actionId));
+    throw new ExecutionFault(found.available.length?'incompatibleTarget':elsewhere?'outOfReach':'targetMissing');
   }
-  return {...candidates[0],position};
+  return {...candidates[0],position:found.position};
 }
 export function executeExplicit(mission,state,node) {
   validateCommand(node,mission);
@@ -93,9 +124,9 @@ export function executeExplicit(mission,state,node) {
       const previous=state.memory[variable];let value=node.value;
       details={...details,variable,previous:structuredClone(previous),...(node.source?{source:structuredClone(node.source)}:{}),value:null};
       if(node.type==='inspect') {
-        const p=commandReach(state,node);
-        if(p.row<0||p.col<0||p.row>=mission.grid.height||p.col>=mission.grid.width)throw new ExecutionFault('outOfReach');
-        const properties=cellProperties(mission,state,p);
+        const observed=resolveInspection(mission,state,node);
+        const {properties,position,...target}=observed;
+        if(node.source.type!=='cellProperty')details={...details,target:position,...target};
         if(!Object.hasOwn(properties,node.source.property))throw new ExecutionFault('propertyMissing');
         value=properties[node.source.property];
       }
