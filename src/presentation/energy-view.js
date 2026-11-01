@@ -1,0 +1,2 @@
+import {asset} from './asset-registry.js';
+export function renderEnergy(state){if(!Object.hasOwn(state,'energyRemaining'))return '';return `<div class="energy-indicator" role="status" aria-live="polite"><img src="${asset('collectibles/battery').src}" width="28" height="28" alt=""><span>Energia: ${state.energyRemaining} / ${state.energyInitial}</span><meter min="0" max="${state.energyInitial}" value="${state.energyRemaining}" aria-label="Energia restante"></meter></div>`;}

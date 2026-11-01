@@ -1,6 +1,6 @@
 # Instruções para Codex e agentes de desenvolvimento
 
-Leia `README.md`, `docs/PRODUCT.md`, `docs/ROADMAP.md`, `docs/MVP.md`, `docs/V02.md`, `docs/V03.md`, `docs/V04.md`, `docs/V05.md`, `docs/V06.md`, `docs/V07.md`, `docs/V071.md`, `docs/V08.md`, `docs/V09.md` e `docs/V09-JSON-CONTRACT.md` antes de implementar.
+Leia `README.md`, `docs/PRODUCT.md`, `docs/ROADMAP.md`, `docs/MVP.md`, `docs/V02.md`, `docs/V03.md`, `docs/V04.md`, `docs/V05.md`, `docs/V06.md`, `docs/V07.md`, `docs/V071.md`, `docs/V08.md`, `docs/V09.md`, `docs/V09-JSON-CONTRACT.md` e `docs/V091.md` antes de implementar.
 
 ## Produto
 - Jogo educativo de programação visual para criança de 6 anos, em pt-BR.
@@ -27,6 +27,14 @@ Leia `README.md`, `docs/PRODUCT.md`, `docs/ROADMAP.md`, `docs/MVP.md`, `docs/V02
 - JSON padrão é missão pura mission-json/v1, com tipos preservados, limite de 1 MiB, validação e confirmação antes de substituir draft.
 - Autosave local degradável, desfazer/refazer de dados, strings escapadas e recursos gráficos whitelisted. Sem backend/contas/dados institucionais.
 - V2.0 multi-escola somente em docs/ROADMAP.md e docs/V20-PLATFORM-VISION.md. Não antecipar implementação.
+
+## V0.9.1 — Contratos incrementais
+- Preservar 01–19 e 21–25; somente a Missão 20 muda de conteúdo, com política declarativa B 2–3 e bifurcação fechada. Não conhecer IDs no motor.
+- Missão pura e draft algo-kids-draft/v1 são formatos distintos. Parser/validação compartilhados com jogo; drafts inválidos nunca são jogáveis.
+- Energia opt-in só cobra primitivas concluídas em applyCommand, sem cobrar falhas/checks nem buscar custo ótimo. Ausência mantém snapshots sem campos extras; incluir energia na assinatura semântica quando habilitada.
+- Importação no jogo é temporária e isolada do catálogo/conquistas; retornar restaura sessão oficial pausada.
+- Ações Excluir/Subir/Descer no Studio devem funcionar em ramos, com confirmação, rebaseTarget, histórico e foco. Campos técnicos não são reduzidos por pressupor desconhecimento do autor.
+- Novas melhorias de UX somente como pendências V0.9.2. V2.0 continua planejamento.
 
 ## Tecnologia
 - HTML/CSS/JavaScript (ES modules). Não introduzir React, backend ou serviços pagos sem justificativa explícita.

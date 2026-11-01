@@ -13,7 +13,7 @@ export function createPlaytest(mission,{all=true,scenario=0,instructionLimit=100
  return {snapshot,scenarios:chosen,sessions:chosen.map(m=>createSession(m,snapshot.solution,{instructionLimit})),index:0,reports:[],trace:[],reachedIds:[],done:false,interrupted:false,all:all||(scenarios.length===1&&(!snapshot.variants||scenario>=0))};
 }
 export function testState(test){return test.sessions[test.index].execution.state;}
-function report(test,session){const s=session.execution.state;return {scenario:test.scenarios[test.index].variantId??String(test.index),label:test.scenarios[test.index].variantLabel??'Cenário',status:s.status,category:classifyResult(s),reason:s.reason??'',row:s.row,col:s.col,direction:s.direction,instructions:s.instructionPointer};}
+function report(test,session){const s=session.execution.state;return {scenario:test.scenarios[test.index].variantId??String(test.index),label:test.scenarios[test.index].variantLabel??'Cenário',status:s.status,category:classifyResult(s),reason:s.reason??'',row:s.row,col:s.col,direction:s.direction,instructions:s.instructionPointer,...(Object.hasOwn(s,'energyRemaining')?{energyInitial:s.energyInitial,energyRemaining:s.energyRemaining,energySpent:s.energySpent}:{})};}
 export function stepPlaytest(test){
  if(test.done)return test;
  const sessions=[...test.sessions],current=sessions[test.index];

@@ -54,7 +54,7 @@ export function loopContext(frames) {
 export const MAX_WHILE_HISTORY=256;
 // Apenas dados que influenciam passos futuros; metadados de execução não entram.
 export function semanticSignature(state) {
-  return canonical({robot:{row:state.row,col:state.col,direction:state.direction},variables:state.variables,memory:state.memory,collectedCount:state.collectedCount,collectedIds:state.collectedIds,consumedIds:state.consumedIds,usedInteractions:state.usedInteractions});
+  return canonical({robot:{row:state.row,col:state.col,direction:state.direction},variables:state.variables,memory:state.memory,collectedCount:state.collectedCount,collectedIds:state.collectedIds,consumedIds:state.consumedIds,usedInteractions:state.usedInteractions,...(Object.hasOwn(state,'energyRemaining')?{energyRemaining:state.energyRemaining,energySpent:state.energySpent}:{})});
 }
 export const stalledMessage='O robô ficou preso repetindo! Ele voltou à mesma situação e a condição continua verdadeira. Experimente mudar alguma coisa dentro do ENQUANTO para conseguir sair.';
 export const stoppedMessage='Você interrompeu o robô. Seu programa continua aqui. Toque em Executar para tentar de novo.';

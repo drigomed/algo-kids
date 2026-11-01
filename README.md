@@ -1,6 +1,6 @@
 # Missões do Robô — Pequenos Programadores
 
-V0.9 do Algo Kids: jogo educativo em português e Studio local de autoria de missões, com o mesmo motor e os 85 SVGs originais da V0.8. Monte o programa antes de executar e leve o robô até a estrela.
+V0.9.1 do Algo Kids: jogo educativo em português e Studio local de autoria de missões, com o mesmo motor e os 85 SVGs originais da V0.8. Monte o programa antes de executar e leve o robô até a estrela.
 
 ## Executar
 
@@ -27,7 +27,7 @@ URL pública esperada: **https://drigomed.github.io/algo-kids/**. O endereço s�
 
 ## Jogar
 
-As definições e soluções 01–25 continuam preservadas. As missões 01–06 mantêm seus comandos e jogabilidade; a V0.8 atualiza somente sua arte. Os cenários 17–25 são demonstrações temporárias do motor; a V0.7 acrescenta somente as fixtures 24–25. Toque em Avançar, Virar à esquerda ou Virar à direita para adicionar comandos. As setas da lista reordenam; × remove. Executar começa do início; Pausar/Continuar controla a execução; Passo a passo executa um comando. Reiniciar mantém o programa; Limpar apaga os comandos. Alterar um programa pausado reinicia a posição do robô. A direção inicial aparece pela seta sobre o robô; norte fica no topo.
+As definições e soluções 01–19 e 21–25 continuam preservadas; a V0.9.1 corrige somente o mapa e a referência da Missão 20 para uma bifurcação real. As missões 01–06 mantêm seus comandos e jogabilidade; a V0.8 atualiza somente sua arte. Os cenários 17–25 são demonstrações temporárias do motor; a V0.7 acrescenta somente as fixtures 24–25. Toque em Avançar, Virar à esquerda ou Virar à direita para adicionar comandos. As setas da lista reordenam; × remove. Executar começa do início; Pausar/Continuar controla a execução; Passo a passo executa um comando. Reiniciar mantém o programa; Limpar apaga os comandos. Alterar um programa pausado reinicia a posição do robô. A direção inicial aparece pela seta sobre o robô; norte fica no topo.
 
 Nas missões 07–08, entrar na casa recolhe o objeto automaticamente. O contador mostra os objetos e a meta da missão. A estrela só encerra a execução quando a meta também estiver satisfeita. Reiniciar restaura todos os objetos e variáveis, preservando o programa.
 
@@ -72,7 +72,7 @@ Na V0.7, **REPITA N VEZES** executa seu CORPO exatamente N vezes (1–20 conform
 
 Selecione **Adicionar aqui** no CORPO e use sua paleta local. Volte explicitamente ao programa principal para inserir os comandos posteriores. Trocar presets da mesma categoria preserva o corpo; remover um bloco preenchido pede confirmação. Uma execução longa continua sujeita ao orçamento defensivo; a V0.7.1 também detecta ciclos sem progresso, mantendo a interface pausável. Não há expansão da AST nem mudança na física.
 
-As demos 24/25 verificam repetição contada e corredor de comprimento variável. São fixtures técnicas, não novas etapas pedagógicas definitivas. Consulte [V07.md](docs/V07.md) para contratos, eventos, orçamento, resultados e revisão no celular; [V07-example.json](docs/V07-example.json) exemplifica autoria inteiramente declarativa. **519 testes passaram**, além de build e validação do artefato estático (134 arquivos, 263 referências). A revisão visual em aparelho permanece pendente; a entrega é por PR, sem merge automático.
+As demos 24/25 verificam repetição contada e corredor de comprimento variável. São fixtures técnicas, não novas etapas pedagógicas definitivas. Consulte [V07.md](docs/V07.md) para contratos, eventos, orçamento, resultados e revisão no celular; [V07-example.json](docs/V07-example.json) exemplifica autoria inteiramente declarativa. **565 testes passaram**, além de build e validação do artefato estático (139 arquivos, 278 referências). A revisão visual em aparelho permanece pendente; a entrega é por PR, sem merge automático.
 
 Na V0.7.1, um **ENQUANTO** que reencontra a mesma situação com condição verdadeira termina como falha por falta de progresso. A comparação inclui posição, direção, mundo, memória, coleta, consumo e interações; não considera somente se o robô andou. O histórico é separado por ativação, com janela de 256 assinaturas; o orçamento continua protegendo execuções longas. REPITA finito e algoritmos que alteram estado continuam funcionando.
 
@@ -95,6 +95,16 @@ Crie mapa por toque/clique/teclado, edite regras em formulários estruturados, c
 [Uso e limites](docs/V09.md) · [Contrato mission-json/v1](docs/V09-JSON-CONTRACT.md) · [Exemplo reativo exportado](docs/V09-example.json). O jogo infantil na raiz, suas 25 definições/soluções e os 85 SVGs permanecem preservados. Nenhuma missão é publicada automaticamente pelo Studio. Revisão real de UX no celular permanece pendente; os testes de controlador não substituem navegador.
 
 A [visão V2.0](docs/V20-PLATFORM-VISION.md) planeja níveis versionados, escolas, administradores, instrutores, alunos, turmas, matrículas, atribuições e progresso. **Não há backend, login, gestão institucional ou dados de alunos na V0.9.**
+
+## V0.9.1 — Conteúdo local e energia opcional
+
+O Studio separa **Importar/Exportar missão** de **Importar/Exportar rascunho (.akdraft.json)**. Drafts incompletos continuam editáveis e portáteis, sem fingir validade de runtime. A paleta é agrupada por finalidade e cada bloco tem **Subir / Descer / Excluir**, inclusive em ramos, com confirmação de conteúdo e undo/redo.
+
+No jogo da raiz, **Jogar missão importada** abre JSON válido exportado pelo Studio, sem preencher o programa da criança, alterar catálogo ou conquistas. **Voltar às missões** restaura a sessão oficial anterior. A importação usa o mesmo contrato/validador do Studio; drafts não são jogáveis.
+
+Energia é opt-in por missão/variante: bateria e seis custos definidos pelo autor; qualquer solução que conclua dentro da bateria vence. Não há resolvedor de ótimo. Missões oficiais não exibem bateria. A Missão 20 agora tem dois corredores fechados por caixas, A até 1 pacote e rota B reservada a 2–3, exigindo a decisão nas variantes.
+
+[Contratos, testes e pendências V0.9.2](docs/V091.md) · [Exemplo de energia](docs/V091-energy-example.json) · [Draft parcial](docs/V091-draft-example.akdraft.json). Sem backend ou deploy manual; revisão visual real permanece pendente.
 
 ## Estrutura
 
@@ -156,7 +166,7 @@ Com acesso administrativo:
 
 Para republicar manualmente: **Actions → Validar e publicar no GitHub Pages → Run workflow → Branch: main**. O botão manual depende de o workflow existir na branch padrão; configure `main` como padrão após a integração para disponibilizá-lo. Selecionar outra branch nunca autoriza o deploy.
 
-O repositório é **público** e o Pages foi configurado após a entrega da infraestrutura. A V0.9 é entregue em PR e não faz deploy manual nem altera configurações de publicação. Após aprovação e merge na `main`, o workflow existente publica a versão. Se for necessário refazer a configuração, siga as instruções administrativas acima. O campo `private: true` do `package.json` impede publicação acidental no npm e não determina a visibilidade do GitHub. Se o repositório passar a privado, confirme a elegibilidade do Pages no plano da conta em **Settings → Pages** e nas configurações de cobrança. Repositório privado não garante site privado. Se o plano não oferecer Pages para repositórios privados, as alternativas são contratar um plano compatível ou tornar o repositório público **somente mediante aprovação do responsável**. Este workflow não altera plano, visibilidade ou branch padrão.
+O repositório é **público** e o Pages foi configurado após a entrega da infraestrutura. A V0.9.1 é entregue em PR e não faz deploy manual nem altera configurações de publicação. Após aprovação e merge na `main`, o workflow existente publica a versão. Se for necessário refazer a configuração, siga as instruções administrativas acima. O campo `private: true` do `package.json` impede publicação acidental no npm e não determina a visibilidade do GitHub. Se o repositório passar a privado, confirme a elegibilidade do Pages no plano da conta em **Settings → Pages** e nas configurações de cobrança. Repositório privado não garante site privado. Se o plano não oferecer Pages para repositórios privados, as alternativas são contratar um plano compatível ou tornar o repositório público **somente mediante aprovação do responsável**. Este workflow não altera plano, visibilidade ou branch padrão.
 
 Para exigir a validação antes de integrar PRs, um administrador pode criar uma regra para `main` em **Settings → Rules → Rulesets** (ou **Branches → Branch protection**), exigir Pull Request e o check **Testes e build**, e bloquear force pushes. Essa proteção depende das opções disponíveis no plano e não é criada automaticamente pelo workflow.
 

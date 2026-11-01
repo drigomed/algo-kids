@@ -1,3 +1,6 @@
+import {loadImportedGame} from './imported-game.js';
+import {renderEnergy} from './presentation/energy-view.js';
+import {energyMessage} from './energy.js';
 import {installAssetFallback} from './presentation/asset-registry.js';
 import {createVisualEffects} from './presentation/visual-effects.js';
 import {renderResultBanner} from './presentation/scene-view.js';
@@ -16,6 +19,7 @@ import {countNodes, editProgram} from './program.js';
 import {renderProgram, renderBoard, encodePath, decodePath, escapeHtml, worldIndicators, eventMessages, describeEnvironment} from './view.js';
 
 const $ = selector => document.querySelector(selector);
+let imported=false,officialSnapshot=null;
 let mission = missions[0], program = [], target = [], session = createSession(mission, program);
 const visualEffects=createVisualEffects();
 let visualEpoch=0,lastBoardKey='',lastResultKey='';
@@ -46,6 +50,7 @@ function edit(operation) {
 function feedback() {
   const s = state();
   if(session.interrupted)return stoppedMessage;
+  if(s.status==='energyDepleted')return energyMessage;
   if(s.status==='stalled')return stalledMessage;
   const messages = {
     stalled: stalledMessage,
@@ -72,12 +77,12 @@ function render() {
   const focusTarget=focus?.dataset.target, focusOption=focus?.dataset.commandOption, focusSwitch=focus?.dataset.switchOption, focusLoop=focus?.dataset.loopOption;
   const inlineField=['inlineAdd','inlineOption','inlineSwitch','inlineLoop'].find(key=>focus?.dataset[key]!==undefined);
   const listScroll = $('#program').scrollTop, missionScroll = $('#missions').scrollLeft;
-  $('#missions').innerHTML = missions.map(m => `<button class="mission ${m === mission ? 'selected' : ''} ${completed.has(m.id) ? 'completed' : ''}" data-mission="${m.id}" aria-current="${m === mission ? 'step' : 'false'}"><span>${completed.has(m.id) ? '✓' : String(m.id).padStart(2,'0')}</span><div><small>MISSÃO ${String(m.id).padStart(2,'0')}</small><strong>${escapeHtml(m.title)}</strong></div></button>`).join('');
+  $('#missions').innerHTML = missions.map(m => `<button class="mission ${m === mission ? 'selected' : ''} ${completed.has(m.id) ? 'completed' : ''}" data-mission="${m.id}" ${imported?'disabled':''} aria-current="${m === mission ? 'step' : 'false'}"><span>${completed.has(m.id) ? '✓' : String(m.id).padStart(2,'0')}</span><div><small>MISSÃO ${String(m.id).padStart(2,'0')}</small><strong>${escapeHtml(m.title)}</strong></div></button>`).join('');
   $('#missions').scrollLeft = missionScroll;
-  $('#mission-number').textContent = `${mission.demo?'DEMONSTRAÇÃO':'MISSÃO'} ${String(mission.id).padStart(2,'0')} / ${missions.length}`;
+  $('#mission-number').textContent = imported?'MISSÃO IMPORTADA':`${mission.demo?'DEMONSTRAÇÃO':'MISSÃO'} ${String(mission.id).padStart(2,'0')} / ${missions.length}`;
   $('#mission-title').textContent = mission.title;
-  $('#lesson-type').textContent = mission.demo ? 'CENÁRIO DEMO' : mission.id >= 13 ? 'MUNDO REATIVO' : mission.id >= 9 ? 'DECISÕES' : mission.id >= 7 ? 'COLETA' : 'SEQUÊNCIA';
-  $('#instructions').textContent = mission.instructions;
+  $('#lesson-type').textContent = imported?'MISSÃO IMPORTADA':mission.demo ? 'CENÁRIO DEMO' : mission.id >= 13 ? 'MUNDO REATIVO' : mission.id >= 9 ? 'DECISÕES' : mission.id >= 7 ? 'COLETA' : 'SEQUÊNCIA';
+  $('#instructions').textContent = mission.instructions??'';
   const board = $('#board');
   board.style.setProperty('--columns', current.grid.width);
   board.style.setProperty('--rows', current.grid.height);
@@ -96,6 +101,8 @@ function render() {
   }
   const result=renderResultBanner(s,{completed:session.completed,interrupted:session.interrupted});
   if(lastResultKey!==visualKey){$('#visual-result').innerHTML=result;$('#visual-result').hidden=!result;lastResultKey=visualKey;}
+  $('#energy').innerHTML=renderEnergy(s);$('#energy').hidden=!Object.hasOwn(s,'energyRemaining');
+  $('#back-missions').hidden=!imported;
   $('#robot-memory').innerHTML=renderMemory(current,s);
   $('#extra-commands').innerHTML=renderCommandPalette(current,running);
   $('#extra-switches').innerHTML=renderSwitchPalette(current,running);
@@ -116,7 +123,7 @@ function render() {
   $('#collection').textContent = `● Objetos coletados: ${s.collectedCount}${progress ? ` · ${current.presentation.variables[progress.variable]}: ${s.variables[progress.variable]} / ${progress.target}` : ''}`;
   const count = countNodes(program);
   $('#count').textContent = `${count} ${count === 1 ? 'bloco' : 'blocos'}`;
-  $('#program').innerHTML = program.length ? renderProgram(program, current, session.execution, target, running) : '<li class="empty"><span>＋</span><strong>Uma aventura começa<br>com uma ideia.</strong><small>Adicione seu primeiro comando acima.</small></li>';
+  $('#program').innerHTML = program.length ? renderProgram(program, imported?{...current,editorDecisions:true}:current, session.execution, target, running) : '<li class="empty"><span>＋</span><strong>Uma aventura começa<br>com uma ideia.</strong><small>Adicione seu primeiro comando acima.</small></li>';
   $('#program').scrollTop = listScroll;
   if (running) {
     const active = $('#program [aria-current="step"]');
@@ -137,7 +144,7 @@ function render() {
   else if(focus?.dataset.edit) {
     (document.querySelector(`#program button[data-target="${encodePath(target)}"]`)??$('#root-target')).focus({preventScroll:true});
   }
-  $('#add-if').hidden = !(mission.conditionOptions||mission.id>=9);
+  $('#add-if').hidden = !(mission.conditionOptions||mission.id>=9||imported);
   $('#insertion-label').textContent = `Adicionar em: ${insertionLabel(mission,program,target)}`;
   $('#root-target').textContent=target.length?'Voltar ao programa principal':'Programa principal';
   $('#root-target').setAttribute('aria-pressed', String(!target.length));
@@ -164,7 +171,7 @@ function render() {
 function step() {
   if (!canStep(session)) return;
   session = stepSession(session);
-  if (session.completed) completed.add(mission.id);
+  if (session.completed&&!imported) completed.add(mission.id);
   if (!canStep(session)) stopPlayback();
   render();
 }
@@ -249,10 +256,22 @@ $('#program').onchange = event => {
 };
 $('#missions').onclick = event => {
   const button = event.target.closest('[data-mission]'); if (!button) return;
+  if(imported)return;
   mission = missions.find(m => m.id === Number(button.dataset.mission)); program = []; target = [];
   $('#hint-text').hidden = true; reset();
 };
-$('#hint').onclick = () => { $('#hint-text').hidden = !$('#hint-text').hidden; $('#hint-text').textContent = mission.hint; };
+$('#hint').onclick = () => { $('#hint-text').hidden = !$('#hint-text').hidden; $('#hint-text').textContent = mission.hint??'Observe a direção do robô e monte seu caminho.'; };
 $('#help').onclick = () => $('#help-dialog').showModal();
 $('#close-help').onclick = $('#start').onclick = () => $('#help-dialog').close();
+$('#import-mission').onchange=async event=>{
+ const file=event.target.files?.[0];if(!file)return;
+ try {
+  if(!file.name.toLowerCase().endsWith('.json')||file.name.toLowerCase().endsWith('.akdraft.json'))throw new Error('Selecione uma missão .json, não um rascunho.');
+  if(file.size>1024*1024)throw new Error('Arquivo excede 1 MiB');
+  const next=loadImportedGame(await file.text(),null);
+  stopPlayback();if(!imported)officialSnapshot={mission,program,target,session};
+  ({mission,program,target,session}=next);imported=true;visualEpoch++;$('#import-message').textContent='Missão importada · arquivo local, sem publicação.';render();
+ }catch(error){$('#import-message').textContent=error.message;}finally{event.target.value='';}
+};
+$('#back-missions').onclick=()=>{if(!imported)return;stopPlayback();({mission,program,target,session}=officialSnapshot);officialSnapshot=null;imported=false;visualEpoch++;$('#import-message').textContent='Catálogo restaurado. Programa e progresso anteriores preservados.';render();};
 render();
