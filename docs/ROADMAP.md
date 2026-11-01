@@ -42,13 +42,9 @@ Prioridade no mecanismo: inspect, setMemory, memoryEquals e interact com autoriz
 
 Comparações numéricas genéricas, propriedades de entidades/barreiras, passagem física avaliada em runtime e seleção explícita de alvo. As únicas demos novas (20–21) validam contratos; 01–19 ficam preservadas. O editor permite tentativas proibidas, que falham durante a execução. Consulte [V05.md](V05.md).
 
-## V0.6 planejada — Múltiplos casos (`switch`)
+## V0.6 — ESCOLHA e editor visual
 
-**Mecânica:** sensor `corDoPiso` com alternativas e um caso padrão.
-
-**Missão exemplo:** 'A placa muda de cor: azul vai à estação A; amarelo vai à B; vermelho vai à C.' Um único programa atende às variações.
-
-**Avaliação:** testar cada cor e caso padrão relevante; dar feedback da condição avaliada.
+Switch/case/default nativo com seleção estrita, snapshot de memória/mundo, retorno ao pai e autorização declarativa. Editor compartilha controles de casos e SE, mantém caminho selecionado e protege contra descarte silencioso. Demos 22–23 validam três alternativas e padrão vencedor; 01–21 permanecem intactas. Contratos e aceite em [V06.md](V06.md). Sem repetição, mapas ou alteração de publicação.
 
 ## Futuro — Enquanto (`while`)
 

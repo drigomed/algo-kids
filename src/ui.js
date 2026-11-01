@@ -1,6 +1,9 @@
+import {insertionLabel} from './branch-view.js';
+import {nodeAt,rebaseTarget} from './tree.js';
+import {switchOption,switchHasCommands} from './switches.js';
 import {classifyResult} from './engine.js';
 import {configureCommand} from './commands.js';
-import {renderCommandPalette,renderMemory,failureMessage,commandMessages,renderDecisionTrace,collisionMessage,passageIndicators,resultLabel} from './command-view.js';
+import {renderCommandPalette,renderMemory,failureMessage,commandMessages,renderDecisionTrace,renderSwitchPalette,collisionMessage,passageIndicators,resultLabel} from './command-view.js';
 import {conditionOptions, valuesFor, defaultCondition, configureCondition} from './condition-options.js';
 import {missions} from './missions.js';
 import {createSession, stepSession, canStep, startVariantTests} from './session.js';
@@ -9,7 +12,7 @@ import {renderProgram, renderBoard, encodePath, decodePath, escapeHtml, worldInd
 
 const $ = selector => document.querySelector(selector);
 let mission = missions[0], program = [], target = [], session = createSession(mission, program);
-let timer = null, running = false, editorMessage = '';
+let timer = null, running = false, editorMessage = '', lastTraceKey='', lastFeedbackKey='';
 const completed = new Set();
 const state = () => session.execution.state;
 const scenario = () => session.scenarios[session.scenarioIndex];
@@ -23,7 +26,7 @@ function edit(operation) {
     const next = editProgram(program, operation);
     const nextSession=createSession(mission,next);
     stop(); program=next; session=nextSession;
-    if(['remove','move'].includes(operation.type))target=[];
+    target=rebaseTarget(next,target,operation);
     editorMessage = ''; render();
   } catch (error) { editorMessage = error.message; render(); }
 }
@@ -49,7 +52,8 @@ function render() {
   // Preserve o foco e a rolagem dos componentes que não mudaram neste passo.
   const focus = document.activeElement;
   const focusPath = focus?.dataset.path, focusField = focus?.dataset.field;
-  const focusTarget=focus?.dataset.target, focusOption=focus?.dataset.commandOption;
+  const focusTarget=focus?.dataset.target, focusOption=focus?.dataset.commandOption, focusSwitch=focus?.dataset.switchOption;
+  const inlineField=['inlineAdd','inlineOption','inlineSwitch'].find(key=>focus?.dataset[key]!==undefined);
   const listScroll = $('#program').scrollTop, missionScroll = $('#missions').scrollLeft;
   $('#missions').innerHTML = missions.map(m => `<button class="mission ${m === mission ? 'selected' : ''} ${completed.has(m.id) ? 'completed' : ''}" data-mission="${m.id}" aria-current="${m === mission ? 'step' : 'false'}"><span>${completed.has(m.id) ? '✓' : String(m.id).padStart(2,'0')}</span><div><small>MISSÃO ${String(m.id).padStart(2,'0')}</small><strong>${escapeHtml(m.title)}</strong></div></button>`).join('');
   $('#missions').scrollLeft = missionScroll;
@@ -68,7 +72,11 @@ function render() {
   board.innerHTML = renderBoard(current,s,activeNode);
   $('#robot-memory').innerHTML=renderMemory(current,s);
   $('#extra-commands').innerHTML=renderCommandPalette(current,running);
-  $('#decision-trace').innerHTML=renderDecisionTrace(current,s);
+  $('#extra-switches').innerHTML=renderSwitchPalette(current,running);
+  $('.palette').hidden=target.length>0;
+  const trace=renderDecisionTrace(current,s);
+  const traceKey=`${session.scenarioIndex}:${s.instructionPointer}:${trace}`;
+  if(lastTraceKey!==traceKey){$('#decision-trace').innerHTML=trace;lastTraceKey=traceKey;}
   const progress = current.presentation?.progress;
   $('#collection').hidden = !(current.entities?.some(entity=>entity.collectible) || progress);
   $('#world-state').textContent = worldIndicators(current,s);
@@ -89,13 +97,24 @@ function render() {
     }
   }
   if (focusField && focusPath !== undefined) document.querySelector(`[data-field="${focusField}"][data-path="${focusPath}"]`)?.focus({preventScroll:true});
-  if(!focusField&&focusTarget!==undefined)document.querySelector(`#program button[data-target="${focusTarget}"]`)?.focus({preventScroll:true});
-  else if(focusOption)document.querySelector(`[data-command-option="${focusOption}"]`)?.focus({preventScroll:true});
+  if(!focusField&&focusTarget!==undefined) {
+    const attribute=inlineField?{'inlineAdd':'data-inline-add','inlineOption':'data-inline-option','inlineSwitch':'data-inline-switch'}[inlineField]:null;
+    const selector=attribute?`#program [${attribute}="${focus.dataset[inlineField]}"][data-target="${encodePath(target)}"]`:`#program button[data-target="${encodePath(target)}"]`;
+    document.querySelector(selector)?.focus({preventScroll:true});
+  } else if(focusOption)document.querySelector(`[data-command-option="${focusOption}"]`)?.focus({preventScroll:true});
+  else if(focusSwitch)document.querySelector(`[data-switch-option="${focusSwitch}"]`)?.focus({preventScroll:true});
+  else if(focus?.dataset.edit) {
+    (document.querySelector(`#program button[data-target="${encodePath(target)}"]`)??$('#root-target')).focus({preventScroll:true});
+  }
   $('#add-if').hidden = !(mission.conditionOptions||mission.id>=9);
-  $('#insertion-label').textContent = target.length ? `Adicionar em ${target.at(-1) === 'then' ? 'ENTÃO' : 'SENÃO'} · bloco ${target.filter(p => typeof p === 'number').map(n => n + 1).join(' / ')}` : 'Adicionar no programa principal';
+  $('#insertion-label').textContent = `Adicionar em: ${insertionLabel(mission,program,target)}`;
+  $('#root-target').textContent=target.length?'Voltar ao programa principal':'Programa principal';
   $('#root-target').setAttribute('aria-pressed', String(!target.length));
   $('#editor-message').textContent = editorMessage;
-  $('#feedback').textContent = feedback(); $('#feedback').className = s.status;
+  const message=feedback();
+  const feedbackKey=`${session.scenarioIndex}:${s.instructionPointer}:${s.status}:${message}`;
+  if(lastFeedbackKey!==feedbackKey){$('#feedback').textContent=message;lastFeedbackKey=feedbackKey;}
+  $('#feedback').className = s.status;
   $('#feedback').dataset.result=classifyResult(s);
   $('#outcome-label').textContent=resultLabel(classifyResult(s));
   $('#run').disabled = running || !program.length;
@@ -117,7 +136,7 @@ function step() {
 }
 function tick() {
   step();
-  if(running)timer=setTimeout(tick,state().events.some(event=>event.type==='condition')&&!matchMedia('(prefers-reduced-motion: reduce)').matches?1100:700);
+  if(running)timer=setTimeout(tick,state().events.some(event=>['condition','switch'].includes(event.type))&&!matchMedia('(prefers-reduced-motion: reduce)').matches?1100:700);
 }
 $('#run').onclick = () => { if (!program.length) return; reset(); running = true; tick(); };
 $('#pause').onclick = () => { if (running) { stop(); render(); } else if (canStep(session)) { running = true; render(); timer = setTimeout(tick, 450); } };
@@ -126,31 +145,44 @@ $('#reset').onclick = $('#back-training').onclick = reset;
 $('#test-variants').onclick = () => { session = startVariantTests(session); running = true; render(); timer = setTimeout(tick, 700); };
 $('#clear').onclick = () => { if (running) return; program = []; target = []; reset(); };
 $('#root-target').onclick = () => { target = []; render(); };
-function addAt(path,nodeType,optionId) {
+function addAt(path,nodeType,optionId,switchId) {
   const destination=[...path];
   try {
-    const operation=optionId?{node:configureCommand(mission,optionId),mission}:{nodeType,condition:defaultCondition(mission)};
+    const operation=switchId?{nodeType:'switch',switchOptionId:switchId,mission}:optionId?{node:configureCommand(mission,optionId),mission}:{nodeType,condition:defaultCondition(mission)};
     edit({type:'add',path:destination,...operation});target=destination;render();
   } catch(error){editorMessage=error.message;render();}
 }
 $('.palette').onclick=event=>{
-  const button=event.target.closest('[data-add],[data-command-option]');
+  const button=event.target.closest('[data-add],[data-command-option],[data-switch-option]');
   if(!button||button.disabled||button.hidden)return;
-  addAt(target,button.dataset.add,button.dataset.commandOption);
+  addAt(target,button.dataset.add,button.dataset.commandOption,button.dataset.switchOption);
 };
 $('#program').onclick = event => {
   const button = event.target.closest('button');
   if (!button || button.disabled || running) return;
-  if(button.dataset.inlineAdd||button.dataset.inlineOption) {
-    addAt(decodePath(button.dataset.target),button.dataset.inlineAdd,button.dataset.inlineOption);
+  if(button.dataset.inlineAdd||button.dataset.inlineOption||button.dataset.inlineSwitch) {
+    addAt(decodePath(button.dataset.target),button.dataset.inlineAdd,button.dataset.inlineOption,button.dataset.inlineSwitch);
   } else if (button.dataset.target !== undefined) {
     target = decodePath(button.dataset.target); render();
     // Os comandos ficam no próprio ramo; não levar a criança de volta ao topo.
-  } else if (button.dataset.edit) edit({type:button.dataset.edit === 'remove' ? 'remove' : 'move', offset:button.dataset.edit === 'up' ? -1 : 1, path:decodePath(button.dataset.path)});
+  } else if(button.dataset.edit) {
+    const path=decodePath(button.dataset.path),node=nodeAt(program,path).node;
+    if(button.dataset.edit==='remove'&&['if','switch'].includes(node.type)&&countNodes([node])>1&&!window.confirm(`Remover este bloco e seus ${countNodes([node])-1} comandos internos?`))return;
+    edit({type:button.dataset.edit==='remove'?'remove':'move',offset:button.dataset.edit==='up'?-1:1,path});
+  }
 };
 $('#program').onchange = event => {
   const input = event.target;
   if (!input.dataset.field || running) return;
+  if(input.dataset.field==='switch-option') {
+    const path=decodePath(input.dataset.path),node=nodeAt(program,path).node;
+    if(switchOption(mission,node)?.id===input.value){render();return;}
+    const occupied=switchHasCommands(node);
+    if(occupied&&!window.confirm(`Trocar esta ESCOLHA substitui todos os caminhos e apaga ${countNodes([node])-1} comandos internos. Quer continuar?`)) {
+      editorMessage='Escolha mantida. Nenhum comando foi removido.';render();return;
+    }
+    edit({type:'switchOption',path,switchOptionId:input.value,mission,confirmDiscard:occupied});return;
+  }
   if(input.dataset.field.startsWith('command-')) {
     const block=input.closest('.explicit-command'),optionId=block.querySelector('[data-field="command-option"]').value;
     try {edit({type:'command',path:decodePath(input.dataset.path),mission,node:configureCommand(mission,optionId,input.dataset.field==='command-value'?Number(input.value):undefined)});}

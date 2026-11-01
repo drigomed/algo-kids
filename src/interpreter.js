@@ -1,9 +1,12 @@
+import {validateSwitchNode,evaluateSwitch,switchBranchPath} from './switches.js';
+import {sequenceAt,MAX_NODES,MAX_DEPTH} from './tree.js';
+export {MAX_NODES,MAX_DEPTH} from './tree.js';
 import {validateDecision} from './condition-options.js';
 import {assertJsonData,ExecutionFault,actionFailure} from './data.js';
 import {explicitTypes,validateCommand} from './commands.js';
 import {initialState, applyCommand, terminal, validateMission} from './world.js';
 import {evaluateCondition} from './rules.js';
-export const MAX_NODES = 300, MAX_DEPTH = 8, DEFAULT_LIMIT = 1000;
+export const DEFAULT_LIMIT = 1000;
 export function validateProgram(program, mission) {
   assertJsonData(program,'program');
   const pending = [{list: program, depth: 0}];
@@ -16,6 +19,9 @@ export function validateProgram(program, mission) {
       if (node.type === 'if') {
         validateDecision(node.condition, mission);
         pending.push({list: node.then, depth: depth + 1}, {list: node.else, depth: depth + 1});
+      } else if(node.type==='switch') {
+        validateSwitchNode(mission,node);
+        pending.push(...node.cases.map(item=>({list:item.body,depth:depth+1})),{list:node.default,depth:depth+1});
       } else if(explicitTypes.includes(node.type))validateCommand(node,mission);
       else if (!['move', 'turnLeft', 'turnRight'].includes(node.type)) throw new Error('Instrução não suportada');
     }
@@ -27,7 +33,7 @@ export function createExecution(mission, program, {instructionLimit = DEFAULT_LI
   if (!Number.isInteger(instructionLimit) || instructionLimit < 1 || instructionLimit > 10000) throw new Error('Limite de instruções inválido');
   return {state: initialState(mission), frames: [{path: [], index: 0}], activePath: null, decision: null, instructionLimit};
 }
-function listAt(program, path) { return path.reduce((value, key) => value[key], program); }
+const listAt=sequenceAt;
 function normalize(program, frames) {
   while (frames.length && frames.at(-1).index >= listAt(program, frames.at(-1).path).length) frames.pop();
 }
@@ -52,6 +58,16 @@ export function stepExecution(mission, program, execution) {
     decision = {path: activePath, branch, result};
     state = {...execution.state, status: 'running', instructionPointer: execution.state.instructionPointer + 1, lastEvent: 'condition', events: [{type: 'condition', result, branch, condition: structuredClone(node.condition)}]};
     frames.push({path: [...activePath, branch], index: 0});
+  } else if(node.type==='switch') {
+    let event;
+    try {event=evaluateSwitch(mission,execution.state,node);}
+    catch(error) {
+      if(!(error instanceof ExecutionFault))throw error;
+      return {...execution,frames:[],activePath,decision:null,state:actionFailure({...execution.state,instructionPointer:execution.state.instructionPointer+1},error.reason,{action:'switch',selector:structuredClone(node.selector),...error.details})};
+    }
+    decision={path:activePath,selected:event.selected,value:event.value,selector:event.selector};
+    state={...execution.state,status:'running',instructionPointer:execution.state.instructionPointer+1,lastEvent:'switch',events:[event]};
+    frames.push({path:switchBranchPath(activePath,event.selected),index:0});
   } else state = applyCommand(mission, execution.state, node);
   normalize(program, frames);
   if (!frames.length && !terminal(state)) state = {...state, status: 'finished', lastEvent: 'finished'};

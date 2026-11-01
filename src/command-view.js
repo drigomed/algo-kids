@@ -1,3 +1,4 @@
+import {switchNarrative,selectorLabel} from './switch-copy.js';
 import {objectProperties} from './properties.js';
 import {escapeHtml as h} from './html.js';
 import {commandOption,explicitTypes} from './commands.js';
@@ -8,7 +9,7 @@ export function renderCommandPalette(mission,disabled=false,inlinePath) {
  return (mission.commandOptions??[]).map(option=>`<button ${inlinePath===undefined?'data-command-option':'data-inline-option'}="${h(option.id)}" ${inlinePath===undefined?'':`data-target="${inlinePath}"`} ${disabled?'disabled':''}><b>${icons[option.node.type]}</b><span>${titles[option.node.type]}<small>${h(option.label)}</small></span></button>`).join('');
 }
 export function renderInlinePalette(mission,path) {
- return `<div class="branch-tools" aria-label="Adicionar neste ramo">${[['move','↑ Avançar'],['turnLeft','↶ Esquerda'],['turnRight','↷ Direita'],...(mission.conditionOptions||mission.id>=9?[['if','◇ SE / SENÃO']]:[])].map(([type,label])=>`<button data-inline-add="${type}" data-target="${path}">${label}</button>`).join('')}${renderCommandPalette(mission,false,path)}</div>`;
+ return `<div class="branch-tools" aria-label="Adicionar neste ramo">${[['move','↑ Avançar'],['turnLeft','↶ Esquerda'],['turnRight','↷ Direita'],...(mission.conditionOptions||mission.id>=9?[['if','◇ SE / SENÃO']]:[])].map(([type,label])=>`<button data-inline-add="${type}" data-target="${path}">${label}</button>`).join('')}${renderCommandPalette(mission,false,path)}${renderSwitchPalette(mission,false,path)}</div>`;
 }
 export function renderExplicitCommand(mission,node,key,controls,active,disabled) {
  const option=commandOption(mission,node),lock=disabled?'disabled':'';
@@ -34,6 +35,7 @@ export function failureMessage(mission,state) {
 }
 export function commandMessages(mission,state) {
  return state.events.flatMap(event=>{
+  if(event.type==='switch'){const n=switchNarrative(mission,event);return [`${n.source}. ${n.comparison}. ${n.branch}.`];}
   if(event.type==='inspected'&&event.success)return [`Observei ${sourceLabels(mission,{type:'inspect',source:event.source,into:event.variable}).target} na casa ${event.source.relativeTo==='here'?'atual':'à frente'} e guardei ${memoryValueLabel(mission,event.variable,event.value)} em ${memoryName(mission,event.variable)}.`];
   if(event.type==='memoryWritten'&&event.success)return [`Guardei ${memoryValueLabel(mission,event.variable,event.value)} em ${memoryName(mission,event.variable)}. O mundo continua igual.`];
   if(event.type==='interacted'&&event.success)return [mission.presentation?.entities?.[event.entityId]?.interactionMessage??'Interação realizada! Observe o que mudou no mundo.'];
@@ -41,7 +43,12 @@ export function commandMessages(mission,state) {
  });
 }
 export function renderDecisionTrace(mission,state) {
- const event=state.events.find(event=>event.type==='condition'||(event.type==='actionFailed'&&event.action==='if'));
+ const event=state.events.find(event=>['condition','switch'].includes(event.type)||(event.type==='actionFailed'&&['if','switch'].includes(event.action)));
+ if(event?.type==='switch') {
+   const narrative=switchNarrative(mission,event);
+   return `<ol class="decision-trace switch-trace" aria-label="Como o robô escolheu"><li><small>1 · VALOR CONSULTADO</small>${h(narrative.source)}</li><li><small>2 · COMPARAÇÃO</small>${h(narrative.comparison)}</li><li><small>3 · CAMINHO</small>${h(narrative.branch)}</li></ol>`;
+ }
+ if(event?.type==='actionFailed'&&event.action==='switch')return `<ol class="decision-trace switch-trace"><li>${h(selectorLabel(mission,event.selector))}: ainda não sei</li><li>Não escolhi nenhum caso</li><li>O padrão também não foi executado</li></ol>`;
  if(!event)return '';
  const failed=event.type==='actionFailed';
  return `<ol class="decision-trace" aria-label="Como o robô decidiu"><li><small>1 · PERGUNTA</small>${h(event.condition?conditionQuestion(mission,event.condition):'Já guardei essa informação?')}</li><li><small>2 · RESPOSTA</small>${failed?'Ainda não sei':event.result?'Sim':'Não'}</li><li><small>3 · CAMINHO</small>${failed?'Nenhum ramo executado':event.result?'ENTÃO':'SENÃO'}</li></ol>`;
@@ -73,3 +80,7 @@ export function passageIndicators(mission,state) {
   return (mission.barriers??[]).flatMap(barrier=>Object.entries(objectProperties(barrier,state)).map(([name,value])=>`${mission.presentation?.barriers?.[barrier.id]?.label??'Passagem'} · ${mission.presentation?.barriers?.[barrier.id]?.propertyLabels?.[name]??'Informação'}: ${typeof value==='boolean'?(value?'Sim':'Não'):value}`)).join(' | ');
 }
 export function resultLabel(category) {return {success:'Objetivo concluído',failure:'Programa interrompido',incomplete:'Programa incompleto',inProgress:'Em andamento'}[category];}
+
+export function renderSwitchPalette(mission,disabled=false,inlinePath) {
+  return (mission.switchOptions??[]).map(option=>`<button ${inlinePath===undefined?'data-switch-option':'data-inline-switch'}="${h(option.id)}" ${inlinePath===undefined?'':`data-target="${inlinePath}"`} ${disabled?'disabled':''}><b>◇</b><span>ESCOLHA<small>${h(option.label)}</small></span></button>`).join('');
+}
