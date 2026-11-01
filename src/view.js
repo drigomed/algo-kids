@@ -1,3 +1,4 @@
+import {renderSceneBoard} from './presentation/scene-view.js';
 import {renderLoop} from './loop-view.js';
 import {renderBranch} from './branch-view.js';
 import {renderSwitch} from './switch-view.js';
@@ -6,9 +7,7 @@ export {encodePath,decodePath} from './tree.js';
 import {escapeHtml} from './html.js';
 export {escapeHtml} from './html.js';
 import {explicitTypes,renderExplicitCommand,renderInlinePalette} from './command-view.js';
-import {commandReach} from './commands.js';
 import {conditionOptions, optionFor, valuesFor, conditionQuestion} from './condition-options.js';
-import {objectProperties} from './properties.js';
 import {cellProperties, passage} from './rules.js';
 // Somente representação: regras e interpretação permanecem fora do DOM.
 export const labels = {move:'Avançar', turnLeft:'Virar à esquerda', turnRight:'Virar à direita'};
@@ -32,32 +31,8 @@ export function renderProgram(program, mission, execution, target, disabled, bas
     return `<li class="condition-block ${within ? 'active-block' : ''} ${active ? 'active' : ''}" ${active ? 'aria-current="step"' : ''}><div class="condition-heading"><strong>SE</strong><span>Bloco ${index + 1}</span>${controls}</div><label class="condition-choice">Pergunta<select data-field="condition" data-path="${key}" ${disabled ? 'disabled' : ''}>${options}</select></label>${fields}${branches}</li>`;
   }).join('');
 }
-export function renderBoard(mission, state, activeNode = null) {
-  const reach=activeNode?commandReach(state,activeNode):null;
-  const failed=state.events.find(event=>event.type==='collision'&&event.barrierId);
-  const failedPosition=failed?.target??(mission.barriers??[]).find(barrier=>barrier.id===failed?.barrierId);
-  return Array.from({length: mission.grid.width * mission.grid.height}, (_, i) => {
-    const row = Math.floor(i / mission.grid.width), col = i % mission.grid.width;
-    const robot = state.row === row && state.col === col, goal = mission.goal.row === row && mission.goal.col === col;
-    const rock = mission.grid.obstacles.some(o => o.row === row && o.col === col);
-    const entities = (mission.entities ?? []).filter(e => e.row === row && e.col === col && !state.consumedIds?.includes(e.id) && !(e.collectible && state.collectedIds.includes(e.id)));
-    const features = renderCellFeatures(mission,state,{row,col});
-    const barriers = (mission.barriers ?? []).filter(b=>b.row===row&&b.col===col).map(b=>{
-      const open = passage(mission,state,b).passable, visual=mission.presentation?.barriers?.[b.id]??{};
-      const label=`${visual.label??'Passagem'}: ${open?'livre':'fechada'}`;
-      return `<span class="barrier ${open?'open':'closed'}" role="img" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}">${escapeHtml(open?visual.openGlyph??'▯':visual.closedGlyph??'▥')}<small>${open?'Livre':'Fechado'}</small>${Object.entries(objectProperties(b,state)).map(([key,value])=>`<small>${escapeHtml(visual.propertyLabels?.[key]??'Informação')}: ${escapeHtml(value)}</small>`).join('')}</span>`;
-    }).join('');
-    const objects = entities.map(e => {
-      const visual = mission.presentation?.entities?.[e.id] ?? {};
-      const effects = e.onEnter.filter(a => a.type === 'increment').map(a => `${mission.presentation?.variables?.[a.variable] ?? a.variable}: +${a.amount}`).join(', ');
-      const label = visual.label ?? mission.presentation?.entityLabel ?? 'Objeto';
-      const role = (['collectible','trigger','delivery'].includes(visual.role) ? ` ${visual.role}` : '')+(state.events.some(event=>['interacted','inspected'].includes(event.type)&&event.entityId===e.id)?' interaction-target':'');
-      return `<span class="entity${role}" role="img" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}: ${escapeHtml(effects)}">${escapeHtml(visual.glyph ?? mission.presentation?.entityGlyph ?? '●')}<small>${e.onEnter.some(a => a.type === 'increment' && a.amount !== 1) ? escapeHtml(e.onEnter.filter(a => a.type === 'increment').map(a => `+${a.amount}`).join(' ')) : ''}</small></span>`;
-    }).join('');
-    const inReach=reach?.row===row&&reach?.col===col;
-    const failureTarget=failedPosition?.row===row&&failedPosition?.col===col;
-    return `<div class="cell ${(row + col) % 2 ? 'alternate' : ''} ${goal ? 'goal' : ''} ${inReach?'command-reach':''} ${failureTarget?'failure-target':''}" ${inReach?'title="Alcance da ação atual"':''}>${goal ? '<span class="star">★</span>' : ''}${rock ? '<span class="rock">◆</span>' : ''}${barriers}${features}${entities.length>1?`<span class="entity-stack">${objects}</span>`:objects}${failureTarget?'<span class="blocked-marker" aria-label="Tentativa bloqueada">!</span>':''}${robot ? `<div class="robot" style="--angle:${{N:0,L:90,S:180,O:270}[state.direction]}deg"><span class="robot-arrow">▲</span><span class="robot-head"><i></i><i></i></span><span class="robot-body"></span></div>` : ''}</div>`;
-  }).join('');
+export function renderBoard(mission,state,activeNode=null,visualOptions={}) {
+  return renderSceneBoard(mission,state,activeNode,visualOptions);
 }
 
 export function renderConditionFields(mission,condition,key,disabled) {
@@ -73,13 +48,6 @@ export function renderConditionFields(mission,condition,key,disabled) {
 function propertyVisual(mission,name,value) {
   const visual=mission.presentation?.properties?.[name]??{};
   return {label:visual.label??'Marca', ...(visual.values?.find(v=>v.value===value)??{label:'Marca',glyph:'◇'})};
-}
-function renderCellFeatures(mission,state,position) {
-  return Object.entries(cellProperties(mission,state,position)).map(([name,value])=>{
-    const visual=propertyVisual(mission,name,value),tone=['green','red','amber'].includes(visual.tone)?visual.tone:'neutral';
-    const label=`${mission.presentation?.properties?.[name]?.label??'Marca'}: ${visual.label}`;
-    return `<span class="cell-feature ${tone}" role="img" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}">${escapeHtml(visual.glyph??'◇')}<small>${escapeHtml(visual.label)}</small></span>`;
-  }).join('');
 }
 export function worldIndicators(mission,state) {
   return (mission.presentation?.stateIndicators??[]).map(indicator=>{

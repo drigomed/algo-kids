@@ -1,9 +1,12 @@
+import {validateAssets} from './validate-assets.js';
+import {assetRegistry} from '../src/presentation/asset-registry.js';
 import {readdir, readFile, lstat} from 'node:fs/promises';
 import {resolve, relative} from 'node:path';
 import assert from 'node:assert/strict';
 
 const root = resolve(process.argv[2] ?? 'dist');
 const files = new Set();
+const assets=new Set(Object.values(assetRegistry).map(file=>`src/assets/${file}`));
 async function walk(directory) {
   for (const name of await readdir(directory)) {
     const path = resolve(directory, name);
@@ -13,19 +16,25 @@ async function walk(directory) {
     else {
       assert(stat.isFile(), `Entrada não regular: ${path}`);
       const local = relative(root, path).split('\\').join('/');
-      assert(local === 'index.html' || /^src\/.+\.(js|css)$/.test(local), `Arquivo inesperado no artefato: ${local}`);
+      assert(local === 'index.html' || (/^src\/.+\.(js|css)$/.test(local)&&!local.startsWith('src/assets/')) || assets.has(local), `Arquivo inesperado no artefato: ${local}`);
       assert(stat.size > 0, `Arquivo vazio: ${local}`);
       files.add(local);
     }
   }
 }
 await walk(root);
+await validateAssets(root);
 for (const required of ['index.html', 'src/style.css', 'src/ui.js', 'src/engine.js', 'src/missions.js']) {
   assert(files.has(required), `Recurso obrigatório ausente: ${required}`);
 }
 const origin = 'https://drigomed.github.io';
 const base = `${origin}/algo-kids/`;
-let references = 0;
+for(const file of Object.values(assetRegistry)) {
+  const url=new URL(`../assets/${file}`,new URL('src/presentation/asset-registry.js',base));
+  assert(url.origin===origin&&url.pathname.startsWith('/algo-kids/src/assets/'),`Asset fora do subdiretório: ${file}`);
+  assert(files.has(decodeURIComponent(url.pathname.slice('/algo-kids/'.length))),`Asset não publicado: ${file}`);
+}
+let references = assets.size;
 for (const file of files) {
   const source = await readFile(resolve(root, file), 'utf8');
   assert(!/\b(?:localhost|127\.0\.0\.1|0\.0\.0\.0)\b/i.test(source), `Referência local em ${file}`);

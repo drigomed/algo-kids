@@ -1,0 +1,56 @@
+/* Algo Kids: superfícies discretas, objetos reais, personagem sempre em primeiro plano. */
+#board .ak-cell{background:var(--ak-tile) center/100% 100%;isolation:isolate;overflow:visible}
+.ak-sprite{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
+.ak-sprite[hidden],.ak-glyph[hidden]{display:none}
+.ak-glyph{font-size:1.4rem;line-height:1}
+#board .ak-goal{position:absolute;inset:4%;z-index:2;pointer-events:none}
+#board .ak-goal .ak-sprite{width:74%;height:74%;margin:13%}
+.ak-goal-ring{position:absolute;inset:2%;border:3px solid #f6c453;border-radius:35%;box-shadow:0 0 0 2px #fff5c9a0}
+#board .ak-goal:has(~.ak-robot) .ak-sprite{width:36%;height:36%;margin:0;position:absolute;top:0;right:0;z-index:8}
+#board .ak-obstacle{position:absolute;inset:3%;z-index:3}
+#board .ak-robot{position:absolute;inset:0;z-index:7;pointer-events:none;transform-origin:center}
+#board .entity{position:absolute;inset:14%;width:auto;height:auto;font-size:inherit;line-height:1;z-index:4;text-shadow:none;border:0;transform:none;display:block}
+#board .entity small{position:absolute;bottom:-3px;right:-3px;font-size:10px;font-weight:bold;background:#fff8e8;border-radius:5px;padding:2px;color:#304c48}
+#board .entity.delivery{inset:11%;z-index:3}
+#board .entity-stack{position:absolute;inset:1%;z-index:5;display:grid;grid-template-columns:1fr 1fr;gap:0;align-content:stretch}
+#board .entity-stack .entity{position:relative;inset:auto;width:100%;height:100%;min-height:0;outline-offset:-2px}
+#board .barrier{position:absolute;inset:1%;z-index:3;padding:0;border:0;background:none;display:block;color:#304c48}
+#board .ak-object-label{position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:center;flex-wrap:wrap;gap:2px;z-index:4;line-height:1}
+#board .ak-object-label small{background:#fff9e8ed;border-radius:3px;padding:1px 2px;font-size:8px}
+#board .cell-feature{position:absolute;inset:0 auto auto 0;width:38%;height:46%;display:block;border:0;background:transparent;padding:0;z-index:5}
+#board .cell-feature small{position:absolute;top:0;left:105%;width:145%;font-size:8px;line-height:1.2;padding:2px;background:#ffffffe6;border-radius:3px;color:#304c48}
+#board .cell-feature:not(:has(.ak-sprite)){width:auto;height:auto;background:#fff9;max-width:45%;font-size:12px}
+#board .cell-feature:not(:has(.ak-sprite)) small{position:static;display:block;width:auto}
+#board .blocked-marker{z-index:10}
+.ak-fx{position:absolute;inset:-12%;pointer-events:none;z-index:9;animation:ak-fx-out .8s ease-out both}
+.ak-result{display:flex;align-items:center;gap:12px;padding:15px 16px;margin:16px 0 8px;border:2px solid #dfcfac;border-radius:16px;background:#fff5dd;color:#654e2b;min-width:0}
+.ak-result .ak-sprite{width:48px;height:48px;flex:none}
+.ak-result strong{font-size:clamp(17px,3.5vw,24px);line-height:1.25;overflow-wrap:anywhere}
+.ak-result-success{background:#e0f5e7;border-color:#78b997;color:#23644b;box-shadow:0 4px 0 #bbdcca}
+.ak-result-variant{background:#eef6ec;border-color:#c6d9be;padding:9px 12px}
+.ak-result-variant .ak-sprite{width:32px;height:32px}.ak-result-variant strong{font-size:16px}
+.ak-result-collision,.ak-result-actionFailed{background:#fff0e8;border-color:#dfa695;color:#874d40}
+.ak-result-interrupted{background:#edf2f7;border-color:#afbfcb;color:#425c72}
+.ak-result-incomplete{background:#faf6e8;border-color:#e0d9bb}
+#board[data-visual-status=collision]{outline:3px solid #d9957d;outline-offset:3px}
+#board[data-visual-status=stalled]{outline:3px dashed #d6b265;outline-offset:3px}
+.ak-mood-idle{animation:ak-breathe 2.8s ease-in-out infinite}
+.ak-mood-move{animation:ak-nudge .24s ease-out both}
+.ak-mood-turn{animation:ak-turn .2s ease-out both}
+.ak-mood-celebrate{animation:ak-hop .9s ease-out both}
+.ak-mood-error{animation:ak-shake .4s ease-out both}
+.ak-mood-stalled{animation:ak-settle .6s ease-out both}
+.ak-mood-rest{animation:ak-settle .3s ease-out both}
+.ak-goal:not(.ak-goal-won) .ak-goal-ring{animation:ak-goal-idle 3.1s ease-in-out infinite}
+.ak-goal-won{animation:ak-goal-glow .9s ease-out both}
+@keyframes ak-breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes ak-nudge{0%{transform:scale(.93)}65%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes ak-turn{0%{transform:rotate(-8deg)}100%{transform:rotate(0)}}
+@keyframes ak-hop{0%,100%{transform:translateY(0)}30%,65%{transform:translateY(-6px)}48%,80%{transform:translateY(0)}}
+@keyframes ak-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}60%{transform:translateX(3px)}}
+@keyframes ak-settle{from{transform:scale(1.04)}to{transform:scale(1)}}
+@keyframes ak-goal-idle{0%,100%{opacity:1}50%{opacity:.72}}
+@keyframes ak-goal-glow{50%{filter:brightness(1.15)}100%{filter:none}}
+@keyframes ak-fx-out{0%{opacity:0;transform:scale(.7)}25%{opacity:1}100%{opacity:0;transform:scale(1.1)}}
+@media(max-width:420px){.ak-result{padding:11px;gap:8px}.ak-result .ak-sprite{width:40px;height:40px}#board .ak-object-label small{font-size:7px}#board .cell-feature small{font-size:7px}}
+@media(prefers-reduced-motion:reduce){#board .ak-robot,#board .ak-goal,#board .ak-goal-ring,.ak-fx{animation:none;transition:none;transform:none}.ak-fx{opacity:.65}}

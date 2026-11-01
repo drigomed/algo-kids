@@ -1,0 +1,307 @@
+{
+  "source": "main V0.7.1 / 1e9edaf",
+  "missions": "eccf32b38c2e85fd03997826b6773d7e0530133c09e14049c5399ebbad02fd2c",
+  "variants": [
+    {
+      "missionId": 1,
+      "variantId": "principal",
+      "status": "won",
+      "instructions": 3,
+      "trace": "93fe9ded05488636ff0a3b03da70a5a71b4a3a3a4d6ddb0353dd78652c3aa95a"
+    },
+    {
+      "missionId": 2,
+      "variantId": "principal",
+      "status": "won",
+      "instructions": 4,
+      "trace": "36243f335165cfabe984b0eda2c9d9de6013064e182878ac1942221389575da3"
+    },
+    {
+      "missionId": 3,
+      "variantId": "principal",
+      "status": "won",
+      "instructions": 6,
+      "trace": "41c5c293b7c9268cff80617090daf612c062a0db5b7be25e25fb9bffd2707b79"
+    },
+    {
+      "missionId": 4,
+      "variantId": "principal",
+      "status": "won",
+      "instructions": 9,
+      "trace": "234cddfd101116e0970e8fe308e51a84fda7eddd89f6bb065e35994f258f12f4"
+    },
+    {
+      "missionId": 5,
+      "variantId": "principal",
+      "status": "won",
+      "instructions": 11,
+      "trace": "e437e90778d93af106810c4c37b5c433bf387ae918a86ee8f036cc7b5a4cf9aa"
+    },
+    {
+      "missionId": 6,
+      "variantId": "principal",
+      "status": "won",
+      "instructions": 11,
+      "trace": "69e5f09ecfab3e2d79f9d3f1c5a32ec357ea4d5303d76351fadd4c26584dda80"
+    },
+    {
+      "missionId": 7,
+      "variantId": "principal",
+      "status": "won",
+      "instructions": 4,
+      "trace": "76e4b484851eb900371872f321c6c1dc58705add3e2401796ed20bd72fd93b90"
+    },
+    {
+      "missionId": 8,
+      "variantId": "principal",
+      "status": "won",
+      "instructions": 7,
+      "trace": "cdda474061efb5ca40c5e5458e9e6ada63d1bdf375734d6c3df8936763533486"
+    },
+    {
+      "missionId": 9,
+      "variantId": "cima",
+      "status": "won",
+      "instructions": 6,
+      "trace": "febd3d01d8749637f4f500c08b4e21b2732fe51e926d9c025717cedaab5e5f16"
+    },
+    {
+      "missionId": 9,
+      "variantId": "direita",
+      "status": "won",
+      "instructions": 7,
+      "trace": "d93efdde1272392691333f9a08455ef2bafe225fd658aed4155c9162d4b3858f"
+    },
+    {
+      "missionId": 10,
+      "variantId": "perto",
+      "status": "won",
+      "instructions": 4,
+      "trace": "19ef6b98e10a7fcc3d11deaa71c89ff1f2dbfa059a8828d1162fd99b7b8b57a7"
+    },
+    {
+      "missionId": 10,
+      "variantId": "desvio",
+      "status": "won",
+      "instructions": 9,
+      "trace": "8dcde06881b5c457ee5423d8aba61ab28d91ed06cd799c6d8da279ece2c248e6"
+    },
+    {
+      "missionId": 11,
+      "variantId": "direto",
+      "status": "won",
+      "instructions": 7,
+      "trace": "bcb1f6443ccbaf1449ffb333ac68ebfc4b191a26687444d5133abd391ec7dc56"
+    },
+    {
+      "missionId": 11,
+      "variantId": "lateral",
+      "status": "won",
+      "instructions": 14,
+      "trace": "d1e0a90ef2a50a1d1a6ddea6e8185a3dc093f981fee7dc0740ac13e03552910c"
+    },
+    {
+      "missionId": 11,
+      "variantId": "direita",
+      "status": "won",
+      "instructions": 7,
+      "trace": "d93efdde1272392691333f9a08455ef2bafe225fd658aed4155c9162d4b3858f"
+    },
+    {
+      "missionId": 12,
+      "variantId": "duplo",
+      "status": "won",
+      "instructions": 4,
+      "trace": "2a4dd1ad24e9d38d211ab7962d3d39c9af63c3e0b0076eea87e504120caf6699"
+    },
+    {
+      "missionId": 12,
+      "variantId": "simples",
+      "status": "won",
+      "instructions": 9,
+      "trace": "e055f2b3a717c228164f1f257dd7db37e17025af08a6d3868167c9bb8fe8184b"
+    },
+    {
+      "missionId": 13,
+      "variantId": "verde",
+      "status": "won",
+      "instructions": 6,
+      "trace": "f6bd60dcd1ed9f26fdba717fea1914d1d3dd7c35c1cc639bd4a2f8614960ed37"
+    },
+    {
+      "missionId": 13,
+      "variantId": "vermelho",
+      "status": "won",
+      "instructions": 7,
+      "trace": "dc80f5b2146ce0250c528e7eb373faac1122d60ff69cdb9d4a96bd9e196ac8b2"
+    },
+    {
+      "missionId": 14,
+      "variantId": "perto",
+      "status": "won",
+      "instructions": 4,
+      "trace": "3aa7eabf754fa8791feaf1806e94a9a9a8c10b63e5fea8039a6b3701f65d05ac"
+    },
+    {
+      "missionId": 14,
+      "variantId": "desvio",
+      "status": "won",
+      "instructions": 9,
+      "trace": "6f145b1680f33e54ab8ae6686dafde53ff660b0902e8230642599b6c11b4aa47"
+    },
+    {
+      "missionId": 15,
+      "variantId": "ativa",
+      "status": "won",
+      "instructions": 4,
+      "trace": "82e3f92a6571585838463a0901e62f8cb8f643eb423de4e48ff9118055097ca0"
+    },
+    {
+      "missionId": 15,
+      "variantId": "inativa",
+      "status": "won",
+      "instructions": 9,
+      "trace": "0b14efa0df50d6458ec9f3f6f6416030407db4de11dc910ea54a1afc66b7120b"
+    },
+    {
+      "missionId": 16,
+      "variantId": "perto",
+      "status": "won",
+      "instructions": 4,
+      "trace": "304aca6557df500b56dd635f628d5a48487f66787bb59e436abbcd954833743a"
+    },
+    {
+      "missionId": 16,
+      "variantId": "desvio",
+      "status": "won",
+      "instructions": 9,
+      "trace": "5d6bd8899e4fa5eced44d094147e2f91b27e480ab401159471b3d7fd5e8b4713"
+    },
+    {
+      "missionId": 17,
+      "variantId": "vermelha",
+      "status": "won",
+      "instructions": 9,
+      "trace": "50f9037b4fa61de78c679d98af708260d9ee7425e38290c50dbf3d3b2fc6d7b7"
+    },
+    {
+      "missionId": 17,
+      "variantId": "azul",
+      "status": "won",
+      "instructions": 10,
+      "trace": "6a6e6d3132729e78e0948733c0a0a06ca2d5a395506e57c129d00e41d46a15fc"
+    },
+    {
+      "missionId": 18,
+      "variantId": "principal",
+      "status": "won",
+      "instructions": 5,
+      "trace": "608ada946a6500dbd71ec17f113f8cab9abe56fb44cd200c1a7973e117c96998"
+    },
+    {
+      "missionId": 19,
+      "variantId": "principal",
+      "status": "won",
+      "instructions": 6,
+      "trace": "da34b04b1c924b253ed6fe4335b06ee9fc6c937f0e3271a7def9fc5f1d62b192"
+    },
+    {
+      "missionId": 20,
+      "variantId": "leve",
+      "status": "won",
+      "instructions": 6,
+      "trace": "ed421b19fc6d8d0a126347e12345bd3b606b59be7264215e02f523409c3d7f3a"
+    },
+    {
+      "missionId": 20,
+      "variantId": "maior",
+      "status": "won",
+      "instructions": 7,
+      "trace": "4d8bb4a3bd9d015f65611183a347d4979d96a05302cd5d019ad7ff0eb26acb03"
+    },
+    {
+      "missionId": 21,
+      "variantId": "vermelho",
+      "status": "won",
+      "instructions": 6,
+      "trace": "baa3fe8ce685fa7b2b4bc0b80907f78f97724309642651cb33985a975d0feedc"
+    },
+    {
+      "missionId": 21,
+      "variantId": "azul",
+      "status": "won",
+      "instructions": 7,
+      "trace": "befadcdb930dc84f2b74a54c614074b2f67f5825861501aaafc694a37aef521f"
+    },
+    {
+      "missionId": 21,
+      "variantId": "verde",
+      "status": "won",
+      "instructions": 7,
+      "trace": "07e4bcb3542f2e76199b071bd0dd78717af5e44c30db84f22c428d3ec783140b"
+    },
+    {
+      "missionId": 22,
+      "variantId": "vermelho",
+      "status": "won",
+      "instructions": 6,
+      "trace": "ff8e137720f3d329df0fad7e107ef728c7c4e229dd8540c22b6f49f63bb70bf4"
+    },
+    {
+      "missionId": 22,
+      "variantId": "azul",
+      "status": "won",
+      "instructions": 6,
+      "trace": "d2baf94880d50a5e974848f70ab5f71ce008db02fd4ca1562d2d057eaeabcf8b"
+    },
+    {
+      "missionId": 22,
+      "variantId": "verde",
+      "status": "won",
+      "instructions": 6,
+      "trace": "f7296e8494f3dfcbf28e82bed91329f0b60d234b4bc041d1796b3738edbb0c43"
+    },
+    {
+      "missionId": 23,
+      "variantId": "zero",
+      "status": "won",
+      "instructions": 7,
+      "trace": "0b3dbcd40d353396b140dbf841870c7b9f943757557e3559f0cba6047edb8fdb"
+    },
+    {
+      "missionId": 23,
+      "variantId": "um",
+      "status": "won",
+      "instructions": 7,
+      "trace": "1b49bc294073e24271928522cd8fc5192be7a4d56a9f15183ebc4359bae0475e"
+    },
+    {
+      "missionId": 23,
+      "variantId": "outro",
+      "status": "won",
+      "instructions": 7,
+      "trace": "46caf0a7ee192a9579f5047e43bbe7c433bcd0bd92c4189518fd3727b050d7bc"
+    },
+    {
+      "missionId": 24,
+      "variantId": "principal",
+      "status": "won",
+      "instructions": 11,
+      "trace": "940903ac7348d14caf274beae83dd6225fec138d3285e5cef22502d6af81187d"
+    },
+    {
+      "missionId": 25,
+      "variantId": "curto",
+      "status": "won",
+      "instructions": 7,
+      "trace": "9db2cc8e4fe2d75a500a83ec6797340d4514ec22484aed84cb1710f35c4cd71c"
+    },
+    {
+      "missionId": 25,
+      "variantId": "longo",
+      "status": "won",
+      "instructions": 9,
+      "trace": "4c0aedc219176c3a3d92ef2b05037033db8815dc520f30afa2936e94c7971d79"
+    }
+  ]
+}
