@@ -46,6 +46,7 @@ export function resolveScene(mission,state,overrides={}) {
 export function resultPresentation(state,{completed=false,interrupted=false}={}) {
  if(interrupted||state.status==='stopped')return {kind:'interrupted',icon:asset('ui/interrupted'),title:'Interrompido por você',fx:'stopped-pause',mood:'rest'};
  if(state.status==='won')return {kind:completed?'success':'variant',icon:asset('ui/success'),title:completed?'Missão concluída!':'Esta versão passou!',fx:completed?'success-burst':null,mood:'celebrate'};
+ if(state.status==='energyDepleted')return {kind:'energyDepleted',icon:asset('collectibles/battery'),title:'A bateria acabou!',fx:null,mood:'rest'};
  if(state.status==='stalled')return {kind:'stalled',icon:asset('ui/stalled'),title:'Vamos sair da repetição?',fx:'stalled-loop',mood:'stalled'};
  if(state.status==='finished')return {kind:'incomplete',icon:asset('ui/incomplete'),title:'Ainda falta chegar à meta',fx:null,mood:'idle'};
  if(['collision','actionFailed','limit'].includes(state.status))return {kind:state.status,icon:asset('ui/failure'),title:{collision:'O caminho foi bloqueado',actionFailed:'Esta ação precisa de um ajuste',limit:'Foram muitos passos'}[state.status],fx:state.status==='collision'?'failure-impact':null,mood:state.status==='limit'?'stalled':'error'};

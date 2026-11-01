@@ -11,18 +11,18 @@ const routeChoice=compare(world('pacotes'),'gte',literal(2));
 const inspectA={type:'inspect',source:{type:'barrierProperty',relativeTo:'front',property:'capacidade',barrierId:'ponte-a'},into:'limiteDaPonte'};
 const mission20={
  id:20,title:'Duas pontes, cargas diferentes',demo:true,
- instructions:'Escolha uma rota para a carga atual. A ponte A suporta 1; a ponte B suporta 3. Uma tentativa acima do limite interrompe o programa.',
- hint:'Você pode inspecionar a capacidade. A ponte conserva seu limite mesmo sem inspeção; o SE consulta a carga para escolher o caminho.',
- start:{row:4,col:2,direction:'N'},goal:{row:2,col:4},grid:grid([[4,1],[4,3]]),initialVariables:{pacotes:1},robotMemory:{limiteDaPonte:{type:'number',initial:null}},
- barriers:[{id:'ponte-a',row:3,col:2,properties:{capacidade:1},passableWhen:compare(world('pacotes'),'lte',own('capacidade')),failureCode:'capacityExceeded'},
- {id:'ponte-b',row:4,col:4,properties:{capacidade:3},passableWhen:compare(world('pacotes'),'lte',own('capacidade')),failureCode:'capacityExceeded'}],
+ instructions:'Avance até a bifurcação. Ponte A: até 1 pacote. Rota B: reservada a cargas de 2 a 3 pacotes. Escolha para cima ou para baixo e siga à estrela.',
+ hint:'Depois do primeiro avanço, use SE carga >= 2: desça para B; SENÃO suba para A. Para inspecionar A, avance até (1,1) e olhe para leste. Inspecionar é opcional; memória não altera a física.',
+ start:{row:2,col:0,direction:'L'},goal:{row:2,col:4},grid:grid([[0,0],[0,1],[0,2],[0,3],[0,4],[1,0],[1,4],[2,2],[3,0],[3,4],[4,0],[4,1],[4,2],[4,3],[4,4]]),initialVariables:{pacotes:1},robotMemory:{limiteDaPonte:{type:'number',initial:null}},
+ barriers:[{id:'ponte-a',row:1,col:2,properties:{capacidade:1},passableWhen:compare(world('pacotes'),'lte',own('capacidade')),failureCode:'capacityExceeded'},
+ {id:'ponte-b',row:3,col:2,properties:{minimo:2,capacidade:3},passableWhen:{type:'all',conditions:[compare(world('pacotes'),'gte',own('minimo')),compare(world('pacotes'),'lte',own('capacidade'))]},failureCode:'routeRestricted'}],
  commandOptions:[{id:'observarPonteA',label:'Inspecionar capacidade da ponte A à frente',node:inspectA}],
  conditionOptions:[{id:'carga',label:'Estou carregando pelo menos 2 pacotes?',condition:routeChoice},{id:'caminho',label:'O caminho à frente está livre?',condition:{type:'pathClear'}}],
- solution:[{type:'if',condition:routeChoice,then:seq('DAAEAA'),else:seq('AADAA')}],
- variants:[{id:'leve',label:'Carga de 1 pacote'},{id:'maior',label:'Carga de 2 pacotes',initialVariables:{pacotes:2},grid:grid([[4,1]])}],
- presentation:{variables:{pacotes:'Pacotes'},memory:{limiteDaPonte:{label:'Capacidade observada'}},stateIndicators:[{variable:'pacotes',label:'Pacotes transportados'}],
- barriers:{'ponte-a':{label:'Ponte A',openGlyph:'═',closedGlyph:'╳',propertyLabels:{capacidade:'Capacidade'}},'ponte-b':{label:'Ponte B',openGlyph:'═',closedGlyph:'╳',propertyLabels:{capacidade:'Capacidade'}}},
- failures:{capacityExceeded:'Você está com {actual} pacotes, mas esta ponte suporta {limit}. O caminho falhou.'}}
+ solution:[...seq('A'),{type:'if',condition:routeChoice,then:seq('DAEAAEADA'),else:seq('EADAADAEA')}],
+ variants:[{id:'leve',label:'Carga de 1 pacote'},{id:'maior',label:'Carga de 2 pacotes',initialVariables:{pacotes:2}}],
+ presentation:{visual:{boardStyle:'blueprint',chapter:'advanced',robotSkin:'mk4',environmentTheme:'factory',goalSkin:'star',obstacleSkin:'crate',barrierDefaults:{assetGroup:'bridge'}},variables:{pacotes:'Pacotes'},memory:{limiteDaPonte:{label:'Capacidade observada'}},stateIndicators:[{variable:'pacotes',label:'Pacotes transportados'}],
+ barriers:{'ponte-a':{label:'Ponte A',openGlyph:'═',closedGlyph:'╳',propertyLabels:{capacidade:'Capacidade'}},'ponte-b':{label:'Rota B · 2 a 3 pacotes',openGlyph:'═',closedGlyph:'╳',propertyLabels:{minimo:'Carga mínima',capacidade:'Capacidade'}}},
+ failures:{capacityExceeded:'Você está com {actual} pacotes, mas esta ponte suporta {limit}. O caminho falhou.',routeRestricted:'A rota B é reservada a cargas de 2 a 3 pacotes. Sua carga atual é {actual}.'}}
 };
 const colors=[['vermelho','Vermelha','■','red'],['azul','Azul','◆','neutral'],['verde','Verde','●','green']];
 const inspectLock={type:'inspect',source:{type:'entityProperty',relativeTo:'front',property:'cor',entityId:'fechadura'},into:'corNecessaria'};

@@ -13,7 +13,7 @@ export function scalarControl(value,path,schema={kind:'scalar'}){
 }
 export function readTyped(kind,value){if(kind==='boolean')return value==='true';if(kind==='number'){if(value.trim()===''||!Number.isFinite(Number(value)))throw new Error('Informe um número finito');return Number(value);}if(kind==='null')return null;return value;}
 export function typeDefault(type){return {string:'',number:0,boolean:false,null:null,binding:{stateVariable:'contador'},selector:{source:'variable',name:'liberada',values:[{value:true,state:'on'},{value:false,state:'off'}]}}[type];}
-function summary(value){return Array.isArray(value)?`${value.length} itens`:value&&typeof value==='object'?String(value.label??value.id??value.type??value.assetGroup??'Configurar campos'):String(value);}
+function summary(value){return Array.isArray(value)?`${value.length} itens`:value&&typeof value==='object'?JSON.stringify(value.label??value.id??value.type??value.assetGroup??'Configurar campos'):String(value);}
 export function renderInspector(mission,path,{basic=false}={}){
  let value;try{value=at(mission,path);}catch{return '<p>Escolha um elemento existente.</p>';}
  let schema=schemaAt(mission,path),resolved=concrete(schema,value,path);

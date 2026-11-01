@@ -1,16 +1,18 @@
+import {validateEnergy} from './energy.js';
 import {validateLoopOptions,loopPermissions} from './loops.js';
 import {validateSwitchOptions,switchPermissions} from './switches.js';
 import {validateProperties} from './properties.js';
 import {assertJsonData,ExecutionFault,actionFailure} from './data.js';
 import {validateMemory,initialMemory} from './memory.js';
-import {explicitTypes,validateCommandOptions,validateInteractions,executeExplicit} from './commands.js';
+import {explicitTypes,validateCommand,validateCommandOptions,validateInteractions,executeExplicit} from './commands.js';
 import {validateConditionOptions} from './condition-options.js';
 import {directions, frontCell, passage, victory, validVariable, scalar, record, validateEffects, validateCondition, validatePassageCondition, applyEffects, barrierChanges} from './rules.js';
 export {directions} from './rules.js';
-export const terminal = state => ['won', 'collision', 'finished', 'limit', 'actionFailed', 'stalled', 'stopped'].includes(state.status);
+export const terminal = state => ['won', 'collision', 'finished', 'limit', 'actionFailed', 'stalled', 'stopped', 'energyDepleted'].includes(state.status);
 export function validateMission(m, {checkVariants=true} = {}) {
   assertJsonData(m, 'mission');
   validateMemory(m.robotMemory);
+  validateEnergy(m.energy);
   if (!m?.grid || !Array.isArray(m.grid.obstacles)) throw new Error('Grade inválida');
   const inside = p => p && Number.isInteger(p.row) && Number.isInteger(p.col) && p.row >= 0 && p.col >= 0 && p.row < m.grid.height && p.col < m.grid.width;
   if (!Number.isInteger(m.grid.width) || !Number.isInteger(m.grid.height) || m.grid.width < 1 || m.grid.height < 1 || !inside(m.start) || !inside(m.goal) || !directions.includes(m.start.direction)) throw new Error('Missão inválida');
@@ -70,11 +72,12 @@ export function validateMission(m, {checkVariants=true} = {}) {
 export function initialState(m) {
   validateMission(m);
   const state = {...m.start, variables: {...m.initialVariables}, memory:initialMemory(m.robotMemory), usedInteractions:[], consumedIds:[], collectedIds: [], collectedCount: 0, status: 'ready', instructionPointer: 0, events: [], lastEvent: 'ready'};
+  if(m.energy)Object.assign(state,{energyInitial:m.energy.initial,energyRemaining:m.energy.initial,energySpent:0});
   try { if (victory(m, state)) state.status = 'won'; }
   catch(error) { if(error instanceof ExecutionFault)return actionFailure(state,error.reason,error.details);throw error; }
   return state;
 }
-export function applyCommand(m, state, command) {
+function applyPrimitive(m, state, command) {
   if (terminal(state)) return state;
   let next = {...state, memory:state.memory??initialMemory(m.robotMemory), usedInteractions:state.usedInteractions??[], consumedIds:state.consumedIds??[], variables: {...state.variables}, collectedIds: [...state.collectedIds], events: [], status: 'running', instructionPointer: state.instructionPointer + 1};
   const i = directions.indexOf(state.direction);
@@ -121,9 +124,20 @@ export function applyCommand(m, state, command) {
   return next;
 }
 
+export function applyCommand(m,state,command) {
+  if(terminal(state))return state;
+  if(!m.energy)return applyPrimitive(m,state,command);
+  if(explicitTypes.includes(command.type))validateCommand(command,m);
+  const cost=m.energy.costs[command.type];
+  if(state.energyRemaining<cost)return {...state,status:'energyDepleted',reason:'energyDepleted',lastEvent:'energyDepleted',instructionPointer:state.instructionPointer+1,events:[{type:'energyDepleted',action:command.type,required:cost,remaining:state.energyRemaining}]};
+  const next=applyPrimitive(m,state,command);
+  if(['collision','actionFailed'].includes(next.status))return next;
+  return {...next,energyRemaining:state.energyRemaining-cost,energySpent:state.energySpent+cost,events:[...next.events,{type:'energyConsumed',action:command.type,cost,remaining:state.energyRemaining-cost}]};
+}
+
 export function classifyResult(state) {
   if(state.status==='won')return 'success';
-  if(['collision','actionFailed','limit','stalled'].includes(state.status))return 'failure';
+  if(['collision','actionFailed','limit','stalled','energyDepleted'].includes(state.status))return 'failure';
   if(state.status==='stopped')return 'interrupted';
   if(state.status==='finished')return 'incomplete';
   if(['ready','running'].includes(state.status))return 'inProgress';

@@ -3,6 +3,7 @@
 Atue como gerente de produto, designer de experiência infantil e arquiteto técnico do projeto "Missões do Robô — Pequenos Programadores". O objetivo é criar um jogo web em HTML/CSS/JavaScript para ensinar pensamento computacional a Guilherme (6 anos) por missões progressivas com robô em grade.
 
 Prioridades:
+- V0.9.1: seis entregáveis em docs/V091.md. Energia é opcional e não exige ótimo; só a Missão 20 pode mudar. Draft não é missão executável. UI técnica permanece completa; achados novos vão para V0.9.2.
 - V0.9 entrega Studio local separado para adultos, com autoria estruturada/variantes/teste/JSON. Preservar 01–25 e arte. V2.0 escolar é somente planejamento em docs, sem backend ou perfis.
 - V0.8 autoriza arte vetorial original e temas, mantendo jogabilidade/motor/definições 01–25. Consulte docs/V08.md; revisar galeria humana antes de aprovar estética. Sem sprites externos ou novas mecânicas.
 1. Preservar o princípio: a criança monta o algoritmo **antes** de executar.

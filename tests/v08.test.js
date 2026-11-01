@@ -35,7 +35,7 @@ for(const payload of [
 test('SVG rejeita XML malformado, dimensões vazias e escapes',()=>{
  for(const svg of ['<svg/>','<svg viewBox="0 0 64 64"><g></svg>','<?xml version="1.0"?><svg/>','<svg>&#x3c;script</svg>'])assert.throws(()=>validateSvg(svg));
 });
-for(const [id,skin,theme,goal] of [[1,'mk1','grass','star'],[7,'mk2','trail','star'],[13,'mk3','yard','beacon'],[20,'mk4','factory','landing-pad'],[23,'mk4','parking','landing-pad']])test(`capítulo visual ${id}: quatro direções, tema e meta`,()=>{
+for(const [id,skin,theme,goal] of [[1,'mk1','grass','star'],[7,'mk2','trail','star'],[13,'mk3','yard','beacon'],[20,'mk4','factory','star'],[23,'mk4','parking','landing-pad']])test(`capítulo visual ${id}: quatro direções, tema e meta`,()=>{
  const m=mission(id);for(const [direction,file] of [['N','n'],['L','e'],['S','s'],['O','w']]){const s=freeze({...initialState(m),direction}),scene=resolveScene(m,s);assert.equal(scene.robot.id,`robots/${skin}/${file}`);assert.equal(scene.environment.theme,theme);assert.equal(scene.goal.id,`goals/${goal}`);}
 });
 test('aparência, capítulo e piso são independentes, com defaults e whitelist',()=>{
@@ -63,8 +63,8 @@ test('cores por propriedades, chaves simultâneas e inspeção preservada nas de
 });
 test('sobrecarga exige motivo físico, sem alterar capacidade nem posição',()=>{
  const m=missionVariants(mission(20))[1],s=freeze(initialState(m)),scene=resolveScene(m,s);assert.equal(scene.barriers.find(b=>b.id==='ponte-a').asset.id,'reactive/bridge_overload');assert.equal(scene.barriers.find(b=>b.id==='ponte-b').asset.id,'reactive/bridge_open');
- const failed=applyCommand(m,s,{type:'move'});assert.equal(failed.reason,'capacityExceeded');assert.equal(failed.row,s.row);assert.equal(m.barriers[0].properties.capacidade,1);assert.match(renderSceneBoard(m,failed),/failure-target/);
- const fx=createVisualEffects().next(m,failed);assert(fx.effects.some(e=>e.asset==='overload-warning'&&e.row===3&&e.col===2));
+ let approach=s;for(const type of ['move','turnLeft','move','turnRight'])approach=applyCommand(m,approach,{type});const failed=applyCommand(m,approach,{type:'move'});assert.equal(failed.reason,'capacityExceeded');assert.equal(failed.row,approach.row);assert.equal(m.barriers[0].properties.capacidade,1);assert.match(renderSceneBoard(m,failed),/failure-target/);
+ const fx=createVisualEffects().next(m,failed);assert(fx.effects.some(e=>e.asset==='overload-warning'&&e.row===1&&e.col===2));
 });
 test('fallbacks conservadores não usam URLs de entrada nem interpretam efeitos',()=>{
  const m=structuredClone(mission(18));m.presentation.visual={entities:{controle:{assetGroup:'unknown',state:{source:'eval',expression:'alert(1)'}}},barrierDefaults:{assetGroup:'unknown'}};
@@ -109,10 +109,10 @@ test('SVGs publicados são somente catálogo autorizado; artefato rejeita injeç
   const source=join(temp,'src/ui.js'),js=await readFile(source,'utf8');await writeFile(source,js+"\nimport '/outside.js';");assert.throws(validate);
  }finally{await rm(temp,{recursive:true,force:true});}
 });
-test('contratos V0.7.1: definições e traces completos das 25 missões permanecem idênticos',async()=>{
+test('contratos legados: 24 missões intactas e baseline explícita V0.9.1 da Missão 20',async()=>{
  const {createHash}=await import('node:crypto'),baseline=JSON.parse(await text('tests/fixtures/v071-domain-baseline.json'));
- const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');assert.equal(digest(missions),baseline.missions);
- for(const expected of baseline.variants){const m=mission(expected.missionId),scenario=missionVariants(m).find(s=>s.variantId===expected.variantId),states=simulate(freeze(scenario),freeze(structuredClone(m.solution)));assert.equal(digest(states),expected.trace);assert.equal(states.at(-1).instructionPointer,expected.instructions);assert.equal(states.at(-1).status,expected.status);}
+ const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');assert.equal(digest(missions),baseline.v091Missions??baseline.missions);for(const m of missions.filter(m=>m.id!==20))assert.equal(digest(m),baseline.missionDigests[m.id]);
+ for(const original of baseline.variants){const expected=original.v091??original,m=mission(expected.missionId),scenario=missionVariants(m).find(s=>s.variantId===expected.variantId),states=simulate(freeze(scenario),freeze(structuredClone(m.solution)));assert.equal(digest(states),expected.trace);assert.equal(states.at(-1).instructionPointer,expected.instructions);assert.equal(states.at(-1).status,expected.status);}
 });
 test('seletores visuais malformados usam fallback sem ler código ou URLs',()=>{
  const m=structuredClone(mission(18));m.presentation.visual={entities:{controle:{assetGroup:'button',state:{source:'variable',name:'aberta',values:[null,{},'on',{value:false,state:'file://evil'}]}}}};

@@ -54,6 +54,14 @@ Biblioteca de 85 SVGs originais, MK1–MK4, cinco temas independentes, resolvedo
 
 Editor visual separado em `/algo-kids/studio/`: mapas, entidades, barreiras/sensores, variáveis/memória, efeitos/interações, condições, comandos e estruturas autorizadas, variantes por substituição superficial e aparência V0.8. Solução de referência e playtest pelo mesmo motor, importação/exportação JSON puro e rascunho local. Sem login/backend/escolas ou publicação automática. Contratos e limites em [V09.md](V09.md) e [mission-json/v1](V09-JSON-CONTRACT.md).
 
+## V0.9.1 — Portabilidade e ajustes locais
+
+Rascunhos incompletos portáteis, missão importada no jogo, bifurcação obrigatória da 20, energia opcional sem resolvedor de ótimo e ações/menus claros no Studio. Parser compartilhado, execução atômica e regressão das demais missões. Ver [V091.md](V091.md).
+
+## V0.9.2 — Próxima revisão de usabilidade (pendente)
+
+Observar o Studio no aparelho real, revisar densidade de formulários, navegação/foco em árvores, mensagens/dependências, seleção de objetos coexistentes e limitações de downloads móveis. São achados para validação posterior, não funcionalidades antecipadas na V0.9.1. Sem mudança de escopo para backend ou escola.
+
 ## V1.0 — Produto educativo local consolidado (planejamento)
 
 Organizar currículo definitivo em capítulos, progressão clara, revisão acompanhada com crianças, ajuda contextual, acessibilidade e UX mobile. Consolidar experiência do jogador e progresso local sem dados pessoais. O Studio permanece separado; demos técnicas não viram currículo sem revisão. Preparar convenções de versão/compatibilidade para conteúdo futuro, sem backend institucional nesta fase.

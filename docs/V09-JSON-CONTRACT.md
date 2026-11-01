@@ -6,7 +6,7 @@ O arquivo padrão é **o objeto de missão puro**, compatível com validateMissi
 
 - Padrão de exportação: `{id,title,instructions,hint?,grid,start,goal,solution,...}`.
 - Envelope alternativo de entrada: `{"format":"mission-json","version":1,"mission":{...}}`, com somente essas três chaves. Versões desconhecidas e envelopes misturados com campos de missão são rejeitados.
-- Rascunho local: envelope **diferente**, interno ao localStorage, `algo-kids-draft` versão 1. Não é exportado como missão e pode conter dados incompletos. Esta versão não oferece download de backup inválido *.draft.json.
+- Rascunho local: envelope **diferente**, interno ao localStorage, `algo-kids-draft` versão 1. Não é exportado como missão e pode conter dados incompletos. Na V0.9.1, o mesmo envelope exato pode ser importado/exportado como `.akdraft.json`, independentemente de validade de runtime; não é aceito pelo importador do jogo.
 
 Arquivo completo de referência: [V09-example.json](V09-example.json). Os testes o reproduzem a partir dos handlers reais dos formulários e comparam o documento integralmente.
 
@@ -14,7 +14,7 @@ Arquivo completo de referência: [V09-example.json](V09-example.json). Os testes
 
 Identidade/texto: id (string ou número, sem substituição do catálogo), title, instructions, hint opcional, demo opcional. Objetos legados válidos podem omitir instructions; o Studio preserva a ausência e oferece adicionar o campo, sem migração silenciosa.
 
-Mundo: grid completo (width/height/obstacles/cells), start (row/col/direction), goal, initialVariables, robotMemory, entities, barriers, winCondition.
+Mundo: grid completo (width/height/obstacles/cells), start (row/col/direction), goal, initialVariables, robotMemory, entities, barriers, winCondition e `energy` opcional (V0.9.1: initial e os seis costs completos).
 
 Autorização e programa: commandOptions, conditionOptions, switchOptions, loopOptions, solution. Os contratos dos nós, guardas, operandos, limites e autorização são os do motor existente; não há AST nova.
 
@@ -57,3 +57,7 @@ O limite de 1 MiB também é aplicado à exportação formatada para garantir re
 Exemplos V04/V05/V06/V07 e missões 01–25 continuam objetos válidos. Casos com memória, inspeção, interações, restrições físicas, if/switch/for/while e variantes são reimportados e executados nos testes, sem migração. Metadados visuais antigos glyph/labels permanecem preservados; aparências por ID do catálogo continuam disponíveis. Abrir um modelo pelo Studio gera ID de cópia e materializa sua aparência V0.8 para ela permanecer portátil.
 
 Fluxo comprovado: criar por formulário → validar → testar → exportar → importar em outro draft → validar/testar novamente. Comparação estrutural, tipos, permissões, cenário e AST são preservados. Mudança futura de schema precisa de versão externa explícita e migração documentada; não reinterpretar silenciosamente documentos v1.
+
+## Extensão V0.9.1
+
+Ver [V091.md](V091.md): energia é campo opcional de missão, sem alterar a ausência histórica. Cada variante substitui energy inteiro. Exportação pura continua válida e compartilhada com o importador do jogo; draft usa envelope próprio e não pode contornar a validação. Não inclui saldo runtime ou resultados no JSON.

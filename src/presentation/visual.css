@@ -54,3 +54,8 @@
 @keyframes ak-fx-out{0%{opacity:0;transform:scale(.7)}25%{opacity:1}100%{opacity:0;transform:scale(1.1)}}
 @media(max-width:420px){.ak-result{padding:11px;gap:8px}.ak-result .ak-sprite{width:40px;height:40px}:is(#board,.ak-scene) .ak-object-label small{font-size:7px}:is(#board,.ak-scene) .cell-feature small{font-size:7px}}
 @media(prefers-reduced-motion:reduce){:is(#board,.ak-scene) .ak-robot,:is(#board,.ak-scene) .ak-goal,:is(#board,.ak-scene) .ak-goal-ring,.ak-fx{animation:none;transition:none;transform:none}.ak-fx{opacity:.65}}
+.energy-indicator{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:10px 12px;background:#edf4e7;border:1px solid #b8d1aa;border-radius:10px;margin:8px 0;color:#305f49}.energy-indicator img{flex:none}.energy-indicator meter{width:100%;height:18px}.ak-result-energyDepleted{background:#f6f1dd;border-color:#b9b88a;color:#615d35}
+.mission-import{font-size:12px;margin:12px 0;padding:8px 12px;border:1px solid #d6dfd1;border-radius:10px}.mission-import summary{cursor:pointer;min-height:44px;display:list-item;padding:10px 0}.mission-import input{display:block;min-height:44px;max-width:100%;margin-top:8px}#back-missions{min-height:44px;padding:10px 14px;border-radius:8px;margin-bottom:12px}
+/* Estilo declarativo da bifurcação: mesmas caixas vetoriais, tons azuis e corredores claros. */
+:is(#board,.ak-scene) .ak-blueprint{background:#fff;border:1px solid #e1e7e8}
+.ak-blueprint .ak-obstacle .ak-sprite{filter:grayscale(1) sepia(.8) saturate(3) hue-rotate(155deg)}

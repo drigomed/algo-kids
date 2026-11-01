@@ -210,14 +210,28 @@
       "variantId": "leve",
       "status": "won",
       "instructions": 6,
-      "trace": "ed421b19fc6d8d0a126347e12345bd3b606b59be7264215e02f523409c3d7f3a"
+      "trace": "ed421b19fc6d8d0a126347e12345bd3b606b59be7264215e02f523409c3d7f3a",
+      "v091": {
+        "missionId": 20,
+        "variantId": "leve",
+        "status": "won",
+        "instructions": 11,
+        "trace": "69145d9fe460581377fedb074357d05c262198a791faf5d5c170431d799a08aa"
+      }
     },
     {
       "missionId": 20,
       "variantId": "maior",
       "status": "won",
       "instructions": 7,
-      "trace": "4d8bb4a3bd9d015f65611183a347d4979d96a05302cd5d019ad7ff0eb26acb03"
+      "trace": "4d8bb4a3bd9d015f65611183a347d4979d96a05302cd5d019ad7ff0eb26acb03",
+      "v091": {
+        "missionId": 20,
+        "variantId": "maior",
+        "status": "won",
+        "instructions": 11,
+        "trace": "05542aa17956c995342025517565fd9012486381373693dc8e59c12bac3d8778"
+      }
     },
     {
       "missionId": 21,
@@ -303,5 +317,33 @@
       "instructions": 9,
       "trace": "4c0aedc219176c3a3d92ef2b05037033db8815dc520f30afa2936e94c7971d79"
     }
-  ]
+  ],
+  "missionDigests": {
+    "1": "c326d37aa487f9eeec4d35bbb5f54e0c9594121fc8554143d934864f7b01566a",
+    "2": "48bc4b349c206ab2f4c3b7576aa6980c8459e248d76b1c27a93e19183dc71dcc",
+    "3": "962496280c1cb37e16b326b95e2ccd56d2686da6f3890c2be0ecfb88d886ae65",
+    "4": "41fc040dd5218fca5f95f7adbd006c575042caee41c5ff145d8a2e3d4c6240c8",
+    "5": "4ccb2cf25e7832e9d283393b821b805fbfc50d22ee32f08cd5a81b46e3db3fbb",
+    "6": "f818301fae8a2cd23a187cb1e124f16fdb3b6ad76f92416c9e80e86ca2b21cf3",
+    "7": "19ef0be1312b3f82bcfd36247f8947fa5e09f3ff01392ee50e1866e1b205b424",
+    "8": "aca89b9287ae9942114191386e3693713fdce28a9fa47d14a591820eae7c0b55",
+    "9": "8501965776439f2d5b9cab5b7428b8cdfb6757090bfa74d46fedd5a513cadc7b",
+    "10": "b90df85b7b9150edd23065e669befe276b5911b90d68430f7c8d833401eb7914",
+    "11": "26bd0fc1be4ecf9d738d119c8851839aec487b428dfb7a353cb15d59d75bec84",
+    "12": "bd23f034da492611104a935a259942fc0c209d68ef735a6b9285f91b83ed94de",
+    "13": "d4973b18b0324ccbe2093b4cda04bdb4d3cee948e98d05cb0dd00acdf50559bb",
+    "14": "18a89db4c16167ccf6174cf96df3fcae85eb1cb800649c02dda0024db9f0d5d4",
+    "15": "aaff398fc7fc68ce055eefdf6d10d26c7d534f1d1ec2d40aa724c5ad69385f51",
+    "16": "3868e118e00956d769936af77a6393404031d499929aa70a507c99996aebb95e",
+    "17": "4f4a3edef11adf7536bba204faf9183f6f09822f412060c0c3ffb7ddec6bf911",
+    "18": "16e3c2ac6f0ad18aac22958e29e5e504add2c6fd12b1340d1d36a28e57d15c3e",
+    "19": "813603ef43ccf8fe6e50dd0c6bf979e83b52dc329fc692edc8231edaa838c489",
+    "20": "57bbb2c95849488067a82a305d4fe5aa4b1481d81cf23839dc47f02681481df7",
+    "21": "7430d7870169d41f98787a511e46acf3d7370bb2f4b92af86e656bc9c4bdecc5",
+    "22": "42830def6192aa43326ca1671a903804907dde892462f0f3efa3e35c95875c37",
+    "23": "1eac9a551869c642bf44e3789183a263228ddaeae850ceb5fe839747c9691440",
+    "24": "e7f0211e7e2bfe21e345bbceb4b7df18ea71fbae61d8966f9c6e551e78cad40b",
+    "25": "c511ee3c7a6dce320bb9bbac36e55a0dc1cd6bbfac5315d51a998516054b47e4"
+  },
+  "v091Missions": "87ee02bc874c9de77afaae34f6c45b446911fecd186057858d8f057899a099f3"
 }

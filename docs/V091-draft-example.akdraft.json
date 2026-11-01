@@ -1,0 +1,54 @@
+{
+  "format": "algo-kids-draft",
+  "mission": {
+    "energy": {
+      "initial": "preencher"
+    },
+    "entities": [
+      {
+        "col": 1,
+        "collectible": true,
+        "id": "objeto-em-edicao",
+        "onEnter": [],
+        "row": 4
+      }
+    ],
+    "grid": {
+      "height": 5,
+      "obstacles": [],
+      "width": 5
+    },
+    "hint": "Observe a direção do robô.",
+    "id": "studio-rascunho-parcial",
+    "initialVariables": {
+      "nao": false,
+      "vazio": "",
+      "zero": 0
+    },
+    "instructions": "Chegue até a meta.",
+    "presentation": {
+      "visual": {
+        "chapter": "navigator",
+        "environmentTheme": "grass",
+        "goalSkin": "star",
+        "obstacleSkin": "rock",
+        "robotSkin": "mk1"
+      }
+    },
+    "robotMemory": {
+      "observado": {
+        "initial": null,
+        "type": "number"
+      }
+    },
+    "solution": [],
+    "start": {
+      "col": 0,
+      "direction": "L",
+      "row": 4
+    },
+    "title": "Missão em construção",
+    "variants": []
+  },
+  "version": 1
+}

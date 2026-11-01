@@ -19,7 +19,8 @@ const cmp=(left,operator,right)=>({type:'numberCompare',left,operator,right});
 const seq=text=>text.split('').map(c=>({type:{A:'move',D:'turnRight',E:'turnLeft'}[c]}));
 const move={type:'move'};
 const end=(m,p)=>simulate(m,p).at(-1);
-const m20=()=>structuredClone(missionVariants(missions.find(m=>m.id===20))[1]);
+// Fixture física sintética: os testes unitários de capacidade não dependem do mapa pedagógico 20.
+const m20=()=>{const m=structuredClone(missionVariants(missions.find(m=>m.id===20))[1]);m.start={row:4,col:2,direction:'N'};m.goal={row:2,col:4};m.grid={width:5,height:5,obstacles:[{row:4,col:1}]};m.barriers[0].row=3;m.barriers[1]={...m.barriers[1],row:4,col:4,properties:{capacidade:3},passableWhen:cmp(world('pacotes'),'lte',own('capacidade')),failureCode:'capacityExceeded'};m.solution=[{type:'if',condition:m.solution[1].condition,then:seq('DAAEAA'),else:seq('AADAA')}];return m;};
 const m21=()=>structuredClone(missionVariants(missions.find(m=>m.id===21))[0]);
 function freeze(value){if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
 function finish(s){let guard=0;while(canStep(s)){assert(++guard<2000);s=stepSession(s);}return s;}
@@ -146,7 +147,7 @@ for(const m of missions.filter(m=>m.id>=20&&m.id<=23))test(`V0.5 demo ${m.id}: m
   const program=freeze(structuredClone(m.solution)),input=freeze(structuredClone(scenario));let e=freeze(createExecution(input,program));const states=[e.state];while(!terminal(e.state)){e=freeze(stepExecution(input,program,e));states.push(e.state);}assert.deepEqual(states,simulate(input,program));assert.equal(e.state.status,'won');
  }
  let session=finish(createSession(m,m.solution));assert.equal(session.completed,false);session=finish(startVariantTests(session));assert.equal(session.completed,true);
- if(m.id===20){const trained=finish(createSession(m,seq('AADAA')));assert.equal(trained.execution.state.status,'won');const failed=finish(startVariantTests(trained));assert.equal(failed.execution.state.status,'collision');assert.equal(failed.completed,false);assert.deepEqual(failed.passed,[0]);}
+ if(m.id===20){const trained=finish(createSession(m,seq('AEADAADAEA')));assert.equal(trained.execution.state.status,'won');const failed=finish(startVariantTests(trained));assert.equal(failed.execution.state.status,'collision');assert.equal(failed.completed,false);assert.deepEqual(failed.passed,[0]);}
 });
 test('inspeção de barreira sem seletor usa apenas o alvo geométrico e snapshot',()=>{
  const m=m20(),node=configureCommand(m,'observarPonteA');delete node.source.barrierId;m.commandOptions.push({id:'generic',label:'Observar a passagem à frente',node});

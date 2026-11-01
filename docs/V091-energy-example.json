@@ -1,0 +1,83 @@
+{
+  "energy": {
+    "costs": {
+      "inspect": 0,
+      "interact": 1,
+      "move": 2,
+      "setMemory": 0,
+      "turnLeft": 1,
+      "turnRight": 1
+    },
+    "initial": 10
+  },
+  "goal": {
+    "col": 3,
+    "row": 4
+  },
+  "grid": {
+    "height": 5,
+    "obstacles": [],
+    "width": 5
+  },
+  "hint": "Observe a direção do robô.",
+  "id": "studio-energia",
+  "instructions": "Chegue à estrela dentro da bateria disponível. Não é preciso encontrar um caminho mínimo.",
+  "presentation": {
+    "visual": {
+      "chapter": "navigator",
+      "environmentTheme": "grass",
+      "goalSkin": "star",
+      "obstacleSkin": "rock",
+      "robotSkin": "mk1"
+    }
+  },
+  "solution": [
+    {
+      "type": "move"
+    },
+    {
+      "type": "move"
+    },
+    {
+      "type": "move"
+    }
+  ],
+  "start": {
+    "col": 0,
+    "direction": "L",
+    "row": 4
+  },
+  "title": "Energia para explorar",
+  "variants": [
+    {
+      "energy": {
+        "costs": {
+          "inspect": 0,
+          "interact": 1,
+          "move": 2,
+          "setMemory": 0,
+          "turnLeft": 1,
+          "turnRight": 1
+        },
+        "initial": 6
+      },
+      "id": "exata",
+      "label": "Bateria exata"
+    },
+    {
+      "energy": {
+        "costs": {
+          "inspect": 0,
+          "interact": 1,
+          "move": 2,
+          "setMemory": 0,
+          "turnLeft": 1,
+          "turnRight": 1
+        },
+        "initial": 10
+      },
+      "id": "folga",
+      "label": "Bateria com folga"
+    }
+  ]
+}

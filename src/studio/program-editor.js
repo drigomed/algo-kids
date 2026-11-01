@@ -13,6 +13,6 @@ export function addSolution(mission,path,kind,id){
  else {operation.nodeType=kind;if(kind==='if')operation.condition=defaultCondition(mission);}
  return changeSolution(mission,operation);
 }
-export function programView(mission,target,execution){return renderProgram(mission.solution??[],mission,execution??createExecution(mission,mission.solution??[]),target,false);}
+export function programView(mission,target,execution){return renderProgram(mission.solution??[],{...mission,editorActions:true,editorDecisions:true},execution??createExecution(mission,mission.solution??[]),target,false);}
 
 export function removeSolutionRoot(mission,index){return editProgram(mission.solution??[],{type:'remove',path:[index]});}
