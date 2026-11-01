@@ -173,3 +173,16 @@
 .row-controls button,.help,#close-help,#clear{min-width:44px;min-height:44px}
 .branch-heading strong,.local-destination,.switch-source{min-width:0;overflow-wrap:anywhere}.branch-heading strong{flex:1}.command>span:not(.command-number){flex:1 1 76px;overflow-wrap:anywhere}
 .extra-commands [data-switch-option],.branch-tools [data-inline-switch]{background:#f7ecd5;border-color:#d8bf8e;color:#806330}
+
+/* V0.7: estilos opt-in; não alteram os blocos ou tabuleiros anteriores. */
+.loop-block{list-style:none;min-width:0;border:2px solid #bdc6dc;border-radius:18px;background:#f5f3fc;padding:12px;overflow-wrap:anywhere}
+.loop-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#49446d}
+.loop-choice{display:grid;gap:6px;margin:12px 0;font-size:.9rem}
+.loop-choice select{width:100%;min-width:0;min-height:44px;white-space:normal;border:1px solid #c9c4d8;border-radius:10px;background:white;padding:8px;font:inherit}
+.loop-block .row-controls button,.loop-block .select-branch,.loop-palette-button{min-width:44px;min-height:44px}
+.loop-block.active{outline:3px solid #8c7cb5;outline-offset:2px}
+.loop-body{border-left-color:#a394c2}
+.loop-progress,.loop-check-result,.loop-trace{padding:10px;border-radius:10px;background:#ebe5f4;color:#49446d;overflow-wrap:anywhere}
+.loop-trace{margin:12px 0}
+.loop-palette-button span{min-width:0;overflow-wrap:anywhere;white-space:normal}
+@media(prefers-reduced-motion:reduce){.loop-block,.loop-body,.loop-trace{animation:none;transition:none}}

@@ -11,7 +11,7 @@ export function validatePath(path) {
     if(cursor===path.length)return path;
     const key=path[cursor++];
     if(key==='cases') {if(!index(path[cursor++])||path[cursor++]!=='body')throw new Error('Caminho: caso inválido');}
-    else if(!['then','else','default'].includes(key))throw new Error('Caminho: ramo inválido');
+    else if(!['then','else','default','body'].includes(key))throw new Error('Caminho: ramo inválido');
   }
   return path;
 }
@@ -29,6 +29,7 @@ export function sequenceInfo(program,path) {
     const i=path[cursor++],node=list[i],key=path[cursor++];
     if(!index(i)||!node)throw new Error('Bloco não encontrado');
     if(node.type==='if'&&['then','else'].includes(key)) {list=node[key];trail.push({node,index:i,key});}
+    else if(['for','while'].includes(node.type)&&key==='body') {list=node.body;trail.push({node,index:i,key});}
     else if(node.type==='switch'&&key==='default') {list=node.default;trail.push({node,index:i,key});}
     else if(node.type==='switch'&&key==='cases') {
       const caseIndex=path[cursor++],body=path[cursor++];
@@ -49,6 +50,7 @@ export function nodeAt(program,path) {
 }
 export function branchLists(node) {
   if(node.type==='if')return [node.then,node.else];
+  if(['for','while'].includes(node.type))return [node.body];
   if(node.type==='switch') {
     if(!Array.isArray(node.cases)||node.cases.length<2||node.cases.length>8)throw new Error('ESCOLHA: limite de casos');
     return [...node.cases.map(item=>item.body),node.default];

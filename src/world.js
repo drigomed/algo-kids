@@ -1,3 +1,4 @@
+import {validateLoopOptions,loopPermissions} from './loops.js';
 import {validateSwitchOptions,switchPermissions} from './switches.js';
 import {validateProperties} from './properties.js';
 import {assertJsonData,ExecutionFault,actionFailure} from './data.js';
@@ -51,6 +52,7 @@ export function validateMission(m, {checkVariants=true} = {}) {
   }
   validateCommandOptions(m);
   validateSwitchOptions(m);
+  validateLoopOptions(m);
   validateConditionOptions(m);
   if (m.winCondition) validateCondition(m.winCondition, variables, 0, m.robotMemory??{});
   if(checkVariants && m.variants!==undefined) {
@@ -59,6 +61,7 @@ export function validateMission(m, {checkVariants=true} = {}) {
     for(const variant of variants) {
       if(!record(variant)||typeof variant.id!=='string'||!variant.id||ids.has(variant.id)||Object.hasOwn(variant,'variants'))throw new Error('variants: ID inválido ou variantes aninhadas');
       ids.add(variant.id);const resolved={...base,...variant,id:m.id};validateMission(resolved,{checkVariants:false});
+      if(loopPermissions(resolved)!==loopPermissions(base))throw new Error('Variantes devem autorizar as mesmas repetições');
       if(switchPermissions(resolved)!==switchPermissions(base))throw new Error('Variantes devem autorizar a mesma ESCOLHA');
     }
   }

@@ -1,3 +1,4 @@
+import {renderLoop} from './loop-view.js';
 import {renderBranch} from './branch-view.js';
 import {renderSwitch} from './switch-view.js';
 import {encodePath,decodePath} from './tree.js';
@@ -18,6 +19,7 @@ export function renderProgram(program, mission, execution, target, disabled, bas
   return program.map((node, index) => {
     const path = [...basePath, index], key = encodePath(path), active = same(path, execution.activePath);
     const controls = `<div class="row-controls"><button data-edit="up" data-path="${key}" aria-label="Mover bloco ${index + 1} para cima" ${disabled || index === 0 ? 'disabled' : ''}>↑</button><button data-edit="down" data-path="${key}" aria-label="Mover bloco ${index + 1} para baixo" ${disabled || index === program.length - 1 ? 'disabled' : ''}>↓</button><button data-edit="remove" data-path="${key}" aria-label="Remover bloco ${index + 1}" ${disabled ? 'disabled' : ''}>×</button></div>`;
+    if(['for','while'].includes(node.type))return renderLoop({mission,node,path,key,controls,execution,target,disabled,branch:renderBranch,render:(list,path)=>renderProgram(list,mission,execution,target,disabled,path)});
     if(node.type==='switch')return renderSwitch({mission,node,path,key,controls,execution,target,disabled,render:(list,path)=>renderProgram(list,mission,execution,target,disabled,path)});
     if(explicitTypes.includes(node.type))return renderExplicitCommand(mission,node,key,controls,active,disabled);
     if (node.type !== 'if') return `<li class="command ${node.type} ${active ? 'active' : ''}" ${active ? 'aria-current="step"' : ''}><span class="command-number">${index + 1}</span><b>${icons[node.type]}</b><span>${labels[node.type]}</span>${controls}</li>`;

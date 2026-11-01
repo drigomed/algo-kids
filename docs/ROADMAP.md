@@ -22,14 +22,6 @@ Sensores ambientais à frente, igualdade estrita de estado, passagens dinâmicas
 
 Prioridade no mecanismo: inspect, setMemory, memoryEquals e interact com autorização declarativa, memória tipada independente do mundo, transações e melhorias do editor móvel. Preserva 01–16; os cenários 17–19 são demonstrações de contratos, não expansão do conteúdo. Consulte [V04.md](V04.md). Sem switch, for ou while.
 
-## Futuro — Repetir N vezes (`for`)
-
-**Mecânica:** bloco `Repita N vezes { ... }` com N pequeno e visualização do contador.
-
-**Missão exemplo:** 'A ponte tem sete casas. Você só dispõe de quatro espaços de comandos — invente um jeito de atravessar.' A restrição no tamanho do programa justifica a repetição.
-
-**Avaliação:** distinguir repetição do programa de velocidade de animação; permitir repetição de um bloco de comandos, não só de uma ação.
-
 ## Decisões — contempladas na V0.2
 
 **Mecânica:** sensor booleano `caminhoLivreÀFrente`; blocos `Se... Senão...`. Criar cenários variáveis com posições de obstáculos distintas. Mesma solução deve passar nos cenários definidos.
@@ -46,13 +38,9 @@ Comparações numéricas genéricas, propriedades de entidades/barreiras, passag
 
 Switch/case/default nativo com seleção estrita, snapshot de memória/mundo, retorno ao pai e autorização declarativa. Editor compartilha controles de casos e SE, mantém caminho selecionado e protege contra descarte silencioso. Demos 22–23 validam três alternativas e padrão vencedor; 01–21 permanecem intactas. Contratos e aceite em [V06.md](V06.md). Sem repetição, mapas ou alteração de publicação.
 
-## Futuro — Enquanto (`while`)
+## V0.7 — REPITA e ENQUANTO nativos
 
-**Mecânica:** `Enquanto condição { ... }`, avaliação a cada iteração e limite global de passos para interromper loops sem progresso.
-
-**Missão exemplo:** 'Siga pelo corredor até o sensor detectar a bandeira; o comprimento muda em cada execução.' Não revelar comprimento antecipadamente.
-
-**Avaliação:** diferenciar claramente `while` de `for`; detectar loop infinito ou ausência de progresso e explicar ao jogador.
+For contado e while com reavaliação antes de cada iteração, frames de controle sem expansão, checks incluídos no orçamento e autorização opt-in por loopOptions. Editor compartilha o ramo CORPO, mantém seleção e protege comandos ao reconfigurar. Somente as fixtures 24–25 foram adicionadas; 01–23 permanecem preservadas, especialmente a experiência de locomoção 01–06. Contratos, exemplo e resultados em [V07.md](V07.md). Entrega em PR para revisão, sem merge/deploy manual; validação visual no celular permanece pendente. Sem detector de ausência de progresso, break/continue, iterador local, currículo novo ou mudanças de publicação.
 
 ## V1.0 — Missões combinadas
 
