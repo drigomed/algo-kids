@@ -1,3 +1,4 @@
+import {createLoop,validateLoopNode} from './loops.js';
 // Edição imutável das mesmas sequências usadas pela pilha de execução.
 import {assertJsonData} from './data.js';
 import {validateCommand,explicitTypes} from './commands.js';
@@ -16,9 +17,14 @@ export function editProgram(program,operation) {
   const next=structuredClone(program),path=operation.path??[];
   if(operation.type==='add') {
     const {list}=sequenceInfo(next,path);let node;
-    if(operation.nodeType==='switch')node=createSwitch(operation.mission??{},operation.switchOptionId);
+    if(['for','while'].includes(operation.nodeType)) {
+      node=createLoop(operation.mission??{},operation.loopOptionId);
+      if(node.type!==operation.nodeType)throw new Error('Tipo de repetição incompatível');
+    }
+    else if(operation.nodeType==='switch')node=createSwitch(operation.mission??{},operation.switchOptionId);
     else if(operation.node) {
-      if(operation.node.type==='switch')validateSwitchNode(operation.mission??{},operation.node);
+      if(['for','while'].includes(operation.node.type))validateLoopNode(operation.mission??{},operation.node);
+      else if(operation.node.type==='switch')validateSwitchNode(operation.mission??{},operation.node);
       else validateCommand(operation.node,operation.mission??{});
       node=structuredClone(operation.node);
     } else node=newNode(operation.nodeType,operation.condition);
@@ -33,6 +39,10 @@ export function editProgram(program,operation) {
     } else if(operation.type==='condition'&&node.type==='if')node.condition=structuredClone(operation.condition);
     else if(operation.type==='command'&&explicitTypes.includes(node.type)&&operation.node?.type===node.type) {
       validateCommand(operation.node,operation.mission??{});list[index]=structuredClone(operation.node);
+    } else if(operation.type==='loopOption'&&['for','while'].includes(node.type)) {
+      const replacement=createLoop(operation.mission??{},operation.loopOptionId);
+      if(replacement.type!==node.type)throw new Error('Para trocar o tipo, remova o bloco e adicione outro.');
+      list[index]={...replacement,body:node.body};
     } else if(operation.type==='switchOption'&&node.type==='switch') {
       const replacement=createSwitch(operation.mission??{},operation.switchOptionId);
       if(switchOption(operation.mission??{},node)?.id===operation.switchOptionId)return next;

@@ -1,3 +1,4 @@
+import {renderLoopPalette,loopMessage} from './loop-view.js';
 import {switchNarrative,selectorLabel} from './switch-copy.js';
 import {objectProperties} from './properties.js';
 import {escapeHtml as h} from './html.js';
@@ -9,7 +10,7 @@ export function renderCommandPalette(mission,disabled=false,inlinePath) {
  return (mission.commandOptions??[]).map(option=>`<button ${inlinePath===undefined?'data-command-option':'data-inline-option'}="${h(option.id)}" ${inlinePath===undefined?'':`data-target="${inlinePath}"`} ${disabled?'disabled':''}><b>${icons[option.node.type]}</b><span>${titles[option.node.type]}<small>${h(option.label)}</small></span></button>`).join('');
 }
 export function renderInlinePalette(mission,path) {
- return `<div class="branch-tools" aria-label="Adicionar neste ramo">${[['move','↑ Avançar'],['turnLeft','↶ Esquerda'],['turnRight','↷ Direita'],...(mission.conditionOptions||mission.id>=9?[['if','◇ SE / SENÃO']]:[])].map(([type,label])=>`<button data-inline-add="${type}" data-target="${path}">${label}</button>`).join('')}${renderCommandPalette(mission,false,path)}${renderSwitchPalette(mission,false,path)}</div>`;
+ return `<div class="branch-tools" aria-label="Adicionar neste ramo">${[['move','↑ Avançar'],['turnLeft','↶ Esquerda'],['turnRight','↷ Direita'],...(mission.conditionOptions||mission.id>=9?[['if','◇ SE / SENÃO']]:[])].map(([type,label])=>`<button data-inline-add="${type}" data-target="${path}">${label}</button>`).join('')}${renderCommandPalette(mission,false,path)}${renderSwitchPalette(mission,false,path)}${renderLoopPalette(mission,false,path)}</div>`;
 }
 export function renderExplicitCommand(mission,node,key,controls,active,disabled) {
  const option=commandOption(mission,node),lock=disabled?'disabled':'';
@@ -31,10 +32,12 @@ export function renderMemory(mission,state) {
 const reasons={memoryUnknown:'Antes, descubra e guarde essa informação. Use Inspecionar ou Guardar valor.',outOfReach:'Chegue perto e olhe para a casa certa antes de usar esse comando.',propertyMissing:'Não encontrei essa informação na casa à frente. Confira a posição e a direção.',typeMismatch:'Essa informação não combina com o campo de memória. Tente outra fonte.',targetMissing:'Não há um objeto para essa ação aqui.',incompatibleTarget:'Esse objeto não aceita a ação escolhida nesse alcance.',ambiguousTarget:'Há mais de um objeto para a mesma ação. Escolha uma posição com um único alvo.',preconditionFailed:'Ainda falta cumprir uma condição para usar esse objeto.',alreadyUsed:'Essa ação já foi usada nesta tentativa. Reinicie para experimentar de novo.',targetConsumed:'Esse objeto já foi retirado nesta tentativa.',effectFailed:'Essa ação não pôde terminar. O mundo foi preservado; vamos tentar outro caminho.'};
 export function failureMessage(mission,state) {
  const event=state.events.find(event=>event.type==='actionFailed');
+ if(event?.reason==='memoryUnknown'&&['for','while'].includes(event.action))return 'Ainda não sei essa informação; não consigo decidir se devo continuar.';
  return mission.presentation?.entities?.[event?.entityId]?.failureMessages?.[state.reason]??reasons[state.reason]??'Não foi possível realizar a ação. Confira o programa e tente de novo.';
 }
 export function commandMessages(mission,state) {
  return state.events.flatMap(event=>{
+  if(event.type==='loopCheck')return [loopMessage(mission,event)];
   if(event.type==='switch'){const n=switchNarrative(mission,event);return [`${n.source}. ${n.comparison}. ${n.branch}.`];}
   if(event.type==='inspected'&&event.success)return [`Observei ${sourceLabels(mission,{type:'inspect',source:event.source,into:event.variable}).target} na casa ${event.source.relativeTo==='here'?'atual':'à frente'} e guardei ${memoryValueLabel(mission,event.variable,event.value)} em ${memoryName(mission,event.variable)}.`];
   if(event.type==='memoryWritten'&&event.success)return [`Guardei ${memoryValueLabel(mission,event.variable,event.value)} em ${memoryName(mission,event.variable)}. O mundo continua igual.`];

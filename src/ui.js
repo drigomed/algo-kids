@@ -1,3 +1,4 @@
+import {renderLoopPalette,renderLoopTrace} from './loop-view.js';
 import {insertionLabel} from './branch-view.js';
 import {nodeAt,rebaseTarget} from './tree.js';
 import {switchOption,switchHasCommands} from './switches.js';
@@ -12,7 +13,7 @@ import {renderProgram, renderBoard, encodePath, decodePath, escapeHtml, worldInd
 
 const $ = selector => document.querySelector(selector);
 let mission = missions[0], program = [], target = [], session = createSession(mission, program);
-let timer = null, running = false, editorMessage = '', lastTraceKey='', lastFeedbackKey='';
+let timer = null, running = false, editorMessage = '', lastTraceKey='', lastLoopKey='', lastFeedbackKey='';
 const completed = new Set();
 const state = () => session.execution.state;
 const scenario = () => session.scenarios[session.scenarioIndex];
@@ -39,7 +40,7 @@ function feedback() {
     collision: collisionMessage(scenario(),s),
     finished: 'Os comandos acabaram. Confira a meta e ajuste seu programa para chegar à estrela.',
     actionFailed: failureMessage(scenario(),s),
-    limit: 'Foram muitos passos! Vamos simplificar o programa e tentar de novo?'
+    limit: s.events.some(event=>event.type==='limit'&&event.loop)?'O robô está repetindo muitas vezes. Veja se algo faz a condição mudar.':'Foram muitos passos! Vamos simplificar o programa e tentar de novo?'
   };
   if (session.completed && session.scenarios.length === 1) messages.won = 'Você conseguiu! A estrela é sua. Escolha outra missão! ✨';
   const notices = [...eventMessages(scenario(),s),...commandMessages(scenario(),s)];
@@ -52,8 +53,8 @@ function render() {
   // Preserve o foco e a rolagem dos componentes que não mudaram neste passo.
   const focus = document.activeElement;
   const focusPath = focus?.dataset.path, focusField = focus?.dataset.field;
-  const focusTarget=focus?.dataset.target, focusOption=focus?.dataset.commandOption, focusSwitch=focus?.dataset.switchOption;
-  const inlineField=['inlineAdd','inlineOption','inlineSwitch'].find(key=>focus?.dataset[key]!==undefined);
+  const focusTarget=focus?.dataset.target, focusOption=focus?.dataset.commandOption, focusSwitch=focus?.dataset.switchOption, focusLoop=focus?.dataset.loopOption;
+  const inlineField=['inlineAdd','inlineOption','inlineSwitch','inlineLoop'].find(key=>focus?.dataset[key]!==undefined);
   const listScroll = $('#program').scrollTop, missionScroll = $('#missions').scrollLeft;
   $('#missions').innerHTML = missions.map(m => `<button class="mission ${m === mission ? 'selected' : ''} ${completed.has(m.id) ? 'completed' : ''}" data-mission="${m.id}" aria-current="${m === mission ? 'step' : 'false'}"><span>${completed.has(m.id) ? '✓' : String(m.id).padStart(2,'0')}</span><div><small>MISSÃO ${String(m.id).padStart(2,'0')}</small><strong>${escapeHtml(m.title)}</strong></div></button>`).join('');
   $('#missions').scrollLeft = missionScroll;
@@ -73,6 +74,10 @@ function render() {
   $('#robot-memory').innerHTML=renderMemory(current,s);
   $('#extra-commands').innerHTML=renderCommandPalette(current,running);
   $('#extra-switches').innerHTML=renderSwitchPalette(current,running);
+  $('#extra-loops').innerHTML=renderLoopPalette(current,running);
+  const loopTrace=renderLoopTrace(current,session.execution,program);
+  const loopKey=`${session.scenarioIndex}:${s.instructionPointer}:${loopTrace}`;
+  if(lastLoopKey!==loopKey){$('#loop-trace').innerHTML=loopTrace;$('#loop-trace').hidden=!loopTrace;lastLoopKey=loopKey;}
   $('.palette').hidden=target.length>0;
   const trace=renderDecisionTrace(current,s);
   const traceKey=`${session.scenarioIndex}:${s.instructionPointer}:${trace}`;
@@ -98,10 +103,11 @@ function render() {
   }
   if (focusField && focusPath !== undefined) document.querySelector(`[data-field="${focusField}"][data-path="${focusPath}"]`)?.focus({preventScroll:true});
   if(!focusField&&focusTarget!==undefined) {
-    const attribute=inlineField?{'inlineAdd':'data-inline-add','inlineOption':'data-inline-option','inlineSwitch':'data-inline-switch'}[inlineField]:null;
+    const attribute=inlineField?{'inlineAdd':'data-inline-add','inlineOption':'data-inline-option','inlineSwitch':'data-inline-switch','inlineLoop':'data-inline-loop'}[inlineField]:null;
     const selector=attribute?`#program [${attribute}="${focus.dataset[inlineField]}"][data-target="${encodePath(target)}"]`:`#program button[data-target="${encodePath(target)}"]`;
     document.querySelector(selector)?.focus({preventScroll:true});
   } else if(focusOption)document.querySelector(`[data-command-option="${focusOption}"]`)?.focus({preventScroll:true});
+  else if(focusLoop)document.querySelector(`[data-loop-option="${focusLoop}"]`)?.focus({preventScroll:true});
   else if(focusSwitch)document.querySelector(`[data-switch-option="${focusSwitch}"]`)?.focus({preventScroll:true});
   else if(focus?.dataset.edit) {
     (document.querySelector(`#program button[data-target="${encodePath(target)}"]`)??$('#root-target')).focus({preventScroll:true});
@@ -136,7 +142,7 @@ function step() {
 }
 function tick() {
   step();
-  if(running)timer=setTimeout(tick,state().events.some(event=>['condition','switch'].includes(event.type))&&!matchMedia('(prefers-reduced-motion: reduce)').matches?1100:700);
+  if(running)timer=setTimeout(tick,state().events.some(event=>['condition','switch','loopCheck'].includes(event.type))&&!matchMedia('(prefers-reduced-motion: reduce)').matches?1100:700);
 }
 $('#run').onclick = () => { if (!program.length) return; reset(); running = true; tick(); };
 $('#pause').onclick = () => { if (running) { stop(); render(); } else if (canStep(session)) { running = true; render(); timer = setTimeout(tick, 450); } };
@@ -145,35 +151,38 @@ $('#reset').onclick = $('#back-training').onclick = reset;
 $('#test-variants').onclick = () => { session = startVariantTests(session); running = true; render(); timer = setTimeout(tick, 700); };
 $('#clear').onclick = () => { if (running) return; program = []; target = []; reset(); };
 $('#root-target').onclick = () => { target = []; render(); };
-function addAt(path,nodeType,optionId,switchId) {
+function addAt(path,nodeType,optionId,switchId,loopId) {
   const destination=[...path];
   try {
-    const operation=switchId?{nodeType:'switch',switchOptionId:switchId,mission}:optionId?{node:configureCommand(mission,optionId),mission}:{nodeType,condition:defaultCondition(mission)};
+    const operation=loopId?{nodeType:mission.loopOptions.find(option=>option.id===loopId)?.kind,loopOptionId:loopId,mission}:switchId?{nodeType:'switch',switchOptionId:switchId,mission}:optionId?{node:configureCommand(mission,optionId),mission}:{nodeType,condition:defaultCondition(mission)};
     edit({type:'add',path:destination,...operation});target=destination;render();
   } catch(error){editorMessage=error.message;render();}
 }
 $('.palette').onclick=event=>{
-  const button=event.target.closest('[data-add],[data-command-option],[data-switch-option]');
+  const button=event.target.closest('[data-add],[data-command-option],[data-switch-option],[data-loop-option]');
   if(!button||button.disabled||button.hidden)return;
-  addAt(target,button.dataset.add,button.dataset.commandOption,button.dataset.switchOption);
+  addAt(target,button.dataset.add,button.dataset.commandOption,button.dataset.switchOption,button.dataset.loopOption);
 };
 $('#program').onclick = event => {
   const button = event.target.closest('button');
   if (!button || button.disabled || running) return;
-  if(button.dataset.inlineAdd||button.dataset.inlineOption||button.dataset.inlineSwitch) {
-    addAt(decodePath(button.dataset.target),button.dataset.inlineAdd,button.dataset.inlineOption,button.dataset.inlineSwitch);
+  if(button.dataset.inlineAdd||button.dataset.inlineOption||button.dataset.inlineSwitch||button.dataset.inlineLoop) {
+    addAt(decodePath(button.dataset.target),button.dataset.inlineAdd,button.dataset.inlineOption,button.dataset.inlineSwitch,button.dataset.inlineLoop);
   } else if (button.dataset.target !== undefined) {
     target = decodePath(button.dataset.target); render();
     // Os comandos ficam no próprio ramo; não levar a criança de volta ao topo.
   } else if(button.dataset.edit) {
     const path=decodePath(button.dataset.path),node=nodeAt(program,path).node;
-    if(button.dataset.edit==='remove'&&['if','switch'].includes(node.type)&&countNodes([node])>1&&!window.confirm(`Remover este bloco e seus ${countNodes([node])-1} comandos internos?`))return;
+    if(button.dataset.edit==='remove'&&['if','switch','for','while'].includes(node.type)&&countNodes([node])>1&&!window.confirm(`Remover este bloco e seus ${countNodes([node])-1} comandos internos?`))return;
     edit({type:button.dataset.edit==='remove'?'remove':'move',offset:button.dataset.edit==='up'?-1:1,path});
   }
 };
 $('#program').onchange = event => {
   const input = event.target;
   if (!input.dataset.field || running) return;
+  if(input.dataset.field==='loop-option') {
+    edit({type:'loopOption',path:decodePath(input.dataset.path),loopOptionId:input.value,mission});return;
+  }
   if(input.dataset.field==='switch-option') {
     const path=decodePath(input.dataset.path),node=nodeAt(program,path).node;
     if(switchOption(mission,node)?.id===input.value){render();return;}

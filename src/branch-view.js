@@ -1,3 +1,4 @@
+import {loopTitle} from './loop-view.js';
 import {escapeHtml as h} from './html.js';
 import {encodePath,countNodes,sequenceInfo} from './tree.js';
 import {renderInlinePalette} from './command-view.js';
@@ -8,5 +9,5 @@ export function renderBranch({mission,list,path,label,target,chosen=false,decidi
 }
 export function insertionLabel(mission,program,path) {
   const {trail}=sequenceInfo(program,path);
-  return ['Programa principal',...trail.map(step=>step.node.type==='if'?`Bloco ${step.index+1}: ${step.key==='then'?'ENTÃO':'SENÃO'}`:`Bloco ${step.index+1}: ${step.key==='default'?switchOption(mission,step.node)?.defaultLabel??'OUTRO VALOR':switchOption(mission,step.node)?.cases[step.caseIndex]?.label??`Caso ${step.caseIndex+1}`}`)].join(' → ');
+  return ['Programa principal',...trail.map(step=>['for','while'].includes(step.node.type)?`${loopTitle(mission,step.node)} → CORPO`:step.node.type==='if'?`Bloco ${step.index+1}: ${step.key==='then'?'ENTÃO':'SENÃO'}`:`Bloco ${step.index+1}: ${step.key==='default'?switchOption(mission,step.node)?.defaultLabel??'OUTRO VALOR':switchOption(mission,step.node)?.cases[step.caseIndex]?.label??`Caso ${step.caseIndex+1}`}`)].join(' → ');
 }

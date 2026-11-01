@@ -1,0 +1,152 @@
+{
+  "id": "example-v07",
+  "title": "Contar por interação",
+  "demo": true,
+  "grid": {
+    "width": 5,
+    "height": 5,
+    "obstacles": []
+  },
+  "start": {
+    "row": 4,
+    "col": 0,
+    "direction": "L"
+  },
+  "goal": {
+    "row": 4,
+    "col": 1
+  },
+  "initialVariables": {
+    "count": 0
+  },
+  "robotMemory": {
+    "known": {
+      "type": "boolean",
+      "initial": null
+    }
+  },
+  "entities": [
+    {
+      "id": "station",
+      "row": 4,
+      "col": 0,
+      "collectible": false,
+      "onEnter": [],
+      "interactions": [
+        {
+          "id": "press",
+          "relativeTo": [
+            "here"
+          ],
+          "effects": [
+            {
+              "type": "increment",
+              "variable": "count",
+              "amount": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "commandOptions": [
+    {
+      "id": "press",
+      "label": "Acionar o contador",
+      "node": {
+        "type": "interact",
+        "relativeTo": "here",
+        "entityId": "station",
+        "actionId": "press"
+      }
+    },
+    {
+      "id": "memoryFlag",
+      "label": "Guardar confirmação",
+      "node": {
+        "type": "setMemory",
+        "variable": "known",
+        "value": true
+      }
+    }
+  ],
+  "loopOptions": [
+    {
+      "id": "three",
+      "label": "Ainda faltam três?",
+      "kind": "while",
+      "condition": {
+        "type": "numberCompare",
+        "left": {
+          "kind": "worldVariable",
+          "name": "count"
+        },
+        "operator": "lt",
+        "right": {
+          "kind": "literal",
+          "value": 3
+        }
+      }
+    },
+    {
+      "id": "once",
+      "label": "Repetir uma vez",
+      "kind": "for",
+      "times": 1
+    }
+  ],
+  "winCondition": {
+    "type": "stateAtLeast",
+    "variable": "count",
+    "value": 3
+  },
+  "solution": [
+    {
+      "type": "while",
+      "condition": {
+        "type": "numberCompare",
+        "left": {
+          "kind": "worldVariable",
+          "name": "count"
+        },
+        "operator": "lt",
+        "right": {
+          "kind": "literal",
+          "value": 3
+        }
+      },
+      "body": [
+        {
+          "type": "interact",
+          "relativeTo": "here",
+          "entityId": "station",
+          "actionId": "press"
+        }
+      ]
+    },
+    {
+      "type": "for",
+      "times": 1,
+      "body": [
+        {
+          "type": "setMemory",
+          "variable": "known",
+          "value": true
+        }
+      ]
+    },
+    {
+      "type": "move"
+    }
+  ],
+  "presentation": {
+    "variables": {
+      "count": "Quantidade"
+    },
+    "memory": {
+      "known": {
+        "label": "Confirmação"
+      }
+    }
+  }
+}

@@ -81,8 +81,8 @@ test('opções sem switch não mudam permissões antigas e valores/memória das 
 });
 test('caminhos de caso/padrão têm roundtrip e rejeitam sintaxe quebrada ou perigosa',()=>{
  for(const path of [[],[0],[0,'then',1],[0,'cases',1,'body'],[0,'default'],[0,'cases',0,'body',2,'then',0,'cases',1,'body']])assert.deepEqual(decodePath(encodePath(path)),path);
- for(const encoded of ['0.cases.1','0.body','0.__proto__','-1.then','0.cases.NaN.body','0.cases.1.body..0','00.default','0.default.-1','Infinity'])assert.throws(()=>decodePath(encoded));
- const m=base(),node=built(m);assert.throws(()=>sequenceAt([node],[0,'cases',8,'body']));assert.throws(()=>sequenceAt([move],[0,'default']));assert.throws(()=>sequenceAt([node],[0]));assert.throws(()=>editProgram([node],{type:'remove',path:[0,'cases',0,'body']}));assert.throws(()=>editProgram([node],{type:'remove',path:[0,'cases',0]}));
+ for(const encoded of ['0.cases.1','0.__proto__','-1.then','0.cases.NaN.body','0.cases.1.body..0','00.default','0.default.-1','Infinity'])assert.throws(()=>decodePath(encoded));
+ const m=base(),node=built(m);assert.throws(()=>sequenceAt([move],[0,'body']));assert.throws(()=>sequenceAt([node],[0,'cases',8,'body']));assert.throws(()=>sequenceAt([move],[0,'default']));assert.throws(()=>sequenceAt([node],[0]));assert.throws(()=>editProgram([node],{type:'remove',path:[0,'cases',0,'body']}));assert.throws(()=>editProgram([node],{type:'remove',path:[0,'cases',0]}));
 });
 test('edição múltipla em casos e default é imutável e preserva os demais ramos',()=>{
  const m=base(),original=freeze([built(m)]);let p=editProgram(original,{type:'add',nodeType:'move',path:[0,'cases',1,'body'],mission:m});p=editProgram(p,{type:'add',nodeType:'turnLeft',path:[0,'cases',1,'body'],mission:m});p=editProgram(p,{type:'add',nodeType:'turnRight',path:[0,'default'],mission:m});p=editProgram(p,{type:'move',path:[0,'cases',1,'body',1],offset:-1,mission:m});
@@ -122,7 +122,7 @@ test('renderização expõe valores/casos e destaca somente um ramo, com paleta 
 test('orçamento conta escolha uma vez e impede instruções restantes',()=>{
  const m=base(),node=built(m);node.cases[0].body=[move,move];assert.equal(end(m,[node]).instructionPointer,3);const limited=end(m,[node],{instructionLimit:2});assert.equal(limited.status,'limit');assert.equal(limited.col,1);assert.equal(limited.instructionPointer,2);
 });
-for(const demo of missions.filter(m=>m.id>=22))test(`demo ${demo.id}: mesma AST, simulação/passos/sessão equivalentes e reset`,()=>{
+for(const demo of missions.filter(m=>m.id>=22&&m.id<=23))test(`demo ${demo.id}: mesma AST, simulação/passos/sessão equivalentes e reset`,()=>{
  const program=freeze(structuredClone(demo.solution));
  for(const scenario of missionVariants(demo)){
   const input=freeze(structuredClone(scenario));let e=freeze(createExecution(input,program));const states=[e.state];while(!terminal(e.state)){e=freeze(stepExecution(input,program,e));states.push(e.state);}assert.deepEqual(states,simulate(input,program));assert.equal(e.state.status,'won');assert(states.some(s=>s.events.some(event=>event.type==='switch')));

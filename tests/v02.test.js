@@ -146,7 +146,7 @@ test('representação destaca condição e ramo, escapa rótulos e mostra valor 
 });
 // Busca no produto dos cenários: toda sequência de locomoção possível é considerada.
 // Giros/ciclos repetidos levam a estados já visitados; colisões invalidam a solução.
-for (const m of missions.filter(m=>m.variants)) test(`missão ${m.id}: nenhuma sequência fixa resolve todos os cenários`, () => {
+for (const m of missions.filter(m=>m.variants&&m.id<=23)) test(`missão ${m.id}: nenhuma sequência fixa resolve todos os cenários`, () => {
   const scenarios = missionVariants(m);
   const key = states => JSON.stringify(states.map(s=>[s.row,s.col,s.direction,s.status==='won',s.variables,s.collectedIds.slice().sort()]));
   const first = scenarios.map(initialState), pending = [first], visited = new Set([key(first)]);

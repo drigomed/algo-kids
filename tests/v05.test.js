@@ -141,7 +141,7 @@ test('exemplo JSON completo e renomeado executa sem alterações no motor',async
  let renamed=text;for(const [a,b] of [['fechadura','sensorX'],['opcao-vermelho','itemOne'],['opcao-azul','itemTwo'],['opcao-verde','itemThree'],['take','press'],['liberada','enabled'],['cor','signal'],['corNecessaria','observed'],['vermelho','one'],['azul','two'],['verde','three']])renamed=renamed.replaceAll('"'+a+'"','"'+b+'"');
  const n=JSON.parse(renamed);validateMission(n);for(const variant of missionVariants(n))assert.equal(end(variant,n.solution).status,'won');
 });
-for(const m of missions.filter(m=>m.id>=20))test(`V0.5 demo ${m.id}: mesma AST, passos e variantes isoladas; falhas não concluem sessão`,()=>{
+for(const m of missions.filter(m=>m.id>=20&&m.id<=23))test(`V0.5 demo ${m.id}: mesma AST, passos e variantes isoladas; falhas não concluem sessão`,()=>{
  for(const scenario of missionVariants(m)){
   const program=freeze(structuredClone(m.solution)),input=freeze(structuredClone(scenario));let e=freeze(createExecution(input,program));const states=[e.state];while(!terminal(e.state)){e=freeze(stepExecution(input,program,e));states.push(e.state);}assert.deepEqual(states,simulate(input,program));assert.equal(e.state.status,'won');
  }
