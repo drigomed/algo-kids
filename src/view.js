@@ -1,3 +1,5 @@
+import {conditionOptions, optionFor, valuesFor, conditionQuestion} from './condition-options.js';
+import {cellProperties, passage} from './rules.js';
 // Somente representação: regras e interpretação permanecem fora do DOM.
 export const labels = {move:'Avançar', turnLeft:'Virar à esquerda', turnRight:'Virar à direita'};
 const icons = {move:'↑', turnLeft:'↶', turnRight:'↷'};
@@ -13,15 +15,14 @@ export function renderProgram(program, mission, execution, target, disabled, bas
     if (node.type !== 'if') return `<li class="command ${node.type} ${active ? 'active' : ''}" ${active ? 'aria-current="step"' : ''}><span class="command-number">${index + 1}</span><b>${icons[node.type]}</b><span>${labels[node.type]}</span>${controls}</li>`;
     const within = prefix(path, execution.activePath), condition = node.condition;
     const chosen = active && same(execution.decision?.path, path) ? execution.decision.branch : within ? execution.activePath[path.length] : null;
-    const numericVariables = Object.keys(mission.initialVariables ?? {}).filter(name => typeof mission.initialVariables[name] === 'number');
-    numericVariables.push('collectedCount');
-    const variableLabel = name => name === 'collectedCount' ? 'Objetos coletados' : mission.presentation?.variables?.[name] ?? name;
-    const fields = condition.type === 'stateAtLeast' ? `<div class="threshold-fields"><label>Contador<select data-field="variable" data-path="${key}" ${disabled ? 'disabled' : ''}>${numericVariables.map(name => `<option value="${escapeHtml(name)}" ${name === condition.variable ? 'selected' : ''}>${escapeHtml(variableLabel(name))}</option>`).join('')}</select></label><label>Pelo menos<input type="number" inputmode="numeric" min="0" max="99" step="1" value="${condition.value}" data-field="threshold" data-path="${key}" ${disabled ? 'disabled' : ''}></label></div>` : '';
+    const option = optionFor(mission,condition);
+    const fields = renderConditionFields(mission,condition,key,disabled);
+    const options = conditionOptions(mission).map(choice=>`<option value="${escapeHtml(choice.id)}" ${choice.id===option?.id?'selected':''}>${escapeHtml(choice.label)}</option>`).join('');
     const branches = ['then','else'].map(branch => {
       const branchPath = [...path, branch], selected = same(target, branchPath);
       return `<section class="branch ${branch} ${chosen === branch ? 'executing-branch' : ''} ${selected ? 'insertion-branch' : ''}"><div class="branch-heading"><strong>${branch === 'then' ? 'ENTÃO' : 'SENÃO'}</strong><button data-target="${encodePath(branchPath)}" ${disabled ? 'disabled' : ''} aria-pressed="${selected}">${selected ? '✓ Adicionando aqui' : '+ Adicionar aqui'}</button></div><ol class="branch-list">${node[branch].length ? renderProgram(node[branch], mission, execution, target, disabled, branchPath) : '<li class="branch-empty">Este ramo ainda não tem comandos.</li>'}</ol></section>`;
     }).join('');
-    return `<li class="condition-block ${within ? 'active-block' : ''} ${active ? 'active' : ''}" ${active ? 'aria-current="step"' : ''}><div class="condition-heading"><strong>SE</strong><span>Bloco ${index + 1}</span>${controls}</div><label class="condition-choice">Pergunta<select data-field="condition" data-path="${key}" ${disabled ? 'disabled' : ''}><option value="pathClear" ${condition.type === 'pathClear' ? 'selected' : ''}>Caminho à frente livre</option><option value="stateAtLeast" ${condition.type === 'stateAtLeast' ? 'selected' : ''}>Contador atingiu uma quantidade</option></select></label>${fields}${branches}</li>`;
+    return `<li class="condition-block ${within ? 'active-block' : ''} ${active ? 'active' : ''}" ${active ? 'aria-current="step"' : ''}><div class="condition-heading"><strong>SE</strong><span>Bloco ${index + 1}</span>${controls}</div><label class="condition-choice">Pergunta<select data-field="condition" data-path="${key}" ${disabled ? 'disabled' : ''}>${options}</select></label>${fields}${branches}</li>`;
   }).join('');
 }
 export function renderBoard(mission, state) {
@@ -30,11 +31,70 @@ export function renderBoard(mission, state) {
     const robot = state.row === row && state.col === col, goal = mission.goal.row === row && mission.goal.col === col;
     const rock = mission.grid.obstacles.some(o => o.row === row && o.col === col);
     const entities = (mission.entities ?? []).filter(e => e.row === row && e.col === col && !(e.collectible && state.collectedIds.includes(e.id)));
+    const features = renderCellFeatures(mission,state,{row,col});
+    const barriers = (mission.barriers ?? []).filter(b=>b.row===row&&b.col===col).map(b=>{
+      const open = passage(mission,state,b).passable, visual=mission.presentation?.barriers?.[b.id]??{};
+      const label=`${visual.label??'Passagem'}: ${open?'livre':'fechada'}`;
+      return `<span class="barrier ${open?'open':'closed'}" role="img" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}">${escapeHtml(open?visual.openGlyph??'▯':visual.closedGlyph??'▥')}<small>${open?'Livre':'Fechado'}</small></span>`;
+    }).join('');
     const objects = entities.map(e => {
       const visual = mission.presentation?.entities?.[e.id] ?? {};
       const effects = e.onEnter.filter(a => a.type === 'increment').map(a => `${mission.presentation?.variables?.[a.variable] ?? a.variable}: +${a.amount}`).join(', ');
-      return `<span class="entity" title="${escapeHtml(visual.label ?? mission.presentation?.entityLabel ?? 'Objeto')}: ${escapeHtml(effects)}">${escapeHtml(visual.glyph ?? mission.presentation?.entityGlyph ?? '●')}<small>${e.onEnter.some(a => a.type === 'increment' && a.amount !== 1) ? escapeHtml(e.onEnter.filter(a => a.type === 'increment').map(a => `+${a.amount}`).join(' ')) : ''}</small></span>`;
+      const label = visual.label ?? mission.presentation?.entityLabel ?? 'Objeto';
+      const role = ['collectible','trigger','delivery'].includes(visual.role) ? ` ${visual.role}` : '';
+      return `<span class="entity${role}" role="img" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}: ${escapeHtml(effects)}">${escapeHtml(visual.glyph ?? mission.presentation?.entityGlyph ?? '●')}<small>${e.onEnter.some(a => a.type === 'increment' && a.amount !== 1) ? escapeHtml(e.onEnter.filter(a => a.type === 'increment').map(a => `+${a.amount}`).join(' ')) : ''}</small></span>`;
     }).join('');
-    return `<div class="cell ${(row + col) % 2 ? 'alternate' : ''} ${goal ? 'goal' : ''}">${goal ? '<span class="star">★</span>' : ''}${rock ? '<span class="rock">◆</span>' : ''}${objects}${robot ? `<div class="robot" style="--angle:${{N:0,L:90,S:180,O:270}[state.direction]}deg"><span class="robot-arrow">▲</span><span class="robot-head"><i></i><i></i></span><span class="robot-body"></span></div>` : ''}</div>`;
+    return `<div class="cell ${(row + col) % 2 ? 'alternate' : ''} ${goal ? 'goal' : ''}">${goal ? '<span class="star">★</span>' : ''}${rock ? '<span class="rock">◆</span>' : ''}${barriers}${features}${objects}${robot ? `<div class="robot" style="--angle:${{N:0,L:90,S:180,O:270}[state.direction]}deg"><span class="robot-arrow">▲</span><span class="robot-head"><i></i><i></i></span><span class="robot-body"></span></div>` : ''}</div>`;
   }).join('');
+}
+
+export function renderConditionFields(mission,condition,key,disabled) {
+  const option = optionFor(mission,condition), values = option ? valuesFor(option) : [];
+  const lock = disabled ? 'disabled' : '';
+  if (values.length) return `<label class="value-fields">Resposta a procurar<select data-field="value-choice" data-path="${key}" ${lock}>${values.map((value,index)=>`<option value="${index}" ${value.value===condition.value?'selected':''}>${escapeHtml(value.label)}</option>`).join('')}</select></label>`;
+  if (condition.type==='stateAtLeast') {
+    const variables = mission.conditionOptions ? [option.condition.variable] : [...Object.keys(mission.initialVariables??{}).filter(key=>typeof mission.initialVariables[key]==='number'),'collectedCount'];
+    return `<div class="threshold-fields"><label>Contador<select data-field="variable" data-path="${key}" ${lock}>${variables.map(name=>`<option value="${escapeHtml(name)}" ${name===condition.variable?'selected':''}>${escapeHtml(name==='collectedCount'?'Objetos coletados':mission.presentation?.variables?.[name]??'Contador')}</option>`).join('')}</select></label><label>Pelo menos<input type="number" inputmode="numeric" min="0" max="99" step="1" value="${condition.value}" data-field="threshold" data-path="${key}" ${lock}></label></div>`;
+  }
+  return typeof condition.value==='number' ? `<label class="value-fields">Quantidade exata<input type="number" inputmode="decimal" step="any" value="${condition.value}" data-field="exact-value" data-path="${key}" ${lock}></label>` : '';
+}
+function propertyVisual(mission,name,value) {
+  const visual=mission.presentation?.properties?.[name]??{};
+  return {label:visual.label??'Marca', ...(visual.values?.find(v=>v.value===value)??{label:'Marca',glyph:'◇'})};
+}
+function renderCellFeatures(mission,state,position) {
+  return Object.entries(cellProperties(mission,state,position)).map(([name,value])=>{
+    const visual=propertyVisual(mission,name,value),tone=['green','red','amber'].includes(visual.tone)?visual.tone:'neutral';
+    const label=`${mission.presentation?.properties?.[name]?.label??'Marca'}: ${visual.label}`;
+    return `<span class="cell-feature ${tone}" role="img" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}">${escapeHtml(visual.glyph??'◇')}<small>${escapeHtml(visual.label)}</small></span>`;
+  }).join('');
+}
+export function worldIndicators(mission,state) {
+  return (mission.presentation?.stateIndicators??[]).map(indicator=>{
+    const value=state.variables[indicator.variable];
+    const label=indicator.values?.find(option=>option.value===value)?.label??(typeof value==='boolean'?(value?'Sim':'Não'):String(value));
+    return `${indicator.label}: ${label}`;
+  }).join(' · ');
+}
+export function eventMessages(mission,state) {
+  const messages=[];
+  for (const event of state.events) {
+    const visual=mission.presentation?.entities?.[event.entityId]??{};
+    if (event.type==='entityEntered' && visual.messages?.entered) messages.push(visual.messages.entered);
+    if (event.type==='collected') messages.push(visual.messages?.collected??'Boa descoberta! Você coletou um objeto.');
+    if (event.type==='effectCondition' && visual.guardMessages?.[String(event.result)]) messages.push(visual.guardMessages[String(event.result)]);
+    if (event.type==='variableChanged' && event.previous!==event.value) {
+      const message=mission.presentation?.stateMessages?.[event.variable]?.find(item=>item.value===event.value)?.message;
+      if (message) messages.push(message);
+    }
+    if (event.type==='barrierChanged') messages.push(`${mission.presentation?.barriers?.[event.barrierId]?.label??'Passagem'}: ${event.passable?'passagem liberada':'passagem fechada'}.`);
+    if (event.type==='condition') messages.push(`${conditionQuestion(mission,event.condition)} ${event.result?'Sim':'Não'} → ${event.result?'ENTÃO':'SENÃO'}.`);
+  }
+  return [...new Set(messages)];
+}
+export function describeEnvironment(mission,state) {
+  const features=(mission.grid.cells??[]).map(cell=>`${Object.entries(cellProperties(mission,state,cell)).map(([name,value])=>`${mission.presentation?.properties?.[name]?.label??'Marca'}: ${propertyVisual(mission,name,value).label}`).join(', ')} na linha ${cell.row+1}, coluna ${cell.col+1}`);
+  const barriers=(mission.barriers??[]).map(b=>`${mission.presentation?.barriers?.[b.id]?.label??'Passagem'} ${passage(mission,state,b).passable?'livre':'fechada'} na linha ${b.row+1}, coluna ${b.col+1}`);
+  const entities=(mission.entities??[]).filter(e=>!e.collectible||!state.collectedIds.includes(e.id)).map(e=>`${mission.presentation?.entities?.[e.id]?.label??mission.presentation?.entityLabel??'Objeto'} na linha ${e.row+1}, coluna ${e.col+1}`);
+  return [...features,...barriers,...entities].join('; ');
 }

@@ -1,6 +1,6 @@
 # Missões do Robô — Pequenos Programadores
 
-V0.2 jogável de programação visual, em português do Brasil: sequência, coleta e decisões. Monte o programa antes de executar e leve o robô até a estrela.
+V0.3 jogável de programação visual, em português do Brasil: sequência, coleta, decisões e mundo reativo. Monte o programa antes de executar e leve o robô até a estrela.
 
 ## Executar
 
@@ -27,7 +27,7 @@ URL pública esperada: **https://drigomed.github.io/algo-kids/**. O endereço s�
 
 ## Jogar
 
-Escolha uma das doze missões. Toque em Avançar, Virar à esquerda ou Virar à direita para adicionar comandos. As setas da lista reordenam; × remove. Executar começa do início; Pausar/Continuar controla a execução; Passo a passo executa um comando. Reiniciar mantém o programa; Limpar apaga os comandos. Alterar um programa pausado reinicia a posição do robô. A direção inicial aparece pela seta sobre o robô; norte fica no topo.
+Escolha uma das dezesseis missões. Toque em Avançar, Virar à esquerda ou Virar à direita para adicionar comandos. As setas da lista reordenam; × remove. Executar começa do início; Pausar/Continuar controla a execução; Passo a passo executa um comando. Reiniciar mantém o programa; Limpar apaga os comandos. Alterar um programa pausado reinicia a posição do robô. A direção inicial aparece pela seta sobre o robô; norte fica no topo.
 
 Nas missões 07–08, entrar na casa recolhe o objeto automaticamente. O contador mostra os objetos e a meta da missão. A estrela só encerra a execução quando a meta também estiver satisfeita. Reiniciar restaura todos os objetos e variáveis, preservando o programa.
 
@@ -35,24 +35,29 @@ Nas missões 09–12, adicione **SE / SENÃO**. Escolha **Caminho à frente livr
 
 Cada decisão é um passo: a interface informa verdadeiro/falso e destaca o bloco e o ramo executados. Um programa pode ter até 300 blocos e 8 níveis de aninhamento. O limite defensivo padrão é de 1.000 instruções executadas (inclui decisões). Não há repetições nesta versão.
 
-As missões 09–12 começam com uma variante de treino. Após vencê-la, toque em **Testar outras versões**. O mesmo programa é executado nos demais cenários, sem sorteio. A missão só é concluída após todas as variantes passarem. Use Pausar/Continuar ou Passo a passo também durante os testes. Editar o programa, reiniciar ou voltar ao treino limpa o resultado da execução atual; uma versão que falha precisa ser corrigida e novamente validada desde o treino.
+As missões 09–16 começam com uma variante de treino. Após vencê-la, toque em **Testar outras versões**. O mesmo programa é executado nos demais cenários, sem sorteio. A missão só é concluída após todas as variantes passarem. Use Pausar/Continuar ou Passo a passo também durante os testes. Editar o programa, reiniciar ou voltar ao treino limpa o resultado da execução atual; uma versão que falha precisa ser corrigida e novamente validada desde o treino.
 
 Na missão 12, um objeto pode alterar a variável de pontos em 1 ou 2. O número de objetos coletados e os pontos são exibidos separadamente; os nomes, valores, efeitos e metas pertencem à missão, não ao motor.
+
+Nas missões 13–16, as perguntas são filtradas pela missão. O SE pode observar um sinal na casa à frente ou comparar uma variável com uma resposta selecionada. Booleanos usam **Sim/Não**, textos usam opções discretas e valores numéricos usam um controle de quantidade. Não é necessário escrever código ou nomes de variáveis.
+
+O tabuleiro diferencia sinais, objetos, placas, estações e passagens abertas/fechadas por símbolos e rótulos além da cor. Os indicadores mostram o estado atual. Pisar numa entidade pode alterar esse estado, abrir uma passagem ou realizar uma entrega condicional; a mudança vale para a próxima decisão e o próximo movimento da mesma execução. Se uma passagem fechar sobre o robô, ele pode sair, mas não reentrar até ela abrir.
 
 ## Estrutura
 
 - `src/engine.js`: API pública do motor, sem DOM.
-- `src/rules.js`: condições e ações declarativas sobre variáveis genéricas.
+- `src/rules.js`: condições e sensores, regra centralizada de passagem e efeitos declarativos sobre variáveis genéricas.
 - `src/world.js`: movimento, entidades, eventos, estado e vitória.
 - `src/interpreter.js`: AST, pilha de frames, caminhos ativos, orçamento e simulação.
 - `src/program.js`: operações imutáveis da árvore do editor.
 - `src/session.js`: treino e validação determinística em múltiplos cenários.
-- `src/missions.js`: doze missões progressivas, entidades, variantes, apresentação, dicas e soluções de referência.
+- `src/missions.js`: mantém as missões 01–12 e agrega as missões 13–16 de `src/reactive-missions.js`, com variantes, metadados, dicas e soluções de referência.
+- `src/condition-options.js`: autorização, seleção guiada e rótulos das condições.
 - `src/ui.js` e `src/view.js`: controles, temporização e representação visual do estado e da AST.
 - `src/style.css`: layout responsivo, controles de toque e movimento reduzido.
-- `tests/engine.test.js` e `tests/v02.test.js`: regressão, entidades, coleta, estado, condições, interpretação, editor, sessões e soluções de todas as variantes.
+- `tests/engine.test.js`, `tests/v02.test.js` e `tests/v03.test.js`: regressão, entidades, coleta, estado, condições, interpretação, editor, sessões e soluções de todas as variantes.
 - `scripts/build.js`: empacotamento estático sem dependências.
-- `docs/V02.md`: contratos, critérios de aceite, exemplos e roteiro de revisão; `docs/` mantém o escopo original e o roadmap atualizado.
+- `docs/V02.md` e `docs/V03.md`: contratos, critérios de aceite, exemplos e roteiros de revisão; `docs/` mantém o escopo original e o roadmap atualizado.
 
 Sem backend, APIs, fontes externas, anúncios, contas, telemetria ou dados pessoais. Progresso fica apenas na memória da página e reinicia ao recarregar. Os comandos são nós tipados; não há execução de código arbitrário.
 
@@ -86,7 +91,7 @@ Com acesso administrativo:
 
 Para republicar manualmente: **Actions → Validar e publicar no GitHub Pages → Run workflow → Branch: main**. O botão manual depende de o workflow existir na branch padrão; configure `main` como padrão após a integração para disponibilizá-lo. Selecionar outra branch nunca autoriza o deploy.
 
-O repositório é **público** e o Pages foi configurado após a entrega da infraestrutura. A V0.2 é entregue em PR e não faz deploy manual nem altera configurações de publicação. Após aprovação e merge na `main`, o workflow existente publica a versão. Se for necessário refazer a configuração, siga as instruções administrativas acima. O campo `private: true` do `package.json` impede publicação acidental no npm e não determina a visibilidade do GitHub. Se o repositório passar a privado, confirme a elegibilidade do Pages no plano da conta em **Settings → Pages** e nas configurações de cobrança. Repositório privado não garante site privado. Se o plano não oferecer Pages para repositórios privados, as alternativas são contratar um plano compatível ou tornar o repositório público **somente mediante aprovação do responsável**. Este workflow não altera plano, visibilidade ou branch padrão.
+O repositório é **público** e o Pages foi configurado após a entrega da infraestrutura. A V0.3 é entregue em PR e não faz deploy manual nem altera configurações de publicação. Após aprovação e merge na `main`, o workflow existente publica a versão. Se for necessário refazer a configuração, siga as instruções administrativas acima. O campo `private: true` do `package.json` impede publicação acidental no npm e não determina a visibilidade do GitHub. Se o repositório passar a privado, confirme a elegibilidade do Pages no plano da conta em **Settings → Pages** e nas configurações de cobrança. Repositório privado não garante site privado. Se o plano não oferecer Pages para repositórios privados, as alternativas são contratar um plano compatível ou tornar o repositório público **somente mediante aprovação do responsável**. Este workflow não altera plano, visibilidade ou branch padrão.
 
 Para exigir a validação antes de integrar PRs, um administrador pode criar uma regra para `main` em **Settings → Rules → Rulesets** (ou **Branches → Branch protection**), exigir Pull Request e o check **Testes e build**, e bloquear force pushes. Essa proteção depende das opções disponíveis no plano e não é criada automaticamente pelo workflow.
 

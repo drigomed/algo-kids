@@ -8,8 +8,8 @@ export function sequenceAt(program, path) {
 export function countNodes(program) {
   return program.reduce((total, node) => total + 1 + (node.type === 'if' ? countNodes(node.then) + countNodes(node.else) : 0), 0);
 }
-export function newNode(type) {
-  if (type === 'if') return {type, condition: {type: 'pathClear'}, then: [], else: []};
+export function newNode(type, condition = {type:'pathClear'}) {
+  if (type === 'if') return {type, condition: structuredClone(condition), then: [], else: []};
   if (!['move', 'turnLeft', 'turnRight'].includes(type)) throw new Error('Bloco desconhecido');
   return {type};
 }
@@ -18,7 +18,7 @@ export function editProgram(program, operation) {
   const path = operation.path ?? [];
   if (operation.type === 'add') {
     if (countNodes(program) >= MAX_NODES || (operation.nodeType === 'if' && path.length / 2 >= MAX_DEPTH)) throw new Error('Seu programa já tem muitos blocos. Tente simplificar o caminho.');
-    sequenceAt(next, path).push(newNode(operation.nodeType));
+    sequenceAt(next, path).push(newNode(operation.nodeType, operation.condition));
   } else {
     const list = sequenceAt(next, path.slice(0, -1)), index = path.at(-1);
     if (!Number.isInteger(index) || !list[index]) throw new Error('Bloco não encontrado');

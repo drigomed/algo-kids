@@ -14,6 +14,10 @@ As fases a seguir são incrementais. Só avançar após validar a fase anterior 
 
 A diretriz atual prioriza entidades genéricas, coleta, estado e `if/else`, com missões 07–12 e variantes determinísticas. Consulte [V02.md](V02.md) para o contrato e os critérios de aceite. As seis missões V0.1 continuam disponíveis.
 
+## V0.3 — O mundo reage ao robô
+
+Sensores ambientais à frente, igualdade estrita de estado, passagens dinâmicas e efeitos condicionais genéricos. Missões 13–16 com variantes determinísticas e perguntas guiadas; contratos e aceite em [V03.md](V03.md). Preserva 01–12, sem implementar repetição ou alterar publicação.
+
 ## Futuro — Repetir N vezes (`for`)
 
 **Mecânica:** bloco `Repita N vezes { ... }` com N pequeno e visualização do contador.
