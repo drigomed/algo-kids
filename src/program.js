@@ -1,41 +1,48 @@
-// Operações da árvore do editor; também utilizáveis sem DOM.
-import {MAX_DEPTH, MAX_NODES} from './interpreter.js';
+// Edição imutável das mesmas sequências usadas pela pilha de execução.
+import {assertJsonData} from './data.js';
 import {validateCommand,explicitTypes} from './commands.js';
-export function sequenceAt(program, path) {
-  const sequence = path.reduce((value, key) => value?.[key], program);
-  if (!Array.isArray(sequence)) throw new Error('Ramo inválido');
-  return sequence;
-}
-export function countNodes(program) {
-  return program.reduce((total, node) => total + 1 + (node.type === 'if' ? countNodes(node.then) + countNodes(node.else) : 0), 0);
-}
-export function newNode(type, condition = {type:'pathClear'}) {
-  if (type === 'if') return {type, condition: structuredClone(condition), then: [], else: []};
-  if (!['move', 'turnLeft', 'turnRight'].includes(type)) throw new Error('Bloco desconhecido');
+import {validateProgram} from './interpreter.js';
+import {createSwitch,validateSwitchNode,switchOption,switchHasCommands} from './switches.js';
+import {sequenceAt,sequenceInfo,nodeAt,countNodes} from './tree.js';
+export {sequenceAt,countNodes,encodePath,decodePath,rebaseTarget} from './tree.js';
+export function newNode(type,condition={type:'pathClear'}) {
+  if(type==='if')return {type,condition:structuredClone(condition),then:[],else:[]};
+  if(!['move','turnLeft','turnRight'].includes(type))throw new Error('Bloco desconhecido ou sem configuração autorizada');
   return {type};
 }
-export function editProgram(program, operation) {
-  const next = structuredClone(program);
-  const path = operation.path ?? [];
-  if (operation.type === 'add') {
-    if (countNodes(program) >= MAX_NODES || (operation.nodeType === 'if' && path.length / 2 >= MAX_DEPTH)) throw new Error('Seu programa já tem muitos blocos. Tente simplificar o caminho.');
-    if(operation.node) {
-      validateCommand(operation.node,operation.mission??{});
-      sequenceAt(next,path).push(structuredClone(operation.node));
-    } else sequenceAt(next, path).push(newNode(operation.nodeType, operation.condition));
+export function editProgram(program,operation) {
+  assertJsonData(program,'program');countNodes(program);
+  if(operation.mission)validateProgram(program,operation.mission);
+  const next=structuredClone(program),path=operation.path??[];
+  if(operation.type==='add') {
+    const {list}=sequenceInfo(next,path);let node;
+    if(operation.nodeType==='switch')node=createSwitch(operation.mission??{},operation.switchOptionId);
+    else if(operation.node) {
+      if(operation.node.type==='switch')validateSwitchNode(operation.mission??{},operation.node);
+      else validateCommand(operation.node,operation.mission??{});
+      node=structuredClone(operation.node);
+    } else node=newNode(operation.nodeType,operation.condition);
+    list.push(node);
   } else {
-    const list = sequenceAt(next, path.slice(0, -1)), index = path.at(-1);
-    if (!Number.isInteger(index) || !list[index]) throw new Error('Bloco não encontrado');
-    if (operation.type === 'remove') list.splice(index, 1);
-    else if(operation.type==='command'&&explicitTypes.includes(list[index].type)&&operation.node?.type===list[index].type) {
+    const {list,index,node}=nodeAt(next,path);
+    if(operation.type==='remove')list.splice(index,1);
+    else if(operation.type==='move') {
+      const target=index+operation.offset;
+      if(![-1,1].includes(operation.offset)||target<0||target>=list.length)throw new Error('Posição inválida');
+      [list[index],list[target]]=[list[target],list[index]];
+    } else if(operation.type==='condition'&&node.type==='if')node.condition=structuredClone(operation.condition);
+    else if(operation.type==='command'&&explicitTypes.includes(node.type)&&operation.node?.type===node.type) {
       validateCommand(operation.node,operation.mission??{});list[index]=structuredClone(operation.node);
-    }
-    else if (operation.type === 'move') {
-      const target = index + operation.offset;
-      if (![-1, 1].includes(operation.offset) || target < 0 || target >= list.length) throw new Error('Posição inválida');
-      [list[index], list[target]] = [list[target], list[index]];
-    } else if (operation.type === 'condition' && list[index].type === 'if') list[index].condition = structuredClone(operation.condition);
-    else throw new Error('Edição desconhecida');
+    } else if(operation.type==='switchOption'&&node.type==='switch') {
+      const replacement=createSwitch(operation.mission??{},operation.switchOptionId);
+      if(switchOption(operation.mission??{},node)?.id===operation.switchOptionId)return next;
+      const occupied=switchHasCommands(node);
+      if(occupied&&operation.confirmDiscard!==true) {
+        const error=new Error('Este bloco tem comandos. Trocar a escolha exige confirmar a substituição dos caminhos.');error.code='switchHasCommands';throw error;
+      }
+      list[index]=replacement;
+    } else throw new Error('Edição desconhecida');
   }
+  countNodes(next);if(operation.mission)validateProgram(next,operation.mission);
   return next;
 }

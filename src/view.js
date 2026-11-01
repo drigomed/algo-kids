@@ -1,3 +1,7 @@
+import {renderBranch} from './branch-view.js';
+import {renderSwitch} from './switch-view.js';
+import {encodePath,decodePath} from './tree.js';
+export {encodePath,decodePath} from './tree.js';
 import {escapeHtml} from './html.js';
 export {escapeHtml} from './html.js';
 import {explicitTypes,renderExplicitCommand,renderInlinePalette} from './command-view.js';
@@ -10,12 +14,11 @@ export const labels = {move:'Avançar', turnLeft:'Virar à esquerda', turnRight:
 const icons = {move:'↑', turnLeft:'↶', turnRight:'↷'};
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const prefix = (path, full) => full && path.every((part, i) => full[i] === part) && full.length >= path.length;
-export const encodePath = path => path.join('.');
-export const decodePath = path => path ? path.split('.').map(part => ['then','else'].includes(part) ? part : Number(part)) : [];
 export function renderProgram(program, mission, execution, target, disabled, basePath = []) {
   return program.map((node, index) => {
     const path = [...basePath, index], key = encodePath(path), active = same(path, execution.activePath);
     const controls = `<div class="row-controls"><button data-edit="up" data-path="${key}" aria-label="Mover bloco ${index + 1} para cima" ${disabled || index === 0 ? 'disabled' : ''}>↑</button><button data-edit="down" data-path="${key}" aria-label="Mover bloco ${index + 1} para baixo" ${disabled || index === program.length - 1 ? 'disabled' : ''}>↓</button><button data-edit="remove" data-path="${key}" aria-label="Remover bloco ${index + 1}" ${disabled ? 'disabled' : ''}>×</button></div>`;
+    if(node.type==='switch')return renderSwitch({mission,node,path,key,controls,execution,target,disabled,render:(list,path)=>renderProgram(list,mission,execution,target,disabled,path)});
     if(explicitTypes.includes(node.type))return renderExplicitCommand(mission,node,key,controls,active,disabled);
     if (node.type !== 'if') return `<li class="command ${node.type} ${active ? 'active' : ''}" ${active ? 'aria-current="step"' : ''}><span class="command-number">${index + 1}</span><b>${icons[node.type]}</b><span>${labels[node.type]}</span>${controls}</li>`;
     const within = prefix(path, execution.activePath), condition = node.condition;
@@ -23,10 +26,7 @@ export function renderProgram(program, mission, execution, target, disabled, bas
     const option = optionFor(mission,condition);
     const fields = renderConditionFields(mission,condition,key,disabled);
     const options = conditionOptions(mission).map(choice=>`<option value="${escapeHtml(choice.id)}" ${choice.id===option?.id?'selected':''}>${escapeHtml(choice.label)}</option>`).join('');
-    const branches = ['then','else'].map(branch => {
-      const branchPath = [...path, branch], selected = same(target, branchPath);
-      return `<section class="branch ${branch} ${chosen === branch ? 'executing-branch' : ''} ${selected ? 'insertion-branch' : ''}"><div class="branch-heading"><strong>${branch === 'then' ? 'ENTÃO' : 'SENÃO'}</strong><button data-target="${encodePath(branchPath)}" ${disabled ? 'disabled' : ''} aria-pressed="${selected}">${selected ? '✓ Adicionando aqui' : '+ Adicionar aqui'}</button></div>${selected&&!disabled?renderInlinePalette(mission,encodePath(branchPath)):''}<ol class="branch-list">${node[branch].length ? renderProgram(node[branch], mission, execution, target, disabled, branchPath) : '<li class="branch-empty">Este ramo ainda não tem comandos.</li>'}</ol></section>`;
-    }).join('');
+    const branches=['then','else'].map(branch=>renderBranch({mission,list:node[branch],path:[...path,branch],label:branch==='then'?'ENTÃO':'SENÃO',target,chosen:chosen===branch,deciding:!!chosen,disabled,kind:branch,render:(list,path)=>renderProgram(list,mission,execution,target,disabled,path)})).join('');
     return `<li class="condition-block ${within ? 'active-block' : ''} ${active ? 'active' : ''}" ${active ? 'aria-current="step"' : ''}><div class="condition-heading"><strong>SE</strong><span>Bloco ${index + 1}</span>${controls}</div><label class="condition-choice">Pergunta<select data-field="condition" data-path="${key}" ${disabled ? 'disabled' : ''}>${options}</select></label>${fields}${branches}</li>`;
   }).join('');
 }

@@ -1,8 +1,10 @@
 // Orquestra treino e validação sem depender da interface ou de temporizadores.
 import {missionVariants} from './missions.js';
-import {createExecution, stepExecution, terminal} from './engine.js';
+import {createExecution, stepExecution, terminal, validateMission, validateProgram} from './engine.js';
 export function createSession(mission, program, options) {
+  validateMission(mission);
   const scenarios = missionVariants(mission), snapshot = structuredClone(program);
+  scenarios.forEach(scenario=>validateProgram(snapshot,scenario));
   const execution = createExecution(scenarios[0], snapshot, options);
   const passed = execution.state.status === 'won' ? [0] : [];
   return {scenarios, program: snapshot, options, scenarioIndex: 0, passed, testing: false,

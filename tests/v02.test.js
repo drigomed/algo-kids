@@ -102,7 +102,7 @@ for(const m of missions.filter(m=>m.id>=7))for(const variant of missionVariants(
   const first=simulate(input,p);assert.equal(first.at(-1).status,'won');
   assert.deepEqual(first,simulate(input,p));
 });
-for(const m of missions.filter(m=>m.variants))test(`missão ${m.id}: variantes exercitam verdadeiro/falso e rejeitam fixar um ramo`,()=>{
+for(const m of missions.filter(m=>m.variants&&m.id<=21))test(`missão ${m.id}: variantes exercitam verdadeiro/falso e rejeitam fixar um ramo`,()=>{
   const scenarios=missionVariants(m),results=new Set(scenarios.flatMap(v=>simulate(v,m.solution).flatMap(s=>s.events.filter(e=>e.type==='condition').map(e=>e.result))));
   assert.deepEqual([...results].sort(),[false,true]);
   function flatten(nodes, side){return nodes.flatMap(n=>n.type==='if'?flatten(n[side],side):[n]);}

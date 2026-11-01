@@ -1,6 +1,6 @@
 # Missões do Robô — Pequenos Programadores
 
-V0.5 do motor de programação visual, em português do Brasil: restrições físicas, comparações numéricas e seleção explícita de alvos. Monte o programa antes de executar e leve o robô até a estrela.
+V0.6 do motor de programação visual, em português do Brasil: escolhas múltiplas nativas e edição de caminhos aninhados. Monte o programa antes de executar e leve o robô até a estrela.
 
 ## Executar
 
@@ -27,7 +27,7 @@ URL pública esperada: **https://drigomed.github.io/algo-kids/**. O endereço s�
 
 ## Jogar
 
-As definições e soluções 01–19 continuam disponíveis e preservadas. Os cenários 17–21 são demonstrações temporárias do motor; a V0.5 acrescenta somente 20–21. Toque em Avançar, Virar à esquerda ou Virar à direita para adicionar comandos. As setas da lista reordenam; × remove. Executar começa do início; Pausar/Continuar controla a execução; Passo a passo executa um comando. Reiniciar mantém o programa; Limpar apaga os comandos. Alterar um programa pausado reinicia a posição do robô. A direção inicial aparece pela seta sobre o robô; norte fica no topo.
+As definições e soluções 01–21 continuam disponíveis e preservadas. Os cenários 17–23 são demonstrações temporárias do motor; a V0.6 acrescenta somente 22–23. Toque em Avançar, Virar à esquerda ou Virar à direita para adicionar comandos. As setas da lista reordenam; × remove. Executar começa do início; Pausar/Continuar controla a execução; Passo a passo executa um comando. Reiniciar mantém o programa; Limpar apaga os comandos. Alterar um programa pausado reinicia a posição do robô. A direção inicial aparece pela seta sobre o robô; norte fica no topo.
 
 Nas missões 07–08, entrar na casa recolhe o objeto automaticamente. O contador mostra os objetos e a meta da missão. A estrela só encerra a execução quando a meta também estiver satisfeita. Reiniciar restaura todos os objetos e variáveis, preservando o programa.
 
@@ -62,6 +62,12 @@ Inspecionar também pode ler propriedades de objetos e barreiras à frente ou na
 
 O exemplo completo [V05-example.json](docs/V05-example.json) e os contratos de [V05.md](docs/V05.md) mostram a autoria por configuração. A demo 20 testa cargas e capacidades (incluindo tentativas negativas nos testes); a 21 testa inspeção de um objeto e escolha entre três alvos, sem switch.
 
+Na V0.6, **ESCOLHA** consulta uma informação conhecida da memória ou do mundo e executa somente um **CASO**. Se o valor conhecido não tiver caso, executa **OUTRO VALOR**. Memória desconhecida interrompe o programa e não executa o padrão. Zero, Não e texto vazio são valores conhecidos. Após o caminho escolhido, o robô retoma a sequência principal; não há fallthrough nem repetição.
+
+Selecione **Adicionar aqui** no caso, padrão, ENTÃO ou SENÃO desejado. A paleta fica apenas nesse local, no fim da sequência; várias inserções mantêm o destino. O caminho de inserção aparece em texto, e **Voltar ao programa principal** muda explicitamente para a raiz. Os comandos podem ser removidos/reordenados dentro dos casos. Valores e ordem dos casos vêm da missão, sem edição livre. Trocar um preset preenchido ou remover um bloco estruturado com comandos pede confirmação; cancelar mantém o programa.
+
+A demo 22 mantém a inspeção e as três chaves da 21, mas usa um switch real. A 21 continua com SE/SENÃO. A demo 23 usa um valor numérico do mundo, dois casos e um padrão efetivamente vencedor. Os contratos, limites, evento, caminhos e roteiro estão em [V06.md](docs/V06.md), com exemplo completo [V06-example.json](docs/V06-example.json).
+
 ## Estrutura
 
 - `src/engine.js`: API pública do motor, sem DOM.
@@ -69,22 +75,25 @@ O exemplo completo [V05-example.json](docs/V05-example.json) e os contratos de [
 - `src/world.js`: movimento, entidades, eventos, estado e vitória.
 - `src/data.js`, `src/memory.js` e `src/commands.js`: validação JSON, memória tipada, autorização de comandos e execução transacional de interações.
 - `src/interpreter.js`: AST, pilha de frames, caminhos ativos, orçamento e simulação.
-- `src/program.js`: operações imutáveis da árvore do editor.
+- `src/program.js` e `src/tree.js`: operações imutáveis, caminhos estruturais, contagem e seleção do editor.
+- `src/switches.js`: autorização, criação e seleção nativa de switch.
 - `src/session.js`: treino e validação determinística em múltiplos cenários.
 - `src/missions.js`: mantém as missões 01–12 e agrega as missões 13–16 de `src/reactive-missions.js`, com variantes, metadados, dicas e soluções de referência.
 - `src/demo-missions-v05.js`: apenas as duas demonstrações novas de física e seleção de alvos.
+- `src/demo-missions-v06.js`: somente as duas fixtures novas da V0.6.
+- `src/switch-view.js`, `src/branch-view.js` e `src/switch-copy.js`: escolhas, controles de ramo compartilhados e narrativa visual.
 - `src/condition-options.js`: autorização, seleção guiada e rótulos das condições.
 - `src/ui.js`, `src/view.js`, `src/command-view.js` e `src/html.js`: controles, temporização e representação visual do estado e da AST.
 - `src/style.css`: layout responsivo, controles de toque e movimento reduzido.
-- `tests/engine.test.js`, `tests/v02.test.js`, `tests/v03.test.js`, `tests/v04.test.js` e `tests/v05.test.js`: regressão, entidades, coleta, estado, condições, interpretação, editor, sessões e soluções de todas as variantes.
+- `tests/engine.test.js`, `tests/v02.test.js`, `tests/v03.test.js`, `tests/v04.test.js`, `tests/v05.test.js` e `tests/v06.test.js`: regressão, entidades, coleta, estado, condições, interpretação, editor, sessões e soluções de todas as variantes.
 - `scripts/build.js`: empacotamento estático sem dependências.
-- `docs/V02.md`, `docs/V03.md`, `docs/V04.md` e `docs/V05.md`: contratos, critérios de aceite, exemplos e roteiros de revisão; `docs/` mantém o escopo original e o roadmap atualizado.
+- `docs/V02.md`, `docs/V03.md`, `docs/V04.md`, `docs/V05.md` e `docs/V06.md`: contratos, critérios de aceite, exemplos e roteiros de revisão; `docs/` mantém o escopo original e o roadmap atualizado.
 
 Sem backend, APIs, fontes externas, anúncios, contas, telemetria ou dados pessoais. Progresso fica apenas na memória da página e reinicia ao recarregar. Os comandos são nós tipados; não há execução de código arbitrário.
 
 ## Validação e limites
 
-Testes automatizados do motor e build executados. A interface ainda precisa de validação visual em navegadores reais e de uma sessão acompanhada por adulto para confirmar legibilidade, orientação e dificuldade. Não há testes automatizados de navegador ou captura de tela nesta entrega. `for`, `while`, `switch`, som, PWA e persistência ficam para versões posteriores. A pilha do interpretador e o orçamento de instruções poderão ser reaproveitados por novos nós de controle.
+Testes automatizados do motor e build executados. A interface ainda precisa de validação visual em navegadores reais e de uma sessão acompanhada por adulto para confirmar legibilidade, orientação e dificuldade. Não há testes automatizados de navegador ou captura de tela nesta entrega. `for`, `while`, som, PWA e persistência ficam para versões posteriores. A pilha do interpretador e o orçamento de instruções poderão ser reaproveitados por novos nós de controle.
 
 ## Branches e publicação
 
@@ -112,7 +121,7 @@ Com acesso administrativo:
 
 Para republicar manualmente: **Actions → Validar e publicar no GitHub Pages → Run workflow → Branch: main**. O botão manual depende de o workflow existir na branch padrão; configure `main` como padrão após a integração para disponibilizá-lo. Selecionar outra branch nunca autoriza o deploy.
 
-O repositório é **público** e o Pages foi configurado após a entrega da infraestrutura. A V0.5 é entregue em PR e não faz deploy manual nem altera configurações de publicação. Após aprovação e merge na `main`, o workflow existente publica a versão. Se for necessário refazer a configuração, siga as instruções administrativas acima. O campo `private: true` do `package.json` impede publicação acidental no npm e não determina a visibilidade do GitHub. Se o repositório passar a privado, confirme a elegibilidade do Pages no plano da conta em **Settings → Pages** e nas configurações de cobrança. Repositório privado não garante site privado. Se o plano não oferecer Pages para repositórios privados, as alternativas são contratar um plano compatível ou tornar o repositório público **somente mediante aprovação do responsável**. Este workflow não altera plano, visibilidade ou branch padrão.
+O repositório é **público** e o Pages foi configurado após a entrega da infraestrutura. A V0.6 é entregue em PR e não faz deploy manual nem altera configurações de publicação. Após aprovação e merge na `main`, o workflow existente publica a versão. Se for necessário refazer a configuração, siga as instruções administrativas acima. O campo `private: true` do `package.json` impede publicação acidental no npm e não determina a visibilidade do GitHub. Se o repositório passar a privado, confirme a elegibilidade do Pages no plano da conta em **Settings → Pages** e nas configurações de cobrança. Repositório privado não garante site privado. Se o plano não oferecer Pages para repositórios privados, as alternativas são contratar um plano compatível ou tornar o repositório público **somente mediante aprovação do responsável**. Este workflow não altera plano, visibilidade ou branch padrão.
 
 Para exigir a validação antes de integrar PRs, um administrador pode criar uma regra para `main` em **Settings → Rules → Rulesets** (ou **Branches → Branch protection**), exigir Pull Request e o check **Testes e build**, e bloquear force pushes. Essa proteção depende das opções disponíveis no plano e não é criada automaticamente pelo workflow.
 
