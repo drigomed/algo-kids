@@ -4,7 +4,7 @@ const categories={
  tiles:['grass','trail','yard','factory','parking'].flatMap(theme=>['a','b','c'].map(v=>`${theme}/${v}`)),
  goals:['star','beacon','landing-pad'],obstacles:['rock','crate','cone','bollard'],
  collectibles:['crystal','battery','gear','package','chip'],
- reactive:['button_off','button_on','lever_off','lever_on','plate_off','plate_on','bridge_open','bridge_closed','bridge_overload','door_closed','door_open','door_locked','gate_closed','gate_open','traffic_red','traffic_yellow','traffic_green','station_idle','station_active','lock_red','lock_blue','lock_green','key_red','key_blue','key_green','terminal_idle','terminal_active','sign_red','sign_blue','sign_green'],
+ reactive:['button_off','button_on','lever_off','lever_on','plate_off','plate_on','bridge_open','bridge_closed','bridge_overload','door_closed','door_open','door_locked','gate_closed','gate_open','traffic_red','traffic_yellow','traffic_green','station_idle','station_active','lock_red','lock_blue','lock_green','key_red','key_blue','key_green','terminal_idle','terminal_active','sign_red','sign_blue','sign_green','shapekey_redround','shapekey_redsquare','shapekey_blueround','shapekey_bluesquare','stack_idle','bin_idle'],
  fx:['success-burst','failure-impact','collect-pop','interact-spark','stalled-loop','stopped-pause','overload-warning'],
  ui:['success','failure','incomplete','stalled','interrupted']
 };

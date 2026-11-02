@@ -1,0 +1,432 @@
+{
+  "barriers": [
+    {
+      "col": 2,
+      "failureCode": "stackBlocked",
+      "id": "bloqueio",
+      "passableWhen": {
+        "type": "stateEquals",
+        "value": 0,
+        "variable": "restantes"
+      },
+      "row": 2
+    }
+  ],
+  "commandOptions": [
+    {
+      "id": "inspecionar",
+      "label": "Inspecionar quantidade à frente",
+      "node": {
+        "into": "quantidadeObservada",
+        "source": {
+          "entityId": "pilha",
+          "property": "quantidade",
+          "relativeTo": "front",
+          "type": "entityProperty"
+        },
+        "type": "inspect"
+      }
+    },
+    {
+      "id": "retirar",
+      "label": "Retirar uma caixa à frente",
+      "node": {
+        "actionId": "retirar",
+        "entityId": "pilha",
+        "relativeTo": "front",
+        "type": "interact"
+      }
+    },
+    {
+      "id": "descartar",
+      "label": "Jogar uma caixa na lixeira aqui",
+      "node": {
+        "actionId": "descartar",
+        "entityId": "lixeira",
+        "relativeTo": "here",
+        "type": "interact"
+      }
+    }
+  ],
+  "demo": true,
+  "entities": [
+    {
+      "col": 2,
+      "collectible": false,
+      "id": "pilha",
+      "interactions": [
+        {
+          "consume": false,
+          "effects": [
+            {
+              "amount": -1,
+              "type": "increment",
+              "variable": "restantes"
+            },
+            {
+              "type": "set",
+              "value": true,
+              "variable": "carregando"
+            }
+          ],
+          "id": "retirar",
+          "once": false,
+          "relativeTo": [
+            "front"
+          ],
+          "when": {
+            "conditions": [
+              {
+                "type": "stateAtLeast",
+                "value": 1,
+                "variable": "restantes"
+              },
+              {
+                "type": "stateEquals",
+                "value": false,
+                "variable": "carregando"
+              }
+            ],
+            "type": "all"
+          }
+        }
+      ],
+      "onEnter": [],
+      "properties": {
+        "quantidade": {
+          "stateVariable": "restantes"
+        }
+      },
+      "row": 2
+    },
+    {
+      "col": 1,
+      "collectible": false,
+      "id": "lixeira",
+      "interactions": [
+        {
+          "consume": false,
+          "effects": [
+            {
+              "type": "set",
+              "value": false,
+              "variable": "carregando"
+            },
+            {
+              "amount": 1,
+              "type": "increment",
+              "variable": "descartadas"
+            }
+          ],
+          "id": "descartar",
+          "once": false,
+          "relativeTo": [
+            "here"
+          ],
+          "when": {
+            "type": "stateEquals",
+            "value": true,
+            "variable": "carregando"
+          }
+        }
+      ],
+      "onEnter": [],
+      "properties": {
+        "quantidade": {
+          "stateVariable": "descartadas"
+        }
+      },
+      "row": 2
+    }
+  ],
+  "goal": {
+    "col": 4,
+    "row": 2
+  },
+  "grid": {
+    "height": 5,
+    "obstacles": [
+      {
+        "col": 0,
+        "row": 0
+      },
+      {
+        "col": 1,
+        "row": 0
+      },
+      {
+        "col": 2,
+        "row": 0
+      },
+      {
+        "col": 3,
+        "row": 0
+      },
+      {
+        "col": 4,
+        "row": 0
+      },
+      {
+        "col": 0,
+        "row": 1
+      },
+      {
+        "col": 1,
+        "row": 1
+      },
+      {
+        "col": 2,
+        "row": 1
+      },
+      {
+        "col": 3,
+        "row": 1
+      },
+      {
+        "col": 4,
+        "row": 1
+      },
+      {
+        "col": 0,
+        "row": 2
+      },
+      {
+        "col": 0,
+        "row": 3
+      },
+      {
+        "col": 1,
+        "row": 3
+      },
+      {
+        "col": 2,
+        "row": 3
+      },
+      {
+        "col": 3,
+        "row": 3
+      },
+      {
+        "col": 4,
+        "row": 3
+      },
+      {
+        "col": 0,
+        "row": 4
+      },
+      {
+        "col": 1,
+        "row": 4
+      },
+      {
+        "col": 2,
+        "row": 4
+      },
+      {
+        "col": 3,
+        "row": 4
+      },
+      {
+        "col": 4,
+        "row": 4
+      }
+    ],
+    "width": 5
+  },
+  "hint": "A quantidade guardada é lida uma vez, ao entrar no REPITA. Teste a mesma solução com 1, 2 e 3 caixas.",
+  "id": 30,
+  "initialVariables": {
+    "carregando": false,
+    "descartadas": 0,
+    "restantes": 1
+  },
+  "instructions": "Inspecione a pilha. REPITA a quantidade observada: retire UMA caixa e jogue na lixeira. Só depois atravesse até a estrela.",
+  "loopOptions": [
+    {
+      "count": {
+        "kind": "memoryVariable",
+        "name": "quantidadeObservada"
+      },
+      "id": "observado",
+      "kind": "for",
+      "label": "Repetir a quantidade observada"
+    },
+    {
+      "id": "uma",
+      "kind": "for",
+      "label": "Repetir 1 vez (quantidade fixa)",
+      "times": 1
+    }
+  ],
+  "presentation": {
+    "barriers": {
+      "bloqueio": {
+        "label": "Corredor bloqueado pela pilha"
+      }
+    },
+    "entities": {
+      "lixeira": {
+        "failureMessages": {
+          "preconditionFailed": "Primeiro retire uma caixa da pilha."
+        },
+        "glyph": "▤",
+        "interactionMessage": "Caixa descartada na lixeira!",
+        "label": "Lixeira",
+        "role": "delivery"
+      },
+      "pilha": {
+        "failureMessages": {
+          "preconditionFailed": "Verifique se ainda há caixas e se suas mãos estão vazias."
+        },
+        "glyph": "▣",
+        "interactionMessage": "Você retirou uma caixa. Agora jogue-a na lixeira!",
+        "label": "Pilha de caixas",
+        "propertyLabels": {
+          "quantidade": "Caixas restantes"
+        }
+      }
+    },
+    "failures": {
+      "stackBlocked": "Ainda há caixas bloqueando a passagem. Retire e descarte uma por vez."
+    },
+    "memory": {
+      "quantidadeObservada": {
+        "label": "Quantidade observada"
+      }
+    },
+    "stateIndicators": [
+      {
+        "label": "Caixas na pilha",
+        "variable": "restantes"
+      },
+      {
+        "label": "Carregando uma caixa",
+        "variable": "carregando"
+      },
+      {
+        "label": "Caixas na lixeira",
+        "variable": "descartadas"
+      }
+    ],
+    "visual": {
+      "boardStyle": "blueprint",
+      "chapter": "advanced",
+      "entities": {
+        "lixeira": {
+          "assetGroup": "bin",
+          "quantity": {
+            "name": "quantidade",
+            "source": "property"
+          }
+        },
+        "pilha": {
+          "assetGroup": "stack",
+          "quantity": {
+            "empty": "hideImage",
+            "name": "quantidade",
+            "source": "property"
+          }
+        }
+      },
+      "goalSkin": "star"
+    }
+  },
+  "robotMemory": {
+    "quantidadeObservada": {
+      "initial": null,
+      "type": "number"
+    }
+  },
+  "solution": [
+    {
+      "into": "quantidadeObservada",
+      "source": {
+        "entityId": "pilha",
+        "property": "quantidade",
+        "relativeTo": "front",
+        "type": "entityProperty"
+      },
+      "type": "inspect"
+    },
+    {
+      "body": [
+        {
+          "actionId": "retirar",
+          "entityId": "pilha",
+          "relativeTo": "front",
+          "type": "interact"
+        },
+        {
+          "actionId": "descartar",
+          "entityId": "lixeira",
+          "relativeTo": "here",
+          "type": "interact"
+        }
+      ],
+      "count": {
+        "kind": "memoryVariable",
+        "name": "quantidadeObservada"
+      },
+      "type": "for"
+    },
+    {
+      "type": "move"
+    },
+    {
+      "type": "move"
+    },
+    {
+      "type": "move"
+    }
+  ],
+  "start": {
+    "col": 1,
+    "direction": "L",
+    "row": 2
+  },
+  "title": "Quantas caixas preciso retirar?",
+  "variants": [
+    {
+      "id": "caixas1",
+      "initialVariables": {
+        "carregando": false,
+        "descartadas": 0,
+        "restantes": 1
+      },
+      "label": "1 caixa(s)"
+    },
+    {
+      "id": "caixas2",
+      "initialVariables": {
+        "carregando": false,
+        "descartadas": 0,
+        "restantes": 2
+      },
+      "label": "2 caixa(s)"
+    },
+    {
+      "id": "caixas3",
+      "initialVariables": {
+        "carregando": false,
+        "descartadas": 0,
+        "restantes": 3
+      },
+      "label": "3 caixa(s)"
+    }
+  ],
+  "winCondition": {
+    "conditions": [
+      {
+        "type": "stateEquals",
+        "value": 0,
+        "variable": "restantes"
+      },
+      {
+        "type": "stateEquals",
+        "value": false,
+        "variable": "carregando"
+      }
+    ],
+    "type": "all"
+  }
+}

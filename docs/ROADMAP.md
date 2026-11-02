@@ -81,3 +81,20 @@ Ver [V20-PLATFORM-VISION.md](V20-PLATFORM-VISION.md) para papéis, modelo concei
 - Visualização de pseudocódigo ou JavaScript.
 - Integração institucional do Studio somente no planejamento V2.0 (o criador local existe na V0.9).
 - PWA offline e instalação na tela inicial.
+
+## V0.9.2 — Entrega para revisão
+
+- 33 missões e 71 cenários; auditoria antes/depois em V092-MISSION-AUDIT.md.
+- 01–08 intactas; 20 sem inspeção; 21/22 com observação antes das chaves; 24 ganha variante.
+- 26–29: decisões aninhadas, OU por fluxo, quatro casos e seleção hierárquica.
+- 30–33: retirar/descartar, for.count da memória, while e energia opcional.
+- Studio compartilha autorização/AST, exporta dados dinâmicos e mostra fonte resolvida. 91 SVGs, 85 legados preservados.
+- Pendente revisão humana de UX/pedagogia em celular com crianças; não equivale a currículo definitivo.
+
+## V1.0 — Pendências da auditoria
+
+- Revisar repetição de geometrias em 10/12 e 14–16 sem alterar retroativamente o currículo aprovado.
+- Considerar variantes de 18/19; distinguir memória/interação necessárias de capacidades apenas demonstradas.
+- Revisar densidade de campos, foco após histórico e quatro objetos coexistentes com instrutor em aparelho real.
+- E/OU nativos somente após necessidade comprovada; sem implementação nesta versão.
+- V2.0 continua planejamento institucional descrito em V20-PLATFORM-VISION.md, sem backend antecipado.

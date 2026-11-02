@@ -131,8 +131,8 @@ for(const demo of missions.filter(m=>m.id>=22&&m.id<=23))test(`demo ${demo.id}: 
 });
 test('demo 22 escolhe três casos, interação errada falha e ausência de inspeção não usa padrão',()=>{
  const m=missions.find(m=>m.id===22),scenarios=missionVariants(m);assert.deepEqual(scenarios.map(s=>simulate(s,m.solution).flatMap(state=>state.events).find(event=>event.type==='switch').selected.index),[0,1,2]);
- for(const s of scenarios)assert.equal(end(s,m.solution.slice(1)).reason,'memoryUnknown');
- const wrong=structuredClone(m.solution);wrong[1].cases[0].body[0].entityId='opcao-azul';const last=end(scenarios[0],wrong);assert.equal(last.reason,'preconditionFailed');assert.deepEqual(last.consumedIds,[]);assert.equal(last.variables.liberada,false);
+ for(const s of scenarios)assert.equal(end(s,m.solution.filter(n=>n.type!=='inspect')).reason,'memoryUnknown');
+ const wrong=structuredClone(m.solution);wrong.find(n=>n.type==='switch').cases[0].body[0].entityId='opcao-azul';const last=end(scenarios[0],wrong);assert.equal(last.reason,'preconditionFailed');assert.deepEqual(last.consumedIds,[]);assert.equal(last.variables.liberada,false);
 });
 test('demo 23 executa zero, um e default em variantes vencedoras e preserva física',()=>{
  const m=missions.find(m=>m.id===23),variants=missionVariants(m),events=variants.map(s=>simulate(s,m.solution).flatMap(state=>state.events).find(event=>event.type==='switch'));

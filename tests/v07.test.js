@@ -197,7 +197,7 @@ for(const m of missions.filter(m=>m.id<=23))test(`missão ${m.id}: paletas sem R
  assert.equal(m.loopOptions,undefined);assert.equal(renderLoopPalette(m),'');assert.doesNotMatch(renderInlinePalette(m,''),/data-inline-loop|REPITA|ENQUANTO/);
  for(const scenario of missionVariants(m))assert.equal(end(scenario,m.solution).status,'won');
 });
-for(const demo of missions.filter(m=>m.id>=24))test(`demo ${demo.id}: AST única, estados equivalentes, pausa/reset/variantes isolados`,()=>{
+for(const demo of missions.filter(m=>m.id>=24&&m.id<=25))test(`demo ${demo.id}: AST única, estados equivalentes, pausa/reset/variantes isolados`,()=>{
  const program=freeze(structuredClone(demo.solution));
  for(const [i,scenario] of missionVariants(demo).entries()) {
   const {states,execution}=statesByStep(freeze(scenario),program);assert.deepEqual(states,simulate(scenario,program));assert.equal(execution.state.status,'won');
@@ -206,7 +206,7 @@ for(const demo of missions.filter(m=>m.id>=24))test(`demo ${demo.id}: AST única
  let s=createSession(demo,program);s=stepSession(stepSession(s));const paused=freeze(s),snapshot=structuredClone(paused.execution);
  renderLoopTrace(paused.scenarios[0],paused.execution,program);renderProgram(program,paused.scenarios[0],paused.execution,[],false);
  s=stepSession(paused);assert.deepEqual(paused.execution,snapshot);assert.equal(s.execution.state.instructionPointer,3);assert.equal(s.execution.state.events[0].iteration,2);assert.equal(paused.execution.state.instructionPointer,2);s=finish(s);
- if(demo.id===25){assert.equal(s.completed,false);s=startVariantTests(s);assert.equal(s.execution.state.instructionPointer,0);assert.equal(s.execution.frames.length,1);s=finish(s);}assert.equal(s.completed,true);
+ if(demo.variants){assert.equal(s.completed,false);s=startVariantTests(s);assert.equal(s.execution.state.instructionPointer,0);assert.equal(s.execution.frames.length,1);s=finish(s);}assert.equal(s.completed,true);
  const reset=createSession(demo,program);assert.equal(reset.execution.state.instructionPointer,0);assert.deepEqual(reset.execution.frames,[{path:[],index:0}]);assert.equal(reset.execution.state.col,0);assert.deepEqual(reset.program,program);
 });
 test('UI mantém confirmação antes de remover corpos, timers incrementais e estilos restritos',async()=>{

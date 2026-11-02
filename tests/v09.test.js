@@ -68,7 +68,7 @@ test('inspector estruturado: condições por contexto, propriedades e tipos, sem
 test('todas as variantes são testadas mesmo após falha; estados stalled/limit/unknown/interrupção',()=>{
  const m=simple();m.variants=[{id:'ok'},{id:'bloqueada',grid:{width:5,height:5,obstacles:[{row:4,col:2}]}},{id:'ok-final'}];const t=finish(createPlaytest(m));assert.deepEqual(t.reports.map(r=>r.status),['won','collision','won']);assert.equal(referenceValidated(t,m),false);
  const loop={...newMission(),initialVariables:{open:true},loopOptions:[{id:'loop',label:'Aberto?',kind:'while',condition:{type:'stateEquals',variable:'open',value:true}}],solution:[{type:'while',condition:{type:'stateEquals',variable:'open',value:true},body:[]}]};assert.equal(finish(createPlaytest(loop)).reports[0].status,'stalled');assert.equal(finish(createPlaytest(loop,{instructionLimit:1})).reports[0].status,'limit');
- const memory=structuredClone(missions.find(m=>m.id===22));memory.solution=memory.solution.slice(1);assert.equal(finish(createPlaytest(memory)).reports[0].reason,'memoryUnknown');
+ const memory=structuredClone(missions.find(m=>m.id===22));memory.solution=memory.solution.filter(n=>n.type!=='inspect');assert.equal(finish(createPlaytest(memory)).reports[0].reason,'memoryUnknown');
  const begun=stepPlaytest(createPlaytest(simple())),stopped=interruptPlaytest(begun);assert.equal(testState(stopped).status,'stopped');assert.equal(stopped.done,true);assert.equal(stepPlaytest(stopped),stopped);assert.equal(testState(begun).status,'running');assert.equal(stopped.reports[0].instructions,1);
 });
 test('rascunho local versionado, indisponibilidade e quota não impedem exportação',()=>{

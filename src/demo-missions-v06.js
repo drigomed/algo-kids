@@ -1,13 +1,13 @@
 // Duas fixtures técnicas: decisões múltiplas nativas, não conteúdo definitivo.
-import {demoMissionsV05} from './demo-missions-v05.js';
+import {lockMissionData,approach,returnToGoal} from './lock-mission-data.js';
 const seq=text=>text.split('').map(c=>({type:{A:'move',D:'turnRight',E:'turnLeft'}[c]}));
 const colors=[['vermelho','Chave vermelha'],['azul','Chave azul'],['verde','Chave verde']];
 const selector={kind:'memoryVariable',name:'corNecessaria'};
-const mission22={...structuredClone(demoMissionsV05[1]),id:22,title:'As três chaves — ESCOLHA',
+const mission22={...lockMissionData(),id:22,title:'As três chaves — ESCOLHA',
  instructions:'Inspecione a fechadura e use ESCOLHA para seguir apenas o caminho da cor guardada. Depois avance até a saída.',
  hint:'Cada caso guarda seus próprios comandos. A mesma escolha deve funcionar nas três variantes. Sem observar, a memória continua desconhecida.',
  switchOptions:[{id:'chavePelaCor',label:'Escolher conforme a cor guardada',selector,cases:colors.map(([value,label])=>({value,label})),defaultLabel:'Outra cor'}],
- solution:[structuredClone(demoMissionsV05[1].solution[0]),{type:'switch',selector:structuredClone(selector),cases:colors.map(([value])=>({value,body:[{type:'interact',relativeTo:'front',actionId:'take',entityId:`opcao-${value}`}]})),default:[]},...seq('AAA')]
+ solution:[...approach(),{type:'switch',selector:structuredClone(selector),cases:colors.map(([value])=>({value,body:[{type:'interact',relativeTo:'front',actionId:'take',entityId:`opcao-${value}`}]})),default:[]},...returnToGoal()]
 };
 const choiceSelector={kind:'worldVariable',name:'modo'};
 const equal=(variable,value)=>({type:'stateEquals',variable,value});

@@ -35,6 +35,7 @@ const reasons={memoryUnknown:'Antes, descubra e guarde essa informação. Use In
 export function failureMessage(mission,state) {
  if(state.status==='energyDepleted')return energyMessage;
  const event=state.events.find(event=>event.type==='actionFailed');
+ if(event?.reason==='loopCountInvalid')return 'A quantidade observada deve ser um número inteiro de 0 a 20. Inspecione uma quantidade válida antes de repetir.';
  if(event?.reason==='memoryUnknown'&&['for','while'].includes(event.action))return 'Ainda não sei essa informação; não consigo decidir se devo continuar.';
  return mission.presentation?.entities?.[event?.entityId]?.failureMessages?.[state.reason]??reasons[state.reason]??'Não foi possível realizar a ação. Confira o programa e tente de novo.';
 }

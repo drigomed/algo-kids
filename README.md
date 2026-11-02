@@ -1,6 +1,10 @@
+# V0.9.2 — Escolhas e repetições
+
+33 missões, 71 cenários. A evolução inclui REPITA da memória, pilha/lixeira declarativas, quatro novos desafios de seleção e quatro de repetição; 01–08 preservadas. [Notas](docs/V092.md), [auditoria](docs/V092-MISSION-AUDIT.md), [contrato](docs/V092-JSON-CONTRACT.md) e [validação](docs/V092-VALIDATION.md). Nenhum merge/deploy manual faz parte da entrega.
+
 # Missões do Robô — Pequenos Programadores
 
-V0.9.1 do Algo Kids: jogo educativo em português e Studio local de autoria de missões, com o mesmo motor e os 85 SVGs originais da V0.8. Monte o programa antes de executar e leve o robô até a estrela.
+V0.9.2 do Algo Kids: jogo educativo em português e Studio local de autoria de missões, com o mesmo motor e 91 SVGs locais (85 originais V0.8 + 6 aditivos). Monte o programa antes de executar e leve o robô até a estrela.
 
 ## Executar
 
@@ -72,7 +76,7 @@ Na V0.7, **REPITA N VEZES** executa seu CORPO exatamente N vezes (1–20 conform
 
 Selecione **Adicionar aqui** no CORPO e use sua paleta local. Volte explicitamente ao programa principal para inserir os comandos posteriores. Trocar presets da mesma categoria preserva o corpo; remover um bloco preenchido pede confirmação. Uma execução longa continua sujeita ao orçamento defensivo; a V0.7.1 também detecta ciclos sem progresso, mantendo a interface pausável. Não há expansão da AST nem mudança na física.
 
-As demos 24/25 verificam repetição contada e corredor de comprimento variável. São fixtures técnicas, não novas etapas pedagógicas definitivas. Consulte [V07.md](docs/V07.md) para contratos, eventos, orçamento, resultados e revisão no celular; [V07-example.json](docs/V07-example.json) exemplifica autoria inteiramente declarativa. **565 testes passaram**, além de build e validação do artefato estático (139 arquivos, 278 referências). A revisão visual em aparelho permanece pendente; a entrega é por PR, sem merge automático.
+As demos 24/25 verificam repetição contada e corredor de comprimento variável. São fixtures técnicas, não novas etapas pedagógicas definitivas. Consulte [V07.md](docs/V07.md) para contratos, eventos, orçamento, resultados e revisão no celular; [V07-example.json](docs/V07-example.json) exemplifica autoria inteiramente declarativa. **751 testes passaram**, além de build e validação do artefato estático (147 arquivos, 289 referências). Há revisão local em Chromium; a revisão em aparelho físico permanece pendente; a entrega é por PR, sem merge automático.
 
 Na V0.7.1, um **ENQUANTO** que reencontra a mesma situação com condição verdadeira termina como falha por falta de progresso. A comparação inclui posição, direção, mundo, memória, coleta, consumo e interações; não considera somente se o robô andou. O histórico é separado por ativação, com janela de 256 assinaturas; o orçamento continua protegendo execuções longas. REPITA finito e algoritmos que alteram estado continuam funcionando.
 
@@ -92,7 +96,7 @@ Execute `npm run dev` e abra **http://localhost:5173/studio/**. Após integrar/p
 
 Crie mapa por toque/clique/teclado, edite regras em formulários estruturados, configure variantes e monte a solução por blocos. Use Testar todas as variantes para conferir o programa de referência. Exportar gera JSON puro; importar reproduz regras/tipos/AST e não altera o catálogo. O Studio mantém um único rascunho em localStorage, com desfazer/refazer em memória. Se armazenamento falhar, continua funcionando e orienta exportar o trabalho.
 
-[Uso e limites](docs/V09.md) · [Contrato mission-json/v1](docs/V09-JSON-CONTRACT.md) · [Exemplo reativo exportado](docs/V09-example.json). O jogo infantil na raiz, suas 25 definições/soluções e os 85 SVGs permanecem preservados. Nenhuma missão é publicada automaticamente pelo Studio. Revisão real de UX no celular permanece pendente; os testes de controlador não substituem navegador.
+[Uso e limites](docs/V09.md) · [Contrato mission-json/v1](docs/V09-JSON-CONTRACT.md) · [Exemplo reativo exportado](docs/V09-example.json). O jogo infantil na raiz, as definições 01–08 e os 85 SVGs legados permanecem preservados; mudanças curriculares autorizadas estão descritas em V092.md. Nenhuma missão é publicada automaticamente pelo Studio. Capturas reais de Chromium estão em docs/review-v092; UX em aparelho físico e com crianças permanece pendente.
 
 A [visão V2.0](docs/V20-PLATFORM-VISION.md) planeja níveis versionados, escolas, administradores, instrutores, alunos, turmas, matrículas, atribuições e progresso. **Não há backend, login, gestão institucional ou dados de alunos na V0.9.**
 
@@ -126,7 +130,7 @@ Energia é opt-in por missão/variante: bateria e seis custos definidos pelo aut
 - `src/ui.js`, `src/view.js`, `src/command-view.js` e `src/html.js`: controles, temporização e representação visual do estado e da AST.
 - `src/style.css`: layout responsivo, controles de toque e movimento reduzido.
 - `tests/engine.test.js`, `tests/v02.test.js`, `tests/v03.test.js`, `tests/v04.test.js`, `tests/v05.test.js`, `tests/v06.test.js`, `tests/v07.test.js` e `tests/v071.test.js`: regressão, entidades, coleta, estado, condições, interpretação, editor, sessões e soluções de todas as variantes.
-- `src/assets/`: 85 SVGs originais locais; `src/presentation/`: registry, configuração, resolvedor, efeitos e composição da cena.
+- `src/assets/`: 91 SVGs locais, incluindo os 85 legados intactos; `src/presentation/`: registry, configuração, resolvedor, efeitos e composição da cena.
 - `tests/v08.test.js` e `tests/fixtures/v071-domain-baseline.json`: catálogo, segurança, apresentação e regressão do domínio.
 - `studio/index.html` e `src/studio/`: editor separado, formulários, modelo imutável, variantes, playtest, I/O e autosave.
 - `tests/v09.test.js`: fluxos de autoria/controlador, round-trip, variantes e segurança.

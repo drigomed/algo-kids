@@ -17,3 +17,5 @@ Prioridades:
 9. Antes de pedir ao Codex novas features, definir critérios de aceite. Revisar testes e comportamento real das missões.
 
 Considere `README.md`, `AGENTS.md` e `docs/*.md` como a documentação de referência. Quando mudar escopo, atualize os documentos antes da implementação.
+
+V0.9.2: base main 05eccf6, branch feat/v092-curriculum-decisions-loops; seguir docs/V092.md e contratos incrementais, preservar 01–08, executar teste/build/assets/dist, atualizar auditoria, abrir PR sem merge ou deploy manual.

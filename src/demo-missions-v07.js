@@ -7,7 +7,8 @@ export const demoMissionsV07=[{
   hint:'Coloque um Avançar no CORPO. A curva e o último passo ficam no programa principal.',
   grid:grid([]),start:{row:4,col:0,direction:'L'},goal:{row:3,col:4},
   loopOptions:[{id:'quatro',label:'Repetir 4 vezes',kind:'for',times:4}],
-  solution:[{type:'for',times:4,body:[{type:'move'}]},...structuredClone(finish)]
+  solution:[{type:'for',times:4,body:[{type:'move'}]},...structuredClone(finish)],
+  variants:[{id:'leste',label:'Quatro passos a leste'},{id:'norte',label:'Quatro passos ao norte',start:{row:4,col:4,direction:'N'},goal:{row:0,col:3}}]
 },{
   id:25,title:'Enquanto o caminho está livre',demo:true,
   instructions:'Avance ENQUANTO o caminho estiver livre. Depois vire à esquerda e avance até a estrela. Teste o mesmo programa nos dois corredores.',
