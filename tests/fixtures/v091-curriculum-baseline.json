@@ -1,0 +1,5446 @@
+{
+  "commit": "05eccf602b6a88024385e8b9b1a11833c2066959",
+  "missions": [
+    {
+      "id": 1,
+      "title": "Olá, estrela!",
+      "instructions": "Leve o robô até a estrela. Um passo de cada vez!",
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 1,
+            "col": 1
+          },
+          {
+            "row": 1,
+            "col": 2
+          },
+          {
+            "row": 1,
+            "col": 3
+          }
+        ]
+      },
+      "start": {
+        "row": 3,
+        "col": 1,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 3,
+        "col": 4
+      },
+      "solution": [
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        }
+      ],
+      "hint": "O robô já está olhando para a estrela. Cada Avançar anda uma casa."
+    },
+    {
+      "id": 2,
+      "title": "Uma nova direção",
+      "instructions": "A estrela está lá em cima. Como virar para encontrá-la?",
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 2,
+            "col": 0
+          },
+          {
+            "row": 2,
+            "col": 4
+          }
+        ]
+      },
+      "start": {
+        "row": 4,
+        "col": 2,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 1,
+        "col": 2
+      },
+      "solution": [
+        {
+          "type": "turnLeft"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        }
+      ],
+      "hint": "Virar muda para onde o robô olha. Ele continua na mesma casa."
+    },
+    {
+      "id": 3,
+      "title": "A curva do caminho",
+      "instructions": "Siga em frente e descubra a hora de virar.",
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 1,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 2
+          },
+          {
+            "row": 4,
+            "col": 2
+          }
+        ]
+      },
+      "start": {
+        "row": 4,
+        "col": 0,
+        "direction": "N"
+      },
+      "goal": {
+        "row": 2,
+        "col": 3
+      },
+      "solution": [
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnRight"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        }
+      ],
+      "hint": "Imagine o caminho em duas partes: primeiro para cima, depois para a direita."
+    },
+    {
+      "id": 4,
+      "title": "Pedra no caminho",
+      "instructions": "Tem uma pedra à frente. Vamos encontrar outro caminho?",
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 3,
+            "col": 2
+          },
+          {
+            "row": 4,
+            "col": 2
+          },
+          {
+            "row": 0,
+            "col": 1
+          }
+        ]
+      },
+      "start": {
+        "row": 3,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 3,
+        "col": 4
+      },
+      "solution": [
+        {
+          "type": "turnLeft"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnRight"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnRight"
+        },
+        {
+          "type": "move"
+        }
+      ],
+      "hint": "Contorne a pedra por cima. Vire antes de chegar nela."
+    },
+    {
+      "id": 5,
+      "title": "Entre as rochas",
+      "instructions": "Ajude o robô a explorar um caminho com mais curvas.",
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 2,
+            "col": 0
+          },
+          {
+            "row": 2,
+            "col": 1
+          },
+          {
+            "row": 2,
+            "col": 2
+          },
+          {
+            "row": 4,
+            "col": 2
+          },
+          {
+            "row": 1,
+            "col": 4
+          }
+        ]
+      },
+      "start": {
+        "row": 4,
+        "col": 0,
+        "direction": "N"
+      },
+      "goal": {
+        "row": 0,
+        "col": 4
+      },
+      "solution": [
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnRight"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnLeft"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnRight"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnLeft"
+        },
+        {
+          "type": "move"
+        }
+      ],
+      "hint": "Há uma passagem à direita das três rochas do meio. Observe para onde o robô olha depois de cada curva."
+    },
+    {
+      "id": 6,
+      "title": "Grande expedição",
+      "instructions": "Junte tudo que aprendeu e encontre a última estrela!",
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 1
+          },
+          {
+            "row": 3,
+            "col": 3
+          },
+          {
+            "row": 3,
+            "col": 4
+          },
+          {
+            "row": 1,
+            "col": 1
+          },
+          {
+            "row": 1,
+            "col": 2
+          },
+          {
+            "row": 1,
+            "col": 3
+          }
+        ]
+      },
+      "start": {
+        "row": 4,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 0,
+        "col": 4
+      },
+      "solution": [
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnLeft"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnRight"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnLeft"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        }
+      ],
+      "hint": "Comece pela passagem no meio das rochas. Depois, explore o lado de cima."
+    },
+    {
+      "id": 7,
+      "title": "Tesouros pelo caminho",
+      "instructions": "Recolha os dois cristais e chegue à estrela.",
+      "start": {
+        "row": 3,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 3,
+        "col": 4
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 1,
+            "col": 1
+          },
+          {
+            "row": 1,
+            "col": 3
+          }
+        ]
+      },
+      "initialVariables": {
+        "finds": 0
+      },
+      "entities": [
+        {
+          "id": "cristal-1",
+          "row": 3,
+          "col": 1,
+          "collectible": true,
+          "onEnter": [
+            {
+              "type": "increment",
+              "variable": "finds",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "id": "cristal-2",
+          "row": 3,
+          "col": 3,
+          "collectible": true,
+          "onEnter": [
+            {
+              "type": "increment",
+              "variable": "finds",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "solution": [
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        }
+      ],
+      "winCondition": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "atGoal"
+          },
+          {
+            "type": "stateAtLeast",
+            "variable": "finds",
+            "value": 2
+          }
+        ]
+      },
+      "presentation": {
+        "entityGlyph": "●",
+        "entityLabel": "Cristal",
+        "variables": {
+          "finds": "Cristais"
+        },
+        "progress": {
+          "variable": "finds",
+          "target": 2
+        }
+      },
+      "hint": "O robô recolhe um cristal ao entrar na casa. Acompanhe o contador!"
+    },
+    {
+      "id": 8,
+      "title": "Ainda falta um!",
+      "instructions": "Pegue dois cristais. Pode passar pela estrela e voltar depois!",
+      "start": {
+        "row": 4,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 4,
+        "col": 2
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 2,
+            "col": 1
+          },
+          {
+            "row": 2,
+            "col": 3
+          }
+        ]
+      },
+      "initialVariables": {
+        "finds": 0
+      },
+      "entities": [
+        {
+          "id": "cristal-1",
+          "row": 4,
+          "col": 1,
+          "collectible": true,
+          "onEnter": [
+            {
+              "type": "increment",
+              "variable": "finds",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "id": "cristal-2",
+          "row": 3,
+          "col": 2,
+          "collectible": true,
+          "onEnter": [
+            {
+              "type": "increment",
+              "variable": "finds",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "solution": [
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnLeft"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnRight"
+        },
+        {
+          "type": "turnRight"
+        },
+        {
+          "type": "move"
+        }
+      ],
+      "winCondition": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "atGoal"
+          },
+          {
+            "type": "stateAtLeast",
+            "variable": "finds",
+            "value": 2
+          }
+        ]
+      },
+      "presentation": {
+        "entityGlyph": "●",
+        "entityLabel": "Cristal",
+        "variables": {
+          "finds": "Cristais"
+        },
+        "progress": {
+          "variable": "finds",
+          "target": 2
+        }
+      },
+      "hint": "Se faltar um cristal, a estrela espera. Procure o cristal acima dela e depois volte."
+    },
+    {
+      "id": 9,
+      "title": "Qual caminho está livre?",
+      "instructions": "SE o caminho estiver livre, siga por cima. SENÃO, explore pela direita.",
+      "start": {
+        "row": 4,
+        "col": 2,
+        "direction": "N"
+      },
+      "goal": {
+        "row": 2,
+        "col": 4
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 4,
+            "col": 1
+          },
+          {
+            "row": 4,
+            "col": 3
+          }
+        ]
+      },
+      "initialVariables": {
+        "finds": 0
+      },
+      "entities": [
+        {
+          "id": "cristal-1",
+          "row": 3,
+          "col": 2,
+          "collectible": true,
+          "onEnter": [
+            {
+              "type": "increment",
+              "variable": "finds",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "solution": [
+        {
+          "type": "if",
+          "condition": {
+            "type": "pathClear"
+          },
+          "then": [
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            }
+          ],
+          "else": [
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnLeft"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            }
+          ]
+        }
+      ],
+      "winCondition": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "atGoal"
+          },
+          {
+            "type": "stateAtLeast",
+            "variable": "finds",
+            "value": 1
+          }
+        ]
+      },
+      "presentation": {
+        "entityGlyph": "●",
+        "entityLabel": "Cristal",
+        "variables": {
+          "finds": "Cristais"
+        },
+        "progress": {
+          "variable": "finds",
+          "target": 1
+        }
+      },
+      "hint": "Monte um SE com dois caminhos. Depois do treino, uma rocha muda de lugar!",
+      "variants": [
+        {
+          "id": "cima",
+          "label": "Caminho por cima"
+        },
+        {
+          "id": "direita",
+          "label": "Caminho pela direita",
+          "grid": {
+            "width": 5,
+            "height": 5,
+            "obstacles": [
+              {
+                "row": 4,
+                "col": 1
+              },
+              {
+                "row": 3,
+                "col": 2
+              }
+            ]
+          },
+          "entities": [
+            {
+              "id": "cristal-1",
+              "row": 4,
+              "col": 3,
+              "collectible": true,
+              "onEnter": [
+                {
+                  "type": "increment",
+                  "variable": "finds",
+                  "amount": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Já tenho o suficiente?",
+      "instructions": "Ande uma casa. SE já tiver um cristal, siga até a estrela. SENÃO, busque mais acima.",
+      "start": {
+        "row": 4,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 4,
+        "col": 3
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 1
+          }
+        ]
+      },
+      "initialVariables": {
+        "finds": 0
+      },
+      "entities": [
+        {
+          "id": "cristal-1",
+          "row": 4,
+          "col": 1,
+          "collectible": true,
+          "onEnter": [
+            {
+              "type": "increment",
+              "variable": "finds",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "solution": [
+        {
+          "type": "move"
+        },
+        {
+          "type": "if",
+          "condition": {
+            "type": "stateAtLeast",
+            "variable": "finds",
+            "value": 1
+          },
+          "then": [
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            }
+          ],
+          "else": [
+            {
+              "type": "turnLeft"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            }
+          ]
+        }
+      ],
+      "winCondition": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "atGoal"
+          },
+          {
+            "type": "stateAtLeast",
+            "variable": "finds",
+            "value": 1
+          }
+        ]
+      },
+      "presentation": {
+        "entityGlyph": "●",
+        "entityLabel": "Cristal",
+        "variables": {
+          "finds": "Cristais"
+        },
+        "progress": {
+          "variable": "finds",
+          "target": 1
+        }
+      },
+      "hint": "O SE olha o contador na hora de executar, depois do primeiro passo. O cristal pode mudar de casa.",
+      "variants": [
+        {
+          "id": "perto",
+          "label": "Cristal no primeiro passo"
+        },
+        {
+          "id": "desvio",
+          "label": "Cristal no desvio",
+          "grid": {
+            "width": 5,
+            "height": 5,
+            "obstacles": [
+              {
+                "row": 3,
+                "col": 0
+              },
+              {
+                "row": 4,
+                "col": 2
+              }
+            ]
+          },
+          "entities": [
+            {
+              "id": "cristal-1",
+              "row": 3,
+              "col": 1,
+              "collectible": true,
+              "onEnter": [
+                {
+                  "type": "increment",
+                  "variable": "finds",
+                  "amount": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Uma decisão dentro da outra",
+      "instructions": "Observe o caminho. Depois, consulte o contador para escolher o próximo trecho.",
+      "start": {
+        "row": 4,
+        "col": 2,
+        "direction": "N"
+      },
+      "goal": {
+        "row": 2,
+        "col": 4
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 4,
+            "col": 1
+          },
+          {
+            "row": 4,
+            "col": 3
+          },
+          {
+            "row": 3,
+            "col": 1
+          }
+        ]
+      },
+      "initialVariables": {
+        "finds": 0
+      },
+      "entities": [
+        {
+          "id": "cristal-1",
+          "row": 3,
+          "col": 2,
+          "collectible": true,
+          "onEnter": [
+            {
+              "type": "increment",
+              "variable": "finds",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "solution": [
+        {
+          "type": "if",
+          "condition": {
+            "type": "pathClear"
+          },
+          "then": [
+            {
+              "type": "move"
+            },
+            {
+              "type": "if",
+              "condition": {
+                "type": "stateAtLeast",
+                "variable": "finds",
+                "value": 1
+              },
+              "then": [
+                {
+                  "type": "move"
+                },
+                {
+                  "type": "turnRight"
+                },
+                {
+                  "type": "move"
+                },
+                {
+                  "type": "move"
+                }
+              ],
+              "else": [
+                {
+                  "type": "turnLeft"
+                },
+                {
+                  "type": "move"
+                },
+                {
+                  "type": "turnRight"
+                },
+                {
+                  "type": "move"
+                },
+                {
+                  "type": "move"
+                },
+                {
+                  "type": "turnRight"
+                },
+                {
+                  "type": "move"
+                },
+                {
+                  "type": "move"
+                },
+                {
+                  "type": "move"
+                },
+                {
+                  "type": "turnRight"
+                },
+                {
+                  "type": "move"
+                }
+              ]
+            }
+          ],
+          "else": [
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnLeft"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            }
+          ]
+        }
+      ],
+      "winCondition": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "atGoal"
+          },
+          {
+            "type": "stateAtLeast",
+            "variable": "finds",
+            "value": 1
+          }
+        ]
+      },
+      "presentation": {
+        "entityGlyph": "●",
+        "entityLabel": "Cristal",
+        "variables": {
+          "finds": "Cristais"
+        },
+        "progress": {
+          "variable": "finds",
+          "target": 1
+        }
+      },
+      "hint": "Você pode colocar outro SE dentro de ENTÃO. Cada decisão consulta a posição e o contador daquele momento.",
+      "variants": [
+        {
+          "id": "direto",
+          "label": "Cristal no caminho de cima"
+        },
+        {
+          "id": "lateral",
+          "label": "Cristal na passagem lateral",
+          "grid": {
+            "width": 5,
+            "height": 5,
+            "obstacles": [
+              {
+                "row": 4,
+                "col": 1
+              },
+              {
+                "row": 4,
+                "col": 3
+              },
+              {
+                "row": 2,
+                "col": 2
+              }
+            ]
+          },
+          "entities": [
+            {
+              "id": "cristal-1",
+              "row": 3,
+              "col": 1,
+              "collectible": true,
+              "onEnter": [
+                {
+                  "type": "increment",
+                  "variable": "finds",
+                  "amount": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "direita",
+          "label": "Passagem pela direita",
+          "grid": {
+            "width": 5,
+            "height": 5,
+            "obstacles": [
+              {
+                "row": 4,
+                "col": 1
+              },
+              {
+                "row": 3,
+                "col": 2
+              }
+            ]
+          },
+          "entities": [
+            {
+              "id": "cristal-1",
+              "row": 4,
+              "col": 3,
+              "collectible": true,
+              "onEnter": [
+                {
+                  "type": "increment",
+                  "variable": "finds",
+                  "amount": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Cada descoberta tem seu valor",
+      "instructions": "Junte 2 pontos e chegue à estrela. Um cristal pode valer 1 ou 2 pontos!",
+      "start": {
+        "row": 4,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 4,
+        "col": 3
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 1
+          }
+        ]
+      },
+      "initialVariables": {
+        "points": 0
+      },
+      "entities": [
+        {
+          "id": "cristal-1",
+          "row": 4,
+          "col": 1,
+          "collectible": true,
+          "onEnter": [
+            {
+              "type": "increment",
+              "variable": "points",
+              "amount": 2
+            }
+          ]
+        }
+      ],
+      "solution": [
+        {
+          "type": "move"
+        },
+        {
+          "type": "if",
+          "condition": {
+            "type": "stateAtLeast",
+            "variable": "points",
+            "value": 2
+          },
+          "then": [
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            }
+          ],
+          "else": [
+            {
+              "type": "turnLeft"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            }
+          ]
+        }
+      ],
+      "winCondition": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "atGoal"
+          },
+          {
+            "type": "stateAtLeast",
+            "variable": "points",
+            "value": 2
+          }
+        ]
+      },
+      "presentation": {
+        "entityGlyph": "●",
+        "entityLabel": "Cristal",
+        "variables": {
+          "points": "Pontos"
+        },
+        "progress": {
+          "variable": "points",
+          "target": 2
+        }
+      },
+      "hint": "Consulte os pontos, não só o número de objetos. Se tiver menos de 2, procure outro cristal no desvio.",
+      "variants": [
+        {
+          "id": "duplo",
+          "label": "Primeiro cristal vale 2"
+        },
+        {
+          "id": "simples",
+          "label": "Dois cristais de valor 1",
+          "grid": {
+            "width": 5,
+            "height": 5,
+            "obstacles": [
+              {
+                "row": 3,
+                "col": 0
+              },
+              {
+                "row": 4,
+                "col": 2
+              }
+            ]
+          },
+          "entities": [
+            {
+              "id": "cristal-1",
+              "row": 4,
+              "col": 1,
+              "collectible": true,
+              "onEnter": [
+                {
+                  "type": "increment",
+                  "variable": "points",
+                  "amount": 1
+                }
+              ]
+            },
+            {
+              "id": "cristal-2",
+              "row": 3,
+              "col": 1,
+              "collectible": true,
+              "onEnter": [
+                {
+                  "type": "increment",
+                  "variable": "points",
+                  "amount": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "title": "O semáforo",
+      "instructions": "Olhe o sinal à frente: verde libera o caminho de cima; vermelho pede outro percurso.",
+      "hint": "A pergunta do SE lê o sinal na casa à frente. O mesmo programa precisa servir para as duas cores.",
+      "start": {
+        "row": 4,
+        "col": 2,
+        "direction": "N"
+      },
+      "goal": {
+        "row": 2,
+        "col": 4
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 4,
+            "col": 1
+          },
+          {
+            "row": 4,
+            "col": 3
+          }
+        ],
+        "cells": [
+          {
+            "row": 3,
+            "col": 2,
+            "properties": {
+              "signal": {
+                "stateVariable": "signal"
+              }
+            }
+          }
+        ]
+      },
+      "initialVariables": {
+        "signal": "green"
+      },
+      "barriers": [
+        {
+          "id": "passagem",
+          "row": 3,
+          "col": 2,
+          "passableWhen": {
+            "type": "stateEquals",
+            "variable": "signal",
+            "value": "green"
+          }
+        }
+      ],
+      "conditionOptions": [
+        {
+          "id": "sinal",
+          "label": "O sinal à frente está verde?",
+          "condition": {
+            "type": "cellPropertyEquals",
+            "relativeTo": "front",
+            "property": "signal",
+            "value": "green"
+          },
+          "values": [
+            {
+              "value": "green",
+              "label": "Verde",
+              "question": "O sinal à frente está verde?"
+            },
+            {
+              "value": "red",
+              "label": "Vermelho",
+              "question": "O sinal à frente está vermelho?"
+            }
+          ]
+        }
+      ],
+      "solution": [
+        {
+          "type": "if",
+          "condition": {
+            "type": "cellPropertyEquals",
+            "relativeTo": "front",
+            "property": "signal",
+            "value": "green"
+          },
+          "then": [
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            }
+          ],
+          "else": [
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnLeft"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "verde",
+          "label": "Sinal verde"
+        },
+        {
+          "id": "vermelho",
+          "label": "Sinal vermelho",
+          "initialVariables": {
+            "signal": "red"
+          },
+          "grid": {
+            "width": 5,
+            "height": 5,
+            "obstacles": [
+              {
+                "row": 4,
+                "col": 1
+              }
+            ],
+            "cells": [
+              {
+                "row": 3,
+                "col": 2,
+                "properties": {
+                  "signal": {
+                    "stateVariable": "signal"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "presentation": {
+        "properties": {
+          "signal": {
+            "label": "Sinal",
+            "values": [
+              {
+                "value": "green",
+                "label": "Verde",
+                "glyph": "●",
+                "tone": "green"
+              },
+              {
+                "value": "red",
+                "label": "Pare",
+                "glyph": "■",
+                "tone": "red"
+              }
+            ]
+          }
+        },
+        "barriers": {
+          "passagem": {
+            "label": "Passagem do sinal",
+            "openGlyph": "↥",
+            "closedGlyph": "▥"
+          }
+        },
+        "stateIndicators": [
+          {
+            "variable": "signal",
+            "label": "Sinal",
+            "values": [
+              {
+                "value": "green",
+                "label": "Verde"
+              },
+              {
+                "value": "red",
+                "label": "Vermelho"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "title": "A porta trancada",
+      "instructions": "Avance uma casa. Estou com a chave? Se sim, atravesse a porta; senão, procure a chave pelo desvio.",
+      "hint": "A chave muda o estado do robô. A porta libera a passagem assim que esse estado muda.",
+      "start": {
+        "row": 4,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 4,
+        "col": 3
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 1
+          }
+        ]
+      },
+      "initialVariables": {
+        "temChave": false
+      },
+      "entities": [
+        {
+          "id": "objeto",
+          "row": 4,
+          "col": 1,
+          "collectible": true,
+          "onEnter": [
+            {
+              "type": "set",
+              "variable": "temChave",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "barriers": [
+        {
+          "id": "passagem",
+          "row": 4,
+          "col": 2,
+          "passableWhen": {
+            "type": "stateEquals",
+            "variable": "temChave",
+            "value": true
+          }
+        }
+      ],
+      "winCondition": {
+        "type": "stateEquals",
+        "variable": "temChave",
+        "value": true
+      },
+      "conditionOptions": [
+        {
+          "id": "chave",
+          "label": "Estou com a chave?",
+          "condition": {
+            "type": "stateEquals",
+            "variable": "temChave",
+            "value": true
+          },
+          "values": [
+            {
+              "value": true,
+              "label": "Sim",
+              "question": "Estou com a chave?"
+            },
+            {
+              "value": false,
+              "label": "Não",
+              "question": "Estou sem a chave?"
+            }
+          ]
+        }
+      ],
+      "solution": [
+        {
+          "type": "move"
+        },
+        {
+          "type": "if",
+          "condition": {
+            "type": "stateEquals",
+            "variable": "temChave",
+            "value": true
+          },
+          "then": [
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            }
+          ],
+          "else": [
+            {
+              "type": "turnLeft"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "perto",
+          "label": "Chave no primeiro passo"
+        },
+        {
+          "id": "desvio",
+          "label": "Chave no desvio",
+          "grid": {
+            "width": 5,
+            "height": 5,
+            "obstacles": [
+              {
+                "row": 3,
+                "col": 0
+              }
+            ]
+          },
+          "entities": [
+            {
+              "id": "objeto",
+              "row": 3,
+              "col": 1,
+              "collectible": true,
+              "onEnter": [
+                {
+                  "type": "set",
+                  "variable": "temChave",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "presentation": {
+        "entities": {
+          "objeto": {
+            "label": "Chave",
+            "glyph": "⚿",
+            "role": "collectible",
+            "messages": {
+              "collected": "Você pegou a chave!"
+            }
+          }
+        },
+        "barriers": {
+          "passagem": {
+            "label": "Porta",
+            "openGlyph": "▯",
+            "closedGlyph": "▥"
+          }
+        },
+        "stateIndicators": [
+          {
+            "variable": "temChave",
+            "label": "Com a chave",
+            "values": [
+              {
+                "value": true,
+                "label": "Sim"
+              },
+              {
+                "value": false,
+                "label": "Não"
+              }
+            ]
+          }
+        ],
+        "stateMessages": {
+          "temChave": [
+            {
+              "value": true,
+              "message": "A chave liberou a porta."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 15,
+      "title": "A ponte misteriosa",
+      "instructions": "Pise na placa. Depois pergunte: a ponte está aberta? Escolha um caminho que combine com a resposta.",
+      "hint": "Primeiro acontece a ação da placa; depois o SE consulta o estado atualizado da ponte.",
+      "start": {
+        "row": 4,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 4,
+        "col": 3
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 1
+          }
+        ],
+        "cells": [
+          {
+            "row": 4,
+            "col": 1,
+            "properties": {
+              "marking": {
+                "stateVariable": "placaAtiva"
+              }
+            }
+          }
+        ]
+      },
+      "initialVariables": {
+        "placaAtiva": true,
+        "ponteAberta": false
+      },
+      "entities": [
+        {
+          "id": "placa",
+          "row": 4,
+          "col": 1,
+          "collectible": false,
+          "onEnter": [
+            {
+              "when": {
+                "type": "stateEquals",
+                "variable": "placaAtiva",
+                "value": true
+              },
+              "actions": [
+                {
+                  "type": "set",
+                  "variable": "ponteAberta",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "barriers": [
+        {
+          "id": "passagem",
+          "row": 4,
+          "col": 2,
+          "passableWhen": {
+            "type": "stateEquals",
+            "variable": "ponteAberta",
+            "value": true
+          }
+        }
+      ],
+      "conditionOptions": [
+        {
+          "id": "ponte",
+          "label": "A ponte está aberta?",
+          "condition": {
+            "type": "stateEquals",
+            "variable": "ponteAberta",
+            "value": true
+          },
+          "values": [
+            {
+              "value": true,
+              "label": "Sim",
+              "question": "A ponte está aberta?"
+            },
+            {
+              "value": false,
+              "label": "Não",
+              "question": "A ponte está fechada?"
+            }
+          ]
+        }
+      ],
+      "solution": [
+        {
+          "type": "move"
+        },
+        {
+          "type": "if",
+          "condition": {
+            "type": "stateEquals",
+            "variable": "ponteAberta",
+            "value": true
+          },
+          "then": [
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            }
+          ],
+          "else": [
+            {
+              "type": "turnLeft"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "ativa",
+          "label": "Placa ligada"
+        },
+        {
+          "id": "inativa",
+          "label": "Placa desligada",
+          "initialVariables": {
+            "placaAtiva": false,
+            "ponteAberta": false
+          },
+          "grid": {
+            "width": 5,
+            "height": 5,
+            "obstacles": [
+              {
+                "row": 3,
+                "col": 0
+              }
+            ],
+            "cells": [
+              {
+                "row": 4,
+                "col": 1,
+                "properties": {
+                  "marking": {
+                    "stateVariable": "placaAtiva"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "presentation": {
+        "entities": {
+          "placa": {
+            "label": "Placa",
+            "glyph": "◎",
+            "role": "trigger",
+            "messages": {
+              "entered": "Você pisou na placa."
+            },
+            "guardMessages": {
+              "false": "A placa está desligada; a ponte continua fechada."
+            }
+          }
+        },
+        "barriers": {
+          "passagem": {
+            "label": "Ponte",
+            "openGlyph": "═",
+            "closedGlyph": "╳"
+          }
+        },
+        "properties": {
+          "marking": {
+            "label": "Placa",
+            "values": [
+              {
+                "value": true,
+                "label": "Ligada",
+                "glyph": "+",
+                "tone": "green"
+              },
+              {
+                "value": false,
+                "label": "Desligada",
+                "glyph": "−",
+                "tone": "red"
+              }
+            ]
+          }
+        },
+        "stateIndicators": [
+          {
+            "variable": "ponteAberta",
+            "label": "Ponte aberta",
+            "values": [
+              {
+                "value": true,
+                "label": "Sim"
+              },
+              {
+                "value": false,
+                "label": "Não"
+              }
+            ]
+          }
+        ],
+        "stateMessages": {
+          "ponteAberta": [
+            {
+              "value": true,
+              "message": "A placa abriu a ponte!"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 16,
+      "title": "Entrega especial",
+      "instructions": "Pegue o pacote e leve até a estação da estrela. A entrega só acontece quando você está carregando o pacote.",
+      "hint": "Depois do primeiro passo, pergunte se já está com o pacote. Na estação, observe o que muda no estado.",
+      "start": {
+        "row": 4,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 4,
+        "col": 3
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 1
+          }
+        ]
+      },
+      "initialVariables": {
+        "comPacote": false,
+        "entregue": false
+      },
+      "entities": [
+        {
+          "id": "objeto",
+          "row": 4,
+          "col": 1,
+          "collectible": true,
+          "onEnter": [
+            {
+              "type": "set",
+              "variable": "comPacote",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "estacao",
+          "row": 4,
+          "col": 3,
+          "collectible": false,
+          "onEnter": [
+            {
+              "when": {
+                "type": "stateEquals",
+                "variable": "comPacote",
+                "value": true
+              },
+              "actions": [
+                {
+                  "type": "set",
+                  "variable": "comPacote",
+                  "value": false
+                },
+                {
+                  "type": "set",
+                  "variable": "entregue",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "winCondition": {
+        "type": "stateEquals",
+        "variable": "entregue",
+        "value": true
+      },
+      "conditionOptions": [
+        {
+          "id": "carregando",
+          "label": "Estou carregando o pacote?",
+          "condition": {
+            "type": "stateEquals",
+            "variable": "comPacote",
+            "value": true
+          },
+          "values": [
+            {
+              "value": true,
+              "label": "Sim",
+              "question": "Estou carregando o pacote?"
+            },
+            {
+              "value": false,
+              "label": "Não",
+              "question": "Estou sem o pacote?"
+            }
+          ]
+        },
+        {
+          "id": "entrega",
+          "label": "O pacote foi entregue?",
+          "condition": {
+            "type": "stateEquals",
+            "variable": "entregue",
+            "value": true
+          },
+          "values": [
+            {
+              "value": true,
+              "label": "Sim",
+              "question": "O pacote foi entregue?"
+            },
+            {
+              "value": false,
+              "label": "Não",
+              "question": "Ainda falta entregar o pacote?"
+            }
+          ]
+        }
+      ],
+      "solution": [
+        {
+          "type": "move"
+        },
+        {
+          "type": "if",
+          "condition": {
+            "type": "stateEquals",
+            "variable": "comPacote",
+            "value": true
+          },
+          "then": [
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            }
+          ],
+          "else": [
+            {
+              "type": "turnLeft"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "perto",
+          "label": "Pacote no primeiro passo"
+        },
+        {
+          "id": "desvio",
+          "label": "Pacote no desvio",
+          "grid": {
+            "width": 5,
+            "height": 5,
+            "obstacles": [
+              {
+                "row": 3,
+                "col": 0
+              },
+              {
+                "row": 4,
+                "col": 2
+              }
+            ]
+          },
+          "entities": [
+            {
+              "id": "objeto",
+              "row": 3,
+              "col": 1,
+              "collectible": true,
+              "onEnter": [
+                {
+                  "type": "set",
+                  "variable": "comPacote",
+                  "value": true
+                }
+              ]
+            },
+            {
+              "id": "estacao",
+              "row": 4,
+              "col": 3,
+              "collectible": false,
+              "onEnter": [
+                {
+                  "when": {
+                    "type": "stateEquals",
+                    "variable": "comPacote",
+                    "value": true
+                  },
+                  "actions": [
+                    {
+                      "type": "set",
+                      "variable": "comPacote",
+                      "value": false
+                    },
+                    {
+                      "type": "set",
+                      "variable": "entregue",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "presentation": {
+        "entities": {
+          "objeto": {
+            "label": "Pacote",
+            "glyph": "▣",
+            "role": "collectible",
+            "messages": {
+              "collected": "Pacote recolhido!"
+            }
+          },
+          "estacao": {
+            "label": "Estação de entrega",
+            "glyph": "⌂",
+            "role": "delivery",
+            "messages": {
+              "entered": "Você chegou à estação."
+            },
+            "guardMessages": {
+              "false": "Ainda falta buscar o pacote para entregar."
+            }
+          }
+        },
+        "stateIndicators": [
+          {
+            "variable": "comPacote",
+            "label": "Carregando pacote",
+            "values": [
+              {
+                "value": true,
+                "label": "Sim"
+              },
+              {
+                "value": false,
+                "label": "Não"
+              }
+            ]
+          },
+          {
+            "variable": "entregue",
+            "label": "Entrega feita",
+            "values": [
+              {
+                "value": true,
+                "label": "Sim"
+              },
+              {
+                "value": false,
+                "label": "Não"
+              }
+            ]
+          }
+        ],
+        "stateMessages": {
+          "entregue": [
+            {
+              "value": true,
+              "message": "Entrega feita! O pacote chegou ao destino."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": 17,
+      "title": "Qual é a cor?",
+      "demo": true,
+      "instructions": "Observe a placa com Inspecionar. Depois escolha o caminho usando a cor que ficou na memória.",
+      "hint": "A pergunta usa o que foi guardado, não uma nova leitura do mundo. Antes de decidir, inspecione a casa à frente.",
+      "start": {
+        "row": 4,
+        "col": 2,
+        "direction": "N"
+      },
+      "goal": {
+        "row": 2,
+        "col": 4
+      },
+      "initialVariables": {
+        "cor": "vermelho"
+      },
+      "robotMemory": {
+        "corObservada": {
+          "type": "string",
+          "initial": null
+        }
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 4,
+            "col": 1
+          },
+          {
+            "row": 4,
+            "col": 3
+          }
+        ],
+        "cells": [
+          {
+            "row": 3,
+            "col": 2,
+            "properties": {
+              "mark": {
+                "stateVariable": "cor"
+              }
+            }
+          }
+        ]
+      },
+      "barriers": [
+        {
+          "id": "passagem",
+          "row": 3,
+          "col": 2,
+          "passableWhen": {
+            "type": "stateEquals",
+            "variable": "cor",
+            "value": "vermelho"
+          }
+        }
+      ],
+      "commandOptions": [
+        {
+          "id": "observar",
+          "label": "Inspecionar a placa à frente",
+          "node": {
+            "type": "inspect",
+            "source": {
+              "type": "cellProperty",
+              "relativeTo": "front",
+              "property": "mark"
+            },
+            "into": "corObservada"
+          }
+        }
+      ],
+      "conditionOptions": [
+        {
+          "id": "corGuardada",
+          "label": "A cor que guardei é vermelha?",
+          "condition": {
+            "type": "memoryEquals",
+            "variable": "corObservada",
+            "value": "vermelho"
+          },
+          "values": [
+            {
+              "value": "vermelho",
+              "label": "Vermelha",
+              "question": "A cor que guardei é vermelha?"
+            },
+            {
+              "value": "azul",
+              "label": "Azul",
+              "question": "A cor que guardei é azul?"
+            }
+          ]
+        }
+      ],
+      "solution": [
+        {
+          "type": "inspect",
+          "source": {
+            "type": "cellProperty",
+            "relativeTo": "front",
+            "property": "mark"
+          },
+          "into": "corObservada"
+        },
+        {
+          "type": "turnLeft"
+        },
+        {
+          "type": "turnRight"
+        },
+        {
+          "type": "if",
+          "condition": {
+            "type": "memoryEquals",
+            "variable": "corObservada",
+            "value": "vermelho"
+          },
+          "then": [
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            }
+          ],
+          "else": [
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnLeft"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "vermelha",
+          "label": "Placa vermelha"
+        },
+        {
+          "id": "azul",
+          "label": "Placa azul",
+          "initialVariables": {
+            "cor": "azul"
+          },
+          "grid": {
+            "width": 5,
+            "height": 5,
+            "obstacles": [
+              {
+                "row": 4,
+                "col": 1
+              }
+            ],
+            "cells": [
+              {
+                "row": 3,
+                "col": 2,
+                "properties": {
+                  "mark": {
+                    "stateVariable": "cor"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "presentation": {
+        "memory": {
+          "corObservada": {
+            "label": "Cor guardada",
+            "values": [
+              {
+                "value": "vermelho",
+                "label": "Vermelha"
+              },
+              {
+                "value": "azul",
+                "label": "Azul"
+              }
+            ]
+          }
+        },
+        "properties": {
+          "mark": {
+            "label": "Placa",
+            "values": [
+              {
+                "value": "vermelho",
+                "label": "Vermelha",
+                "glyph": "■",
+                "tone": "red"
+              },
+              {
+                "value": "azul",
+                "label": "Azul",
+                "glyph": "◆",
+                "tone": "neutral"
+              }
+            ]
+          }
+        },
+        "barriers": {
+          "passagem": {
+            "label": "Passagem"
+          }
+        }
+      }
+    },
+    {
+      "id": 18,
+      "title": "Aperte o botão",
+      "demo": true,
+      "instructions": "Use Interagir diante do botão para abrir a passagem. Depois avance até a estrela.",
+      "hint": "Passar pela casa não aperta o botão. O programa precisa dar a ordem de interagir.",
+      "start": {
+        "row": 4,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 4,
+        "col": 4
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 1
+          },
+          {
+            "row": 3,
+            "col": 2
+          },
+          {
+            "row": 3,
+            "col": 3
+          },
+          {
+            "row": 3,
+            "col": 4
+          }
+        ]
+      },
+      "initialVariables": {
+        "disponivel": true,
+        "aberta": false
+      },
+      "entities": [
+        {
+          "id": "controle",
+          "row": 4,
+          "col": 1,
+          "collectible": false,
+          "onEnter": [],
+          "interactions": [
+            {
+              "id": "activate",
+              "relativeTo": [
+                "front",
+                "here"
+              ],
+              "once": true,
+              "when": {
+                "type": "stateEquals",
+                "variable": "disponivel",
+                "value": true
+              },
+              "effects": [
+                {
+                  "type": "set",
+                  "variable": "aberta",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "barriers": [
+        {
+          "id": "passagem",
+          "row": 4,
+          "col": 2,
+          "passableWhen": {
+            "type": "stateEquals",
+            "variable": "aberta",
+            "value": true
+          }
+        }
+      ],
+      "commandOptions": [
+        {
+          "id": "apertar",
+          "label": "Interagir com o botão à frente",
+          "node": {
+            "type": "interact",
+            "relativeTo": "front",
+            "actionId": "activate"
+          }
+        },
+        {
+          "id": "apertarAqui",
+          "label": "Interagir na casa atual",
+          "node": {
+            "type": "interact",
+            "relativeTo": "here",
+            "actionId": "activate"
+          }
+        }
+      ],
+      "winCondition": {
+        "type": "stateEquals",
+        "variable": "aberta",
+        "value": true
+      },
+      "solution": [
+        {
+          "type": "interact",
+          "relativeTo": "front",
+          "actionId": "activate"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        }
+      ],
+      "presentation": {
+        "entities": {
+          "controle": {
+            "label": "Botão",
+            "glyph": "◎",
+            "role": "trigger",
+            "interactionMessage": "Você apertou o botão!"
+          }
+        },
+        "barriers": {
+          "passagem": {
+            "label": "Passagem"
+          }
+        },
+        "stateIndicators": [
+          {
+            "variable": "aberta",
+            "label": "Passagem aberta",
+            "values": [
+              {
+                "value": true,
+                "label": "Sim"
+              },
+              {
+                "value": false,
+                "label": "Não"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 19,
+      "title": "Retirada e entrega",
+      "demo": true,
+      "instructions": "Guarde Sim na memória. Interaja para retirar o item e depois interaja na estação para entregá-lo.",
+      "hint": "Guardar uma intenção não muda o mundo. Retirar e entregar são duas ações explícitas diferentes.",
+      "start": {
+        "row": 4,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 4,
+        "col": 3
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 1
+          },
+          {
+            "row": 3,
+            "col": 2
+          },
+          {
+            "row": 3,
+            "col": 3
+          }
+        ]
+      },
+      "initialVariables": {
+        "carregando": false,
+        "entregue": false,
+        "confirmar": false
+      },
+      "robotMemory": {
+        "confirmar": {
+          "type": "boolean",
+          "initial": null
+        }
+      },
+      "entities": [
+        {
+          "id": "origem",
+          "row": 4,
+          "col": 1,
+          "collectible": false,
+          "onEnter": [],
+          "interactions": [
+            {
+              "id": "receive",
+              "relativeTo": [
+                "front"
+              ],
+              "once": true,
+              "consume": true,
+              "when": {
+                "type": "memoryEquals",
+                "variable": "confirmar",
+                "value": true
+              },
+              "effects": [
+                {
+                  "type": "set",
+                  "variable": "carregando",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "destino",
+          "row": 4,
+          "col": 3,
+          "collectible": false,
+          "onEnter": [],
+          "interactions": [
+            {
+              "id": "deliver",
+              "relativeTo": [
+                "here"
+              ],
+              "once": true,
+              "when": {
+                "type": "stateEquals",
+                "variable": "carregando",
+                "value": true
+              },
+              "effects": [
+                {
+                  "type": "set",
+                  "variable": "carregando",
+                  "value": false
+                },
+                {
+                  "type": "set",
+                  "variable": "entregue",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "commandOptions": [
+        {
+          "id": "confirmar",
+          "label": "Guardar uma confirmação",
+          "node": {
+            "type": "setMemory",
+            "variable": "confirmar",
+            "value": true
+          },
+          "values": [
+            {
+              "value": true,
+              "label": "Sim"
+            },
+            {
+              "value": false,
+              "label": "Não"
+            }
+          ]
+        },
+        {
+          "id": "retirar",
+          "label": "Interagir para retirar à frente",
+          "node": {
+            "type": "interact",
+            "relativeTo": "front",
+            "actionId": "receive"
+          }
+        },
+        {
+          "id": "entregar",
+          "label": "Interagir para entregar aqui",
+          "node": {
+            "type": "interact",
+            "relativeTo": "here",
+            "actionId": "deliver"
+          }
+        }
+      ],
+      "conditionOptions": [
+        {
+          "id": "confirmado",
+          "label": "Guardei uma confirmação?",
+          "condition": {
+            "type": "memoryEquals",
+            "variable": "confirmar",
+            "value": true
+          },
+          "values": [
+            {
+              "value": true,
+              "label": "Sim",
+              "question": "Guardei uma confirmação?"
+            },
+            {
+              "value": false,
+              "label": "Não",
+              "question": "Guardei Não como resposta?"
+            }
+          ]
+        }
+      ],
+      "winCondition": {
+        "type": "stateEquals",
+        "variable": "entregue",
+        "value": true
+      },
+      "solution": [
+        {
+          "type": "setMemory",
+          "variable": "confirmar",
+          "value": true
+        },
+        {
+          "type": "interact",
+          "relativeTo": "front",
+          "actionId": "receive"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "interact",
+          "relativeTo": "here",
+          "actionId": "deliver"
+        }
+      ],
+      "presentation": {
+        "memory": {
+          "confirmar": {
+            "label": "Confirmação",
+            "values": [
+              {
+                "value": true,
+                "label": "Sim"
+              },
+              {
+                "value": false,
+                "label": "Não"
+              }
+            ]
+          }
+        },
+        "entities": {
+          "origem": {
+            "label": "Retirada",
+            "glyph": "▣",
+            "role": "collectible",
+            "interactionMessage": "Item retirado!"
+          },
+          "destino": {
+            "label": "Estação de entrega",
+            "glyph": "⌂",
+            "role": "delivery",
+            "interactionMessage": "Entrega concluída!"
+          }
+        },
+        "stateIndicators": [
+          {
+            "variable": "carregando",
+            "label": "Carregando",
+            "values": [
+              {
+                "value": true,
+                "label": "Sim"
+              },
+              {
+                "value": false,
+                "label": "Não"
+              }
+            ]
+          },
+          {
+            "variable": "entregue",
+            "label": "Entregue",
+            "values": [
+              {
+                "value": true,
+                "label": "Sim"
+              },
+              {
+                "value": false,
+                "label": "Não"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 20,
+      "title": "Duas pontes, cargas diferentes",
+      "demo": true,
+      "instructions": "Avance até a bifurcação. Ponte A: até 1 pacote. Rota B: reservada a cargas de 2 a 3 pacotes. Escolha para cima ou para baixo e siga à estrela.",
+      "hint": "Depois do primeiro avanço, use SE carga >= 2: desça para B; SENÃO suba para A. Para inspecionar A, avance até (1,1) e olhe para leste. Inspecionar é opcional; memória não altera a física.",
+      "start": {
+        "row": 2,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 2,
+        "col": 4
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 0,
+            "col": 0
+          },
+          {
+            "row": 0,
+            "col": 1
+          },
+          {
+            "row": 0,
+            "col": 2
+          },
+          {
+            "row": 0,
+            "col": 3
+          },
+          {
+            "row": 0,
+            "col": 4
+          },
+          {
+            "row": 1,
+            "col": 0
+          },
+          {
+            "row": 1,
+            "col": 4
+          },
+          {
+            "row": 2,
+            "col": 2
+          },
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 4
+          },
+          {
+            "row": 4,
+            "col": 0
+          },
+          {
+            "row": 4,
+            "col": 1
+          },
+          {
+            "row": 4,
+            "col": 2
+          },
+          {
+            "row": 4,
+            "col": 3
+          },
+          {
+            "row": 4,
+            "col": 4
+          }
+        ]
+      },
+      "initialVariables": {
+        "pacotes": 1
+      },
+      "robotMemory": {
+        "limiteDaPonte": {
+          "type": "number",
+          "initial": null
+        }
+      },
+      "barriers": [
+        {
+          "id": "ponte-a",
+          "row": 1,
+          "col": 2,
+          "properties": {
+            "capacidade": 1
+          },
+          "passableWhen": {
+            "type": "numberCompare",
+            "left": {
+              "kind": "worldVariable",
+              "name": "pacotes"
+            },
+            "operator": "lte",
+            "right": {
+              "kind": "barrierProperty",
+              "name": "capacidade"
+            }
+          },
+          "failureCode": "capacityExceeded"
+        },
+        {
+          "id": "ponte-b",
+          "row": 3,
+          "col": 2,
+          "properties": {
+            "minimo": 2,
+            "capacidade": 3
+          },
+          "passableWhen": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "numberCompare",
+                "left": {
+                  "kind": "worldVariable",
+                  "name": "pacotes"
+                },
+                "operator": "gte",
+                "right": {
+                  "kind": "barrierProperty",
+                  "name": "minimo"
+                }
+              },
+              {
+                "type": "numberCompare",
+                "left": {
+                  "kind": "worldVariable",
+                  "name": "pacotes"
+                },
+                "operator": "lte",
+                "right": {
+                  "kind": "barrierProperty",
+                  "name": "capacidade"
+                }
+              }
+            ]
+          },
+          "failureCode": "routeRestricted"
+        }
+      ],
+      "commandOptions": [
+        {
+          "id": "observarPonteA",
+          "label": "Inspecionar capacidade da ponte A à frente",
+          "node": {
+            "type": "inspect",
+            "source": {
+              "type": "barrierProperty",
+              "relativeTo": "front",
+              "property": "capacidade",
+              "barrierId": "ponte-a"
+            },
+            "into": "limiteDaPonte"
+          }
+        }
+      ],
+      "conditionOptions": [
+        {
+          "id": "carga",
+          "label": "Estou carregando pelo menos 2 pacotes?",
+          "condition": {
+            "type": "numberCompare",
+            "left": {
+              "kind": "worldVariable",
+              "name": "pacotes"
+            },
+            "operator": "gte",
+            "right": {
+              "kind": "literal",
+              "value": 2
+            }
+          }
+        },
+        {
+          "id": "caminho",
+          "label": "O caminho à frente está livre?",
+          "condition": {
+            "type": "pathClear"
+          }
+        }
+      ],
+      "solution": [
+        {
+          "type": "move"
+        },
+        {
+          "type": "if",
+          "condition": {
+            "type": "numberCompare",
+            "left": {
+              "kind": "worldVariable",
+              "name": "pacotes"
+            },
+            "operator": "gte",
+            "right": {
+              "kind": "literal",
+              "value": 2
+            }
+          },
+          "then": [
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnLeft"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnLeft"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            }
+          ],
+          "else": [
+            {
+              "type": "turnLeft"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnLeft"
+            },
+            {
+              "type": "move"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "leve",
+          "label": "Carga de 1 pacote"
+        },
+        {
+          "id": "maior",
+          "label": "Carga de 2 pacotes",
+          "initialVariables": {
+            "pacotes": 2
+          }
+        }
+      ],
+      "presentation": {
+        "visual": {
+          "boardStyle": "blueprint",
+          "chapter": "advanced",
+          "robotSkin": "mk4",
+          "environmentTheme": "factory",
+          "goalSkin": "star",
+          "obstacleSkin": "crate",
+          "barrierDefaults": {
+            "assetGroup": "bridge"
+          }
+        },
+        "variables": {
+          "pacotes": "Pacotes"
+        },
+        "memory": {
+          "limiteDaPonte": {
+            "label": "Capacidade observada"
+          }
+        },
+        "stateIndicators": [
+          {
+            "variable": "pacotes",
+            "label": "Pacotes transportados"
+          }
+        ],
+        "barriers": {
+          "ponte-a": {
+            "label": "Ponte A",
+            "openGlyph": "═",
+            "closedGlyph": "╳",
+            "propertyLabels": {
+              "capacidade": "Capacidade"
+            }
+          },
+          "ponte-b": {
+            "label": "Rota B · 2 a 3 pacotes",
+            "openGlyph": "═",
+            "closedGlyph": "╳",
+            "propertyLabels": {
+              "minimo": "Carga mínima",
+              "capacidade": "Capacidade"
+            }
+          }
+        },
+        "failures": {
+          "capacityExceeded": "Você está com {actual} pacotes, mas esta ponte suporta {limit}. O caminho falhou.",
+          "routeRestricted": "A rota B é reservada a cargas de 2 a 3 pacotes. Sua carga atual é {actual}."
+        }
+      }
+    },
+    {
+      "id": 21,
+      "title": "Observar e escolher um objeto",
+      "demo": true,
+      "instructions": "Inspecione a fechadura, guarde a informação e escolha um dos três objetos. Interagir com o objeto incorreto falha; a porta consulta o estado do mundo.",
+      "hint": "Os objetos estão na mesma casa. Use a ação que identifica o objeto escolhido. A informação da fechadura pode mudar entre os testes.",
+      "start": {
+        "row": 4,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 4,
+        "col": 3
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 1
+          },
+          {
+            "row": 3,
+            "col": 2
+          },
+          {
+            "row": 3,
+            "col": 3
+          },
+          {
+            "row": 3,
+            "col": 4
+          }
+        ]
+      },
+      "initialVariables": {
+        "cor": "vermelho",
+        "liberada": false,
+        "escolhida": ""
+      },
+      "robotMemory": {
+        "corNecessaria": {
+          "type": "string",
+          "initial": null
+        }
+      },
+      "entities": [
+        {
+          "id": "fechadura",
+          "row": 4,
+          "col": 1,
+          "collectible": false,
+          "onEnter": [],
+          "properties": {
+            "cor": {
+              "stateVariable": "cor"
+            }
+          }
+        },
+        {
+          "id": "opcao-vermelho",
+          "row": 4,
+          "col": 1,
+          "collectible": false,
+          "onEnter": [],
+          "properties": {
+            "cor": "vermelho"
+          },
+          "interactions": [
+            {
+              "id": "take",
+              "relativeTo": [
+                "front"
+              ],
+              "once": true,
+              "consume": true,
+              "when": {
+                "type": "stateEquals",
+                "variable": "cor",
+                "value": "vermelho"
+              },
+              "effects": [
+                {
+                  "type": "set",
+                  "variable": "escolhida",
+                  "value": "vermelho"
+                },
+                {
+                  "type": "set",
+                  "variable": "liberada",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "opcao-azul",
+          "row": 4,
+          "col": 1,
+          "collectible": false,
+          "onEnter": [],
+          "properties": {
+            "cor": "azul"
+          },
+          "interactions": [
+            {
+              "id": "take",
+              "relativeTo": [
+                "front"
+              ],
+              "once": true,
+              "consume": true,
+              "when": {
+                "type": "stateEquals",
+                "variable": "cor",
+                "value": "azul"
+              },
+              "effects": [
+                {
+                  "type": "set",
+                  "variable": "escolhida",
+                  "value": "azul"
+                },
+                {
+                  "type": "set",
+                  "variable": "liberada",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "opcao-verde",
+          "row": 4,
+          "col": 1,
+          "collectible": false,
+          "onEnter": [],
+          "properties": {
+            "cor": "verde"
+          },
+          "interactions": [
+            {
+              "id": "take",
+              "relativeTo": [
+                "front"
+              ],
+              "once": true,
+              "consume": true,
+              "when": {
+                "type": "stateEquals",
+                "variable": "cor",
+                "value": "verde"
+              },
+              "effects": [
+                {
+                  "type": "set",
+                  "variable": "escolhida",
+                  "value": "verde"
+                },
+                {
+                  "type": "set",
+                  "variable": "liberada",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "barriers": [
+        {
+          "id": "passagem",
+          "row": 4,
+          "col": 2,
+          "passableWhen": {
+            "type": "stateEquals",
+            "variable": "liberada",
+            "value": true
+          },
+          "failureCode": "locked"
+        }
+      ],
+      "commandOptions": [
+        {
+          "id": "observarFechadura",
+          "label": "Inspecionar a cor da fechadura à frente",
+          "node": {
+            "type": "inspect",
+            "source": {
+              "type": "entityProperty",
+              "relativeTo": "front",
+              "property": "cor",
+              "entityId": "fechadura"
+            },
+            "into": "corNecessaria"
+          }
+        },
+        {
+          "id": "retirarvermelho",
+          "label": "Retirar a chave vermelha à frente",
+          "node": {
+            "type": "interact",
+            "relativeTo": "front",
+            "actionId": "take",
+            "entityId": "opcao-vermelho"
+          }
+        },
+        {
+          "id": "retirarazul",
+          "label": "Retirar a chave azul à frente",
+          "node": {
+            "type": "interact",
+            "relativeTo": "front",
+            "actionId": "take",
+            "entityId": "opcao-azul"
+          }
+        },
+        {
+          "id": "retirarverde",
+          "label": "Retirar a chave verde à frente",
+          "node": {
+            "type": "interact",
+            "relativeTo": "front",
+            "actionId": "take",
+            "entityId": "opcao-verde"
+          }
+        }
+      ],
+      "conditionOptions": [
+        {
+          "id": "corVermelha",
+          "label": "A cor observada é vermelha?",
+          "condition": {
+            "type": "memoryEquals",
+            "variable": "corNecessaria",
+            "value": "vermelho"
+          },
+          "values": [
+            {
+              "value": "vermelho",
+              "label": "Vermelha",
+              "question": "A cor observada é vermelha?"
+            }
+          ]
+        },
+        {
+          "id": "corAzul",
+          "label": "A cor observada é azul?",
+          "condition": {
+            "type": "memoryEquals",
+            "variable": "corNecessaria",
+            "value": "azul"
+          },
+          "values": [
+            {
+              "value": "azul",
+              "label": "Azul",
+              "question": "A cor observada é azul?"
+            }
+          ]
+        }
+      ],
+      "solution": [
+        {
+          "type": "inspect",
+          "source": {
+            "type": "entityProperty",
+            "relativeTo": "front",
+            "property": "cor",
+            "entityId": "fechadura"
+          },
+          "into": "corNecessaria"
+        },
+        {
+          "type": "if",
+          "condition": {
+            "type": "memoryEquals",
+            "variable": "corNecessaria",
+            "value": "vermelho"
+          },
+          "then": [
+            {
+              "type": "interact",
+              "relativeTo": "front",
+              "actionId": "take",
+              "entityId": "opcao-vermelho"
+            }
+          ],
+          "else": [
+            {
+              "type": "if",
+              "condition": {
+                "type": "memoryEquals",
+                "variable": "corNecessaria",
+                "value": "azul"
+              },
+              "then": [
+                {
+                  "type": "interact",
+                  "relativeTo": "front",
+                  "actionId": "take",
+                  "entityId": "opcao-azul"
+                }
+              ],
+              "else": [
+                {
+                  "type": "interact",
+                  "relativeTo": "front",
+                  "actionId": "take",
+                  "entityId": "opcao-verde"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        }
+      ],
+      "variants": [
+        {
+          "id": "vermelho",
+          "label": "Fechadura vermelha",
+          "initialVariables": {
+            "cor": "vermelho",
+            "liberada": false,
+            "escolhida": ""
+          }
+        },
+        {
+          "id": "azul",
+          "label": "Fechadura azul",
+          "initialVariables": {
+            "cor": "azul",
+            "liberada": false,
+            "escolhida": ""
+          }
+        },
+        {
+          "id": "verde",
+          "label": "Fechadura verde",
+          "initialVariables": {
+            "cor": "verde",
+            "liberada": false,
+            "escolhida": ""
+          }
+        }
+      ],
+      "presentation": {
+        "memory": {
+          "corNecessaria": {
+            "label": "Cor observada",
+            "values": [
+              {
+                "value": "vermelho",
+                "label": "Vermelha"
+              },
+              {
+                "value": "azul",
+                "label": "Azul"
+              },
+              {
+                "value": "verde",
+                "label": "Verde"
+              }
+            ]
+          }
+        },
+        "entities": {
+          "fechadura": {
+            "label": "Fechadura",
+            "glyph": "▥",
+            "propertyLabels": {
+              "cor": "Cor requerida"
+            }
+          },
+          "opcao-vermelho": {
+            "label": "Chave vermelha",
+            "glyph": "■",
+            "role": "collectible",
+            "interactionMessage": "Você retirou a chave vermelha!",
+            "failureMessages": {
+              "preconditionFailed": "Esse objeto não corresponde à informação observada. O programa parou sem retirar nada."
+            }
+          },
+          "opcao-azul": {
+            "label": "Chave azul",
+            "glyph": "◆",
+            "role": "collectible",
+            "interactionMessage": "Você retirou a chave azul!",
+            "failureMessages": {
+              "preconditionFailed": "Esse objeto não corresponde à informação observada. O programa parou sem retirar nada."
+            }
+          },
+          "opcao-verde": {
+            "label": "Chave verde",
+            "glyph": "●",
+            "role": "collectible",
+            "interactionMessage": "Você retirou a chave verde!",
+            "failureMessages": {
+              "preconditionFailed": "Esse objeto não corresponde à informação observada. O programa parou sem retirar nada."
+            }
+          }
+        },
+        "barriers": {
+          "passagem": {
+            "label": "Porta"
+          }
+        },
+        "failures": {
+          "locked": "A passagem ainda está fechada. Observe e escolha um objeto antes de atravessar."
+        }
+      }
+    },
+    {
+      "id": 22,
+      "title": "As três chaves — ESCOLHA",
+      "demo": true,
+      "instructions": "Inspecione a fechadura e use ESCOLHA para seguir apenas o caminho da cor guardada. Depois avance até a saída.",
+      "hint": "Cada caso guarda seus próprios comandos. A mesma escolha deve funcionar nas três variantes. Sem observar, a memória continua desconhecida.",
+      "start": {
+        "row": 4,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 4,
+        "col": 3
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 1
+          },
+          {
+            "row": 3,
+            "col": 2
+          },
+          {
+            "row": 3,
+            "col": 3
+          },
+          {
+            "row": 3,
+            "col": 4
+          }
+        ]
+      },
+      "initialVariables": {
+        "cor": "vermelho",
+        "liberada": false,
+        "escolhida": ""
+      },
+      "robotMemory": {
+        "corNecessaria": {
+          "type": "string",
+          "initial": null
+        }
+      },
+      "entities": [
+        {
+          "id": "fechadura",
+          "row": 4,
+          "col": 1,
+          "collectible": false,
+          "onEnter": [],
+          "properties": {
+            "cor": {
+              "stateVariable": "cor"
+            }
+          }
+        },
+        {
+          "id": "opcao-vermelho",
+          "row": 4,
+          "col": 1,
+          "collectible": false,
+          "onEnter": [],
+          "properties": {
+            "cor": "vermelho"
+          },
+          "interactions": [
+            {
+              "id": "take",
+              "relativeTo": [
+                "front"
+              ],
+              "once": true,
+              "consume": true,
+              "when": {
+                "type": "stateEquals",
+                "variable": "cor",
+                "value": "vermelho"
+              },
+              "effects": [
+                {
+                  "type": "set",
+                  "variable": "escolhida",
+                  "value": "vermelho"
+                },
+                {
+                  "type": "set",
+                  "variable": "liberada",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "opcao-azul",
+          "row": 4,
+          "col": 1,
+          "collectible": false,
+          "onEnter": [],
+          "properties": {
+            "cor": "azul"
+          },
+          "interactions": [
+            {
+              "id": "take",
+              "relativeTo": [
+                "front"
+              ],
+              "once": true,
+              "consume": true,
+              "when": {
+                "type": "stateEquals",
+                "variable": "cor",
+                "value": "azul"
+              },
+              "effects": [
+                {
+                  "type": "set",
+                  "variable": "escolhida",
+                  "value": "azul"
+                },
+                {
+                  "type": "set",
+                  "variable": "liberada",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "opcao-verde",
+          "row": 4,
+          "col": 1,
+          "collectible": false,
+          "onEnter": [],
+          "properties": {
+            "cor": "verde"
+          },
+          "interactions": [
+            {
+              "id": "take",
+              "relativeTo": [
+                "front"
+              ],
+              "once": true,
+              "consume": true,
+              "when": {
+                "type": "stateEquals",
+                "variable": "cor",
+                "value": "verde"
+              },
+              "effects": [
+                {
+                  "type": "set",
+                  "variable": "escolhida",
+                  "value": "verde"
+                },
+                {
+                  "type": "set",
+                  "variable": "liberada",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "barriers": [
+        {
+          "id": "passagem",
+          "row": 4,
+          "col": 2,
+          "passableWhen": {
+            "type": "stateEquals",
+            "variable": "liberada",
+            "value": true
+          },
+          "failureCode": "locked"
+        }
+      ],
+      "commandOptions": [
+        {
+          "id": "observarFechadura",
+          "label": "Inspecionar a cor da fechadura à frente",
+          "node": {
+            "type": "inspect",
+            "source": {
+              "type": "entityProperty",
+              "relativeTo": "front",
+              "property": "cor",
+              "entityId": "fechadura"
+            },
+            "into": "corNecessaria"
+          }
+        },
+        {
+          "id": "retirarvermelho",
+          "label": "Retirar a chave vermelha à frente",
+          "node": {
+            "type": "interact",
+            "relativeTo": "front",
+            "actionId": "take",
+            "entityId": "opcao-vermelho"
+          }
+        },
+        {
+          "id": "retirarazul",
+          "label": "Retirar a chave azul à frente",
+          "node": {
+            "type": "interact",
+            "relativeTo": "front",
+            "actionId": "take",
+            "entityId": "opcao-azul"
+          }
+        },
+        {
+          "id": "retirarverde",
+          "label": "Retirar a chave verde à frente",
+          "node": {
+            "type": "interact",
+            "relativeTo": "front",
+            "actionId": "take",
+            "entityId": "opcao-verde"
+          }
+        }
+      ],
+      "conditionOptions": [
+        {
+          "id": "corVermelha",
+          "label": "A cor observada é vermelha?",
+          "condition": {
+            "type": "memoryEquals",
+            "variable": "corNecessaria",
+            "value": "vermelho"
+          },
+          "values": [
+            {
+              "value": "vermelho",
+              "label": "Vermelha",
+              "question": "A cor observada é vermelha?"
+            }
+          ]
+        },
+        {
+          "id": "corAzul",
+          "label": "A cor observada é azul?",
+          "condition": {
+            "type": "memoryEquals",
+            "variable": "corNecessaria",
+            "value": "azul"
+          },
+          "values": [
+            {
+              "value": "azul",
+              "label": "Azul",
+              "question": "A cor observada é azul?"
+            }
+          ]
+        }
+      ],
+      "solution": [
+        {
+          "type": "inspect",
+          "source": {
+            "type": "entityProperty",
+            "relativeTo": "front",
+            "property": "cor",
+            "entityId": "fechadura"
+          },
+          "into": "corNecessaria"
+        },
+        {
+          "type": "switch",
+          "selector": {
+            "kind": "memoryVariable",
+            "name": "corNecessaria"
+          },
+          "cases": [
+            {
+              "value": "vermelho",
+              "body": [
+                {
+                  "type": "interact",
+                  "relativeTo": "front",
+                  "actionId": "take",
+                  "entityId": "opcao-vermelho"
+                }
+              ]
+            },
+            {
+              "value": "azul",
+              "body": [
+                {
+                  "type": "interact",
+                  "relativeTo": "front",
+                  "actionId": "take",
+                  "entityId": "opcao-azul"
+                }
+              ]
+            },
+            {
+              "value": "verde",
+              "body": [
+                {
+                  "type": "interact",
+                  "relativeTo": "front",
+                  "actionId": "take",
+                  "entityId": "opcao-verde"
+                }
+              ]
+            }
+          ],
+          "default": []
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        }
+      ],
+      "variants": [
+        {
+          "id": "vermelho",
+          "label": "Fechadura vermelha",
+          "initialVariables": {
+            "cor": "vermelho",
+            "liberada": false,
+            "escolhida": ""
+          }
+        },
+        {
+          "id": "azul",
+          "label": "Fechadura azul",
+          "initialVariables": {
+            "cor": "azul",
+            "liberada": false,
+            "escolhida": ""
+          }
+        },
+        {
+          "id": "verde",
+          "label": "Fechadura verde",
+          "initialVariables": {
+            "cor": "verde",
+            "liberada": false,
+            "escolhida": ""
+          }
+        }
+      ],
+      "presentation": {
+        "memory": {
+          "corNecessaria": {
+            "label": "Cor observada",
+            "values": [
+              {
+                "value": "vermelho",
+                "label": "Vermelha"
+              },
+              {
+                "value": "azul",
+                "label": "Azul"
+              },
+              {
+                "value": "verde",
+                "label": "Verde"
+              }
+            ]
+          }
+        },
+        "entities": {
+          "fechadura": {
+            "label": "Fechadura",
+            "glyph": "▥",
+            "propertyLabels": {
+              "cor": "Cor requerida"
+            }
+          },
+          "opcao-vermelho": {
+            "label": "Chave vermelha",
+            "glyph": "■",
+            "role": "collectible",
+            "interactionMessage": "Você retirou a chave vermelha!",
+            "failureMessages": {
+              "preconditionFailed": "Esse objeto não corresponde à informação observada. O programa parou sem retirar nada."
+            }
+          },
+          "opcao-azul": {
+            "label": "Chave azul",
+            "glyph": "◆",
+            "role": "collectible",
+            "interactionMessage": "Você retirou a chave azul!",
+            "failureMessages": {
+              "preconditionFailed": "Esse objeto não corresponde à informação observada. O programa parou sem retirar nada."
+            }
+          },
+          "opcao-verde": {
+            "label": "Chave verde",
+            "glyph": "●",
+            "role": "collectible",
+            "interactionMessage": "Você retirou a chave verde!",
+            "failureMessages": {
+              "preconditionFailed": "Esse objeto não corresponde à informação observada. O programa parou sem retirar nada."
+            }
+          }
+        },
+        "barriers": {
+          "passagem": {
+            "label": "Porta"
+          }
+        },
+        "failures": {
+          "locked": "A passagem ainda está fechada. Observe e escolha um objeto antes de atravessar."
+        }
+      },
+      "switchOptions": [
+        {
+          "id": "chavePelaCor",
+          "label": "Escolher conforme a cor guardada",
+          "selector": {
+            "kind": "memoryVariable",
+            "name": "corNecessaria"
+          },
+          "cases": [
+            {
+              "value": "vermelho",
+              "label": "Chave vermelha"
+            },
+            {
+              "value": "azul",
+              "label": "Chave azul"
+            },
+            {
+              "value": "verde",
+              "label": "Chave verde"
+            }
+          ],
+          "defaultLabel": "Outra cor"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "title": "Um valor, um caminho",
+      "demo": true,
+      "instructions": "Use ESCOLHA com o valor do mundo. Zero e um têm casos próprios; outro valor conhecido usa OUTRO VALOR. Depois siga à estrela.",
+      "hint": "Zero é uma informação conhecida. OUTRO VALOR é diferente de uma informação ainda não observada.",
+      "start": {
+        "row": 4,
+        "col": 2,
+        "direction": "N"
+      },
+      "goal": {
+        "row": 2,
+        "col": 4
+      },
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 0,
+            "col": 0
+          },
+          {
+            "row": 0,
+            "col": 1
+          },
+          {
+            "row": 0,
+            "col": 2
+          },
+          {
+            "row": 0,
+            "col": 3
+          },
+          {
+            "row": 0,
+            "col": 4
+          },
+          {
+            "row": 1,
+            "col": 0
+          },
+          {
+            "row": 1,
+            "col": 1
+          },
+          {
+            "row": 1,
+            "col": 2
+          },
+          {
+            "row": 1,
+            "col": 3
+          },
+          {
+            "row": 1,
+            "col": 4
+          },
+          {
+            "row": 2,
+            "col": 0
+          },
+          {
+            "row": 2,
+            "col": 1
+          },
+          {
+            "row": 3,
+            "col": 0
+          },
+          {
+            "row": 3,
+            "col": 1
+          },
+          {
+            "row": 3,
+            "col": 3
+          },
+          {
+            "row": 3,
+            "col": 4
+          },
+          {
+            "row": 4,
+            "col": 0
+          },
+          {
+            "row": 4,
+            "col": 1
+          },
+          {
+            "row": 4,
+            "col": 3
+          },
+          {
+            "row": 4,
+            "col": 4
+          }
+        ]
+      },
+      "initialVariables": {
+        "modo": 0,
+        "carga": 1,
+        "liberada": false,
+        "escolha": ""
+      },
+      "entities": [
+        {
+          "id": "controle",
+          "row": 4,
+          "col": 2,
+          "collectible": false,
+          "onEnter": [],
+          "interactions": [
+            {
+              "id": "zero",
+              "relativeTo": [
+                "here"
+              ],
+              "once": true,
+              "when": {
+                "type": "stateEquals",
+                "variable": "modo",
+                "value": 0
+              },
+              "effects": [
+                {
+                  "type": "set",
+                  "variable": "liberada",
+                  "value": true
+                },
+                {
+                  "type": "set",
+                  "variable": "escolha",
+                  "value": "zero"
+                }
+              ]
+            },
+            {
+              "id": "um",
+              "relativeTo": [
+                "here"
+              ],
+              "once": true,
+              "when": {
+                "type": "stateEquals",
+                "variable": "modo",
+                "value": 1
+              },
+              "effects": [
+                {
+                  "type": "set",
+                  "variable": "liberada",
+                  "value": true
+                },
+                {
+                  "type": "set",
+                  "variable": "escolha",
+                  "value": "um"
+                }
+              ]
+            },
+            {
+              "id": "outro",
+              "relativeTo": [
+                "here"
+              ],
+              "once": true,
+              "when": {
+                "type": "numberCompare",
+                "left": {
+                  "kind": "worldVariable",
+                  "name": "modo"
+                },
+                "operator": "gte",
+                "right": {
+                  "kind": "literal",
+                  "value": 2
+                }
+              },
+              "effects": [
+                {
+                  "type": "set",
+                  "variable": "liberada",
+                  "value": true
+                },
+                {
+                  "type": "set",
+                  "variable": "escolha",
+                  "value": "outro"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "barriers": [
+        {
+          "id": "passagem",
+          "row": 3,
+          "col": 2,
+          "properties": {
+            "limite": 3
+          },
+          "failureCode": "capacityExceeded",
+          "passableWhen": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "stateEquals",
+                "variable": "liberada",
+                "value": true
+              },
+              {
+                "type": "numberCompare",
+                "left": {
+                  "kind": "worldVariable",
+                  "name": "carga"
+                },
+                "operator": "lte",
+                "right": {
+                  "kind": "barrierProperty",
+                  "name": "limite"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "commandOptions": [
+        {
+          "id": "zero",
+          "label": "Ativar caminho zero",
+          "node": {
+            "type": "interact",
+            "relativeTo": "here",
+            "actionId": "zero",
+            "entityId": "controle"
+          }
+        },
+        {
+          "id": "um",
+          "label": "Ativar caminho um",
+          "node": {
+            "type": "interact",
+            "relativeTo": "here",
+            "actionId": "um",
+            "entityId": "controle"
+          }
+        },
+        {
+          "id": "outro",
+          "label": "Ativar outro caminho",
+          "node": {
+            "type": "interact",
+            "relativeTo": "here",
+            "actionId": "outro",
+            "entityId": "controle"
+          }
+        }
+      ],
+      "switchOptions": [
+        {
+          "id": "peloValor",
+          "label": "Escolher usando a quantidade do mundo",
+          "selector": {
+            "kind": "worldVariable",
+            "name": "modo"
+          },
+          "cases": [
+            {
+              "value": 0,
+              "label": "ZERO"
+            },
+            {
+              "value": 1,
+              "label": "UM"
+            }
+          ],
+          "defaultLabel": "OUTRO VALOR"
+        }
+      ],
+      "solution": [
+        {
+          "type": "switch",
+          "selector": {
+            "kind": "worldVariable",
+            "name": "modo"
+          },
+          "cases": [
+            {
+              "value": 0,
+              "body": [
+                {
+                  "type": "interact",
+                  "relativeTo": "here",
+                  "actionId": "zero",
+                  "entityId": "controle"
+                }
+              ]
+            },
+            {
+              "value": 1,
+              "body": [
+                {
+                  "type": "interact",
+                  "relativeTo": "here",
+                  "actionId": "um",
+                  "entityId": "controle"
+                }
+              ]
+            }
+          ],
+          "default": [
+            {
+              "type": "interact",
+              "relativeTo": "here",
+              "actionId": "outro",
+              "entityId": "controle"
+            }
+          ]
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnRight"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        }
+      ],
+      "variants": [
+        {
+          "id": "zero",
+          "label": "Quantidade zero"
+        },
+        {
+          "id": "um",
+          "label": "Quantidade um",
+          "initialVariables": {
+            "modo": 1,
+            "carga": 1,
+            "liberada": false,
+            "escolha": ""
+          }
+        },
+        {
+          "id": "outro",
+          "label": "Outro valor conhecido",
+          "initialVariables": {
+            "modo": 2,
+            "carga": 1,
+            "liberada": false,
+            "escolha": ""
+          }
+        }
+      ],
+      "presentation": {
+        "variables": {
+          "modo": "Quantidade do mundo"
+        },
+        "stateIndicators": [
+          {
+            "variable": "modo",
+            "label": "Quantidade do mundo"
+          }
+        ],
+        "entities": {
+          "controle": {
+            "label": "Controle de caminhos",
+            "glyph": "◎",
+            "role": "trigger"
+          }
+        },
+        "barriers": {
+          "passagem": {
+            "label": "Passagem",
+            "propertyLabels": {
+              "limite": "Limite"
+            }
+          }
+        },
+        "failures": {
+          "capacityExceeded": "A carga atual é {actual}, mas a passagem permite {limit}. O programa parou."
+        }
+      }
+    },
+    {
+      "id": 24,
+      "title": "Repita quatro vezes",
+      "demo": true,
+      "instructions": "Use REPITA 4 VEZES para avançar. Depois do bloco, vire à esquerda e vá até a estrela.",
+      "hint": "Coloque um Avançar no CORPO. A curva e o último passo ficam no programa principal.",
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": []
+      },
+      "start": {
+        "row": 4,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 3,
+        "col": 4
+      },
+      "loopOptions": [
+        {
+          "id": "quatro",
+          "label": "Repetir 4 vezes",
+          "kind": "for",
+          "times": 4
+        }
+      ],
+      "solution": [
+        {
+          "type": "for",
+          "times": 4,
+          "body": [
+            {
+              "type": "move"
+            }
+          ]
+        },
+        {
+          "type": "turnLeft"
+        },
+        {
+          "type": "move"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "title": "Enquanto o caminho está livre",
+      "demo": true,
+      "instructions": "Avance ENQUANTO o caminho estiver livre. Depois vire à esquerda e avance até a estrela. Teste o mesmo programa nos dois corredores.",
+      "hint": "O ENQUANTO observa o caminho antes de cada avanço. O corredor pode mudar de tamanho.",
+      "grid": {
+        "width": 5,
+        "height": 5,
+        "obstacles": [
+          {
+            "row": 4,
+            "col": 3
+          }
+        ]
+      },
+      "start": {
+        "row": 4,
+        "col": 0,
+        "direction": "L"
+      },
+      "goal": {
+        "row": 3,
+        "col": 2
+      },
+      "loopOptions": [
+        {
+          "id": "livre",
+          "label": "O caminho está livre?",
+          "kind": "while",
+          "condition": {
+            "type": "pathClear"
+          }
+        }
+      ],
+      "solution": [
+        {
+          "type": "while",
+          "condition": {
+            "type": "pathClear"
+          },
+          "body": [
+            {
+              "type": "move"
+            }
+          ]
+        },
+        {
+          "type": "turnLeft"
+        },
+        {
+          "type": "move"
+        }
+      ],
+      "variants": [
+        {
+          "id": "curto",
+          "label": "Corredor curto"
+        },
+        {
+          "id": "longo",
+          "label": "Corredor longo",
+          "grid": {
+            "width": 5,
+            "height": 5,
+            "obstacles": [
+              {
+                "row": 4,
+                "col": 4
+              }
+            ]
+          },
+          "goal": {
+            "row": 3,
+            "col": 3
+          }
+        }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "id": 1,
+      "title": "Olá, estrela!",
+      "status": "curriculo",
+      "digest": "c326d37aa487f9eeec4d35bbb5f54e0c9594121fc8554143d934864f7b01566a",
+      "nodes": 3,
+      "depth": 0,
+      "decisions": 0,
+      "moves": 3,
+      "mechanisms": [
+        "move"
+      ],
+      "scenarios": [
+        {
+          "id": "principal",
+          "changes": [],
+          "status": "won",
+          "instructions": 3,
+          "trace": "93fe9ded05488636ff0a3b03da70a5a71b4a3a3a4d6ddb0353dd78652c3aa95a"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Uma nova direção",
+      "status": "curriculo",
+      "digest": "48bc4b349c206ab2f4c3b7576aa6980c8459e248d76b1c27a93e19183dc71dcc",
+      "nodes": 4,
+      "depth": 0,
+      "decisions": 0,
+      "moves": 3,
+      "mechanisms": [
+        "turnLeft",
+        "move"
+      ],
+      "scenarios": [
+        {
+          "id": "principal",
+          "changes": [],
+          "status": "won",
+          "instructions": 4,
+          "trace": "36243f335165cfabe984b0eda2c9d9de6013064e182878ac1942221389575da3"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "A curva do caminho",
+      "status": "curriculo",
+      "digest": "962496280c1cb37e16b326b95e2ccd56d2686da6f3890c2be0ecfb88d886ae65",
+      "nodes": 6,
+      "depth": 0,
+      "decisions": 0,
+      "moves": 5,
+      "mechanisms": [
+        "move",
+        "turnRight"
+      ],
+      "scenarios": [
+        {
+          "id": "principal",
+          "changes": [],
+          "status": "won",
+          "instructions": 6,
+          "trace": "41c5c293b7c9268cff80617090daf612c062a0db5b7be25e25fb9bffd2707b79"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Pedra no caminho",
+      "status": "curriculo",
+      "digest": "41fc040dd5218fca5f95f7adbd006c575042caee41c5ff145d8a2e3d4c6240c8",
+      "nodes": 9,
+      "depth": 0,
+      "decisions": 0,
+      "moves": 6,
+      "mechanisms": [
+        "turnLeft",
+        "move",
+        "turnRight"
+      ],
+      "scenarios": [
+        {
+          "id": "principal",
+          "changes": [],
+          "status": "won",
+          "instructions": 9,
+          "trace": "234cddfd101116e0970e8fe308e51a84fda7eddd89f6bb065e35994f258f12f4"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Entre as rochas",
+      "status": "curriculo",
+      "digest": "4ccb2cf25e7832e9d283393b821b805fbfc50d22ee32f08cd5a81b46e3db3fbb",
+      "nodes": 13,
+      "depth": 0,
+      "decisions": 0,
+      "moves": 9,
+      "mechanisms": [
+        "move",
+        "turnRight",
+        "turnLeft"
+      ],
+      "scenarios": [
+        {
+          "id": "principal",
+          "changes": [],
+          "status": "won",
+          "instructions": 11,
+          "trace": "e437e90778d93af106810c4c37b5c433bf387ae918a86ee8f036cc7b5a4cf9aa"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Grande expedição",
+      "status": "curriculo",
+      "digest": "f818301fae8a2cd23a187cb1e124f16fdb3b6ad76f92416c9e80e86ca2b21cf3",
+      "nodes": 11,
+      "depth": 0,
+      "decisions": 0,
+      "moves": 8,
+      "mechanisms": [
+        "move",
+        "turnLeft",
+        "turnRight"
+      ],
+      "scenarios": [
+        {
+          "id": "principal",
+          "changes": [],
+          "status": "won",
+          "instructions": 11,
+          "trace": "69e5f09ecfab3e2d79f9d3f1c5a32ec357ea4d5303d76351fadd4c26584dda80"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Tesouros pelo caminho",
+      "status": "curriculo",
+      "digest": "19ef0be1312b3f82bcfd36247f8947fa5e09f3ff01392ee50e1866e1b205b424",
+      "nodes": 4,
+      "depth": 0,
+      "decisions": 0,
+      "moves": 4,
+      "mechanisms": [
+        "move"
+      ],
+      "scenarios": [
+        {
+          "id": "principal",
+          "changes": [],
+          "status": "won",
+          "instructions": 4,
+          "trace": "76e4b484851eb900371872f321c6c1dc58705add3e2401796ed20bd72fd93b90"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Ainda falta um!",
+      "status": "curriculo",
+      "digest": "aca89b9287ae9942114191386e3693713fdce28a9fa47d14a591820eae7c0b55",
+      "nodes": 7,
+      "depth": 0,
+      "decisions": 0,
+      "moves": 4,
+      "mechanisms": [
+        "move",
+        "turnLeft",
+        "turnRight"
+      ],
+      "scenarios": [
+        {
+          "id": "principal",
+          "changes": [],
+          "status": "won",
+          "instructions": 7,
+          "trace": "cdda474061efb5ca40c5e5458e9e6ada63d1bdf375734d6c3df8936763533486"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Qual caminho está livre?",
+      "status": "curriculo",
+      "digest": "8501965776439f2d5b9cab5b7428b8cdfb6757090bfa74d46fedd5a513cadc7b",
+      "nodes": 12,
+      "depth": 1,
+      "decisions": 1,
+      "moves": 8,
+      "mechanisms": [
+        "if",
+        "move",
+        "turnRight",
+        "turnLeft"
+      ],
+      "scenarios": [
+        {
+          "id": "cima",
+          "changes": [],
+          "status": "won",
+          "instructions": 6,
+          "trace": "febd3d01d8749637f4f500c08b4e21b2732fe51e926d9c025717cedaab5e5f16"
+        },
+        {
+          "id": "direita",
+          "changes": [
+            "grid",
+            "entities"
+          ],
+          "status": "won",
+          "instructions": 7,
+          "trace": "d93efdde1272392691333f9a08455ef2bafe225fd658aed4155c9162d4b3858f"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Já tenho o suficiente?",
+      "status": "curriculo",
+      "digest": "b90df85b7b9150edd23065e669befe276b5911b90d68430f7c8d833401eb7914",
+      "nodes": 11,
+      "depth": 1,
+      "decisions": 1,
+      "moves": 7,
+      "mechanisms": [
+        "move",
+        "if",
+        "turnLeft",
+        "turnRight"
+      ],
+      "scenarios": [
+        {
+          "id": "perto",
+          "changes": [],
+          "status": "won",
+          "instructions": 4,
+          "trace": "19ef6b98e10a7fcc3d11deaa71c89ff1f2dbfa059a8828d1162fd99b7b8b57a7"
+        },
+        {
+          "id": "desvio",
+          "changes": [
+            "grid",
+            "entities"
+          ],
+          "status": "won",
+          "instructions": 9,
+          "trace": "8dcde06881b5c457ee5423d8aba61ab28d91ed06cd799c6d8da279ece2c248e6"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Uma decisão dentro da outra",
+      "status": "curriculo",
+      "digest": "26bd0fc1be4ecf9d738d119c8851839aec487b428dfb7a353cb15d59d75bec84",
+      "nodes": 24,
+      "depth": 2,
+      "decisions": 2,
+      "moves": 15,
+      "mechanisms": [
+        "if",
+        "move",
+        "turnRight",
+        "turnLeft"
+      ],
+      "scenarios": [
+        {
+          "id": "direto",
+          "changes": [],
+          "status": "won",
+          "instructions": 7,
+          "trace": "bcb1f6443ccbaf1449ffb333ac68ebfc4b191a26687444d5133abd391ec7dc56"
+        },
+        {
+          "id": "lateral",
+          "changes": [
+            "grid",
+            "entities"
+          ],
+          "status": "won",
+          "instructions": 14,
+          "trace": "d1e0a90ef2a50a1d1a6ddea6e8185a3dc093f981fee7dc0740ac13e03552910c"
+        },
+        {
+          "id": "direita",
+          "changes": [
+            "grid",
+            "entities"
+          ],
+          "status": "won",
+          "instructions": 7,
+          "trace": "d93efdde1272392691333f9a08455ef2bafe225fd658aed4155c9162d4b3858f"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Cada descoberta tem seu valor",
+      "status": "curriculo",
+      "digest": "bd23f034da492611104a935a259942fc0c209d68ef735a6b9285f91b83ed94de",
+      "nodes": 11,
+      "depth": 1,
+      "decisions": 1,
+      "moves": 7,
+      "mechanisms": [
+        "move",
+        "if",
+        "turnLeft",
+        "turnRight"
+      ],
+      "scenarios": [
+        {
+          "id": "duplo",
+          "changes": [],
+          "status": "won",
+          "instructions": 4,
+          "trace": "2a4dd1ad24e9d38d211ab7962d3d39c9af63c3e0b0076eea87e504120caf6699"
+        },
+        {
+          "id": "simples",
+          "changes": [
+            "grid",
+            "entities"
+          ],
+          "status": "won",
+          "instructions": 9,
+          "trace": "e055f2b3a717c228164f1f257dd7db37e17025af08a6d3868167c9bb8fe8184b"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "title": "O semáforo",
+      "status": "curriculo",
+      "digest": "d4973b18b0324ccbe2093b4cda04bdb4d3cee948e98d05cb0dd00acdf50559bb",
+      "nodes": 12,
+      "depth": 1,
+      "decisions": 1,
+      "moves": 8,
+      "mechanisms": [
+        "if",
+        "move",
+        "turnRight",
+        "turnLeft"
+      ],
+      "scenarios": [
+        {
+          "id": "verde",
+          "changes": [],
+          "status": "won",
+          "instructions": 6,
+          "trace": "f6bd60dcd1ed9f26fdba717fea1914d1d3dd7c35c1cc639bd4a2f8614960ed37"
+        },
+        {
+          "id": "vermelho",
+          "changes": [
+            "initialVariables",
+            "grid"
+          ],
+          "status": "won",
+          "instructions": 7,
+          "trace": "dc80f5b2146ce0250c528e7eb373faac1122d60ff69cdb9d4a96bd9e196ac8b2"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "title": "A porta trancada",
+      "status": "curriculo",
+      "digest": "18a89db4c16167ccf6174cf96df3fcae85eb1cb800649c02dda0024db9f0d5d4",
+      "nodes": 11,
+      "depth": 1,
+      "decisions": 1,
+      "moves": 7,
+      "mechanisms": [
+        "move",
+        "if",
+        "turnLeft",
+        "turnRight"
+      ],
+      "scenarios": [
+        {
+          "id": "perto",
+          "changes": [],
+          "status": "won",
+          "instructions": 4,
+          "trace": "3aa7eabf754fa8791feaf1806e94a9a9a8c10b63e5fea8039a6b3701f65d05ac"
+        },
+        {
+          "id": "desvio",
+          "changes": [
+            "grid",
+            "entities"
+          ],
+          "status": "won",
+          "instructions": 9,
+          "trace": "6f145b1680f33e54ab8ae6686dafde53ff660b0902e8230642599b6c11b4aa47"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "title": "A ponte misteriosa",
+      "status": "curriculo",
+      "digest": "aaff398fc7fc68ce055eefdf6d10d26c7d534f1d1ec2d40aa724c5ad69385f51",
+      "nodes": 11,
+      "depth": 1,
+      "decisions": 1,
+      "moves": 7,
+      "mechanisms": [
+        "move",
+        "if",
+        "turnLeft",
+        "turnRight"
+      ],
+      "scenarios": [
+        {
+          "id": "ativa",
+          "changes": [],
+          "status": "won",
+          "instructions": 4,
+          "trace": "82e3f92a6571585838463a0901e62f8cb8f643eb423de4e48ff9118055097ca0"
+        },
+        {
+          "id": "inativa",
+          "changes": [
+            "initialVariables",
+            "grid"
+          ],
+          "status": "won",
+          "instructions": 9,
+          "trace": "0b14efa0df50d6458ec9f3f6f6416030407db4de11dc910ea54a1afc66b7120b"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "title": "Entrega especial",
+      "status": "curriculo",
+      "digest": "3868e118e00956d769936af77a6393404031d499929aa70a507c99996aebb95e",
+      "nodes": 11,
+      "depth": 1,
+      "decisions": 1,
+      "moves": 7,
+      "mechanisms": [
+        "move",
+        "if",
+        "turnLeft",
+        "turnRight"
+      ],
+      "scenarios": [
+        {
+          "id": "perto",
+          "changes": [],
+          "status": "won",
+          "instructions": 4,
+          "trace": "304aca6557df500b56dd635f628d5a48487f66787bb59e436abbcd954833743a"
+        },
+        {
+          "id": "desvio",
+          "changes": [
+            "grid",
+            "entities"
+          ],
+          "status": "won",
+          "instructions": 9,
+          "trace": "5d6bd8899e4fa5eced44d094147e2f91b27e480ab401159471b3d7fd5e8b4713"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "title": "Qual é a cor?",
+      "status": "demo",
+      "digest": "4f4a3edef11adf7536bba204faf9183f6f09822f412060c0c3ffb7ddec6bf911",
+      "nodes": 15,
+      "depth": 1,
+      "decisions": 1,
+      "moves": 8,
+      "mechanisms": [
+        "inspect",
+        "turnLeft",
+        "turnRight",
+        "if",
+        "move"
+      ],
+      "scenarios": [
+        {
+          "id": "vermelha",
+          "changes": [],
+          "status": "won",
+          "instructions": 9,
+          "trace": "50f9037b4fa61de78c679d98af708260d9ee7425e38290c50dbf3d3b2fc6d7b7"
+        },
+        {
+          "id": "azul",
+          "changes": [
+            "initialVariables",
+            "grid"
+          ],
+          "status": "won",
+          "instructions": 10,
+          "trace": "6a6e6d3132729e78e0948733c0a0a06ca2d5a395506e57c129d00e41d46a15fc"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "title": "Aperte o botão",
+      "status": "demo",
+      "digest": "16e3c2ac6f0ad18aac22958e29e5e504add2c6fd12b1340d1d36a28e57d15c3e",
+      "nodes": 5,
+      "depth": 0,
+      "decisions": 0,
+      "moves": 4,
+      "mechanisms": [
+        "interact",
+        "move"
+      ],
+      "scenarios": [
+        {
+          "id": "principal",
+          "changes": [],
+          "status": "won",
+          "instructions": 5,
+          "trace": "608ada946a6500dbd71ec17f113f8cab9abe56fb44cd200c1a7973e117c96998"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "title": "Retirada e entrega",
+      "status": "demo",
+      "digest": "813603ef43ccf8fe6e50dd0c6bf979e83b52dc329fc692edc8231edaa838c489",
+      "nodes": 6,
+      "depth": 0,
+      "decisions": 0,
+      "moves": 3,
+      "mechanisms": [
+        "setMemory",
+        "interact",
+        "move"
+      ],
+      "scenarios": [
+        {
+          "id": "principal",
+          "changes": [],
+          "status": "won",
+          "instructions": 6,
+          "trace": "da34b04b1c924b253ed6fe4335b06ee9fc6c937f0e3271a7def9fc5f1d62b192"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "title": "Duas pontes, cargas diferentes",
+      "status": "demo",
+      "digest": "5d76b8be734dca38504909934b84371127e0d63df9e8af3e672e1b85e93e4317",
+      "nodes": 20,
+      "depth": 1,
+      "decisions": 1,
+      "moves": 11,
+      "mechanisms": [
+        "move",
+        "if",
+        "turnRight",
+        "turnLeft"
+      ],
+      "scenarios": [
+        {
+          "id": "leve",
+          "changes": [],
+          "status": "won",
+          "instructions": 11,
+          "trace": "69145d9fe460581377fedb074357d05c262198a791faf5d5c170431d799a08aa"
+        },
+        {
+          "id": "maior",
+          "changes": [
+            "initialVariables"
+          ],
+          "status": "won",
+          "instructions": 11,
+          "trace": "05542aa17956c995342025517565fd9012486381373693dc8e59c12bac3d8778"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "title": "Observar e escolher um objeto",
+      "status": "demo",
+      "digest": "7430d7870169d41f98787a511e46acf3d7370bb2f4b92af86e656bc9c4bdecc5",
+      "nodes": 9,
+      "depth": 2,
+      "decisions": 2,
+      "moves": 3,
+      "mechanisms": [
+        "inspect",
+        "if",
+        "interact",
+        "move"
+      ],
+      "scenarios": [
+        {
+          "id": "vermelho",
+          "changes": [
+            "initialVariables"
+          ],
+          "status": "won",
+          "instructions": 6,
+          "trace": "baa3fe8ce685fa7b2b4bc0b80907f78f97724309642651cb33985a975d0feedc"
+        },
+        {
+          "id": "azul",
+          "changes": [
+            "initialVariables"
+          ],
+          "status": "won",
+          "instructions": 7,
+          "trace": "befadcdb930dc84f2b74a54c614074b2f67f5825861501aaafc694a37aef521f"
+        },
+        {
+          "id": "verde",
+          "changes": [
+            "initialVariables"
+          ],
+          "status": "won",
+          "instructions": 7,
+          "trace": "07e4bcb3542f2e76199b071bd0dd78717af5e44c30db84f22c428d3ec783140b"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "title": "As três chaves — ESCOLHA",
+      "status": "demo",
+      "digest": "42830def6192aa43326ca1671a903804907dde892462f0f3efa3e35c95875c37",
+      "nodes": 8,
+      "depth": 1,
+      "decisions": 1,
+      "moves": 3,
+      "mechanisms": [
+        "inspect",
+        "switch",
+        "interact",
+        "move"
+      ],
+      "scenarios": [
+        {
+          "id": "vermelho",
+          "changes": [
+            "initialVariables"
+          ],
+          "status": "won",
+          "instructions": 6,
+          "trace": "ff8e137720f3d329df0fad7e107ef728c7c4e229dd8540c22b6f49f63bb70bf4"
+        },
+        {
+          "id": "azul",
+          "changes": [
+            "initialVariables"
+          ],
+          "status": "won",
+          "instructions": 6,
+          "trace": "d2baf94880d50a5e974848f70ab5f71ce008db02fd4ca1562d2d057eaeabcf8b"
+        },
+        {
+          "id": "verde",
+          "changes": [
+            "initialVariables"
+          ],
+          "status": "won",
+          "instructions": 6,
+          "trace": "f7296e8494f3dfcbf28e82bed91329f0b60d234b4bc041d1796b3738edbb0c43"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "title": "Um valor, um caminho",
+      "status": "demo",
+      "digest": "1eac9a551869c642bf44e3789183a263228ddaeae850ceb5fe839747c9691440",
+      "nodes": 9,
+      "depth": 1,
+      "decisions": 1,
+      "moves": 4,
+      "mechanisms": [
+        "switch",
+        "interact",
+        "move",
+        "turnRight"
+      ],
+      "scenarios": [
+        {
+          "id": "zero",
+          "changes": [],
+          "status": "won",
+          "instructions": 7,
+          "trace": "0b3dbcd40d353396b140dbf841870c7b9f943757557e3559f0cba6047edb8fdb"
+        },
+        {
+          "id": "um",
+          "changes": [
+            "initialVariables"
+          ],
+          "status": "won",
+          "instructions": 7,
+          "trace": "1b49bc294073e24271928522cd8fc5192be7a4d56a9f15183ebc4359bae0475e"
+        },
+        {
+          "id": "outro",
+          "changes": [
+            "initialVariables"
+          ],
+          "status": "won",
+          "instructions": 7,
+          "trace": "46caf0a7ee192a9579f5047e43bbe7c433bcd0bd92c4189518fd3727b050d7bc"
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "title": "Repita quatro vezes",
+      "status": "demo",
+      "digest": "e7f0211e7e2bfe21e345bbceb4b7df18ea71fbae61d8966f9c6e551e78cad40b",
+      "nodes": 4,
+      "depth": 1,
+      "decisions": 0,
+      "moves": 2,
+      "mechanisms": [
+        "for",
+        "move",
+        "turnLeft"
+      ],
+      "scenarios": [
+        {
+          "id": "principal",
+          "changes": [],
+          "status": "won",
+          "instructions": 11,
+          "trace": "940903ac7348d14caf274beae83dd6225fec138d3285e5cef22502d6af81187d"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "title": "Enquanto o caminho está livre",
+      "status": "demo",
+      "digest": "c511ee3c7a6dce320bb9bbac36e55a0dc1cd6bbfac5315d51a998516054b47e4",
+      "nodes": 4,
+      "depth": 1,
+      "decisions": 0,
+      "moves": 2,
+      "mechanisms": [
+        "while",
+        "move",
+        "turnLeft"
+      ],
+      "scenarios": [
+        {
+          "id": "curto",
+          "changes": [],
+          "status": "won",
+          "instructions": 7,
+          "trace": "9db2cc8e4fe2d75a500a83ec6797340d4514ec22484aed84cb1710f35c4cd71c"
+        },
+        {
+          "id": "longo",
+          "changes": [
+            "grid",
+            "goal"
+          ],
+          "status": "won",
+          "instructions": 9,
+          "trace": "4c0aedc219176c3a3d92ef2b05037033db8815dc520f30afa2936e94c7971d79"
+        }
+      ]
+    }
+  ]
+}

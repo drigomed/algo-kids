@@ -1,3 +1,5 @@
+import {readFileSync} from 'node:fs';
+const legacyMissions=JSON.parse(readFileSync(new URL('./fixtures/v091-curriculum-baseline.json',import.meta.url))).missions;
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -20,8 +22,8 @@ const seq=text=>text.split('').map(c=>({type:{A:'move',D:'turnRight',E:'turnLeft
 const move={type:'move'};
 const end=(m,p)=>simulate(m,p).at(-1);
 // Fixture física sintética: os testes unitários de capacidade não dependem do mapa pedagógico 20.
-const m20=()=>{const m=structuredClone(missionVariants(missions.find(m=>m.id===20))[1]);m.start={row:4,col:2,direction:'N'};m.goal={row:2,col:4};m.grid={width:5,height:5,obstacles:[{row:4,col:1}]};m.barriers[0].row=3;m.barriers[1]={...m.barriers[1],row:4,col:4,properties:{capacidade:3},passableWhen:cmp(world('pacotes'),'lte',own('capacidade')),failureCode:'capacityExceeded'};m.solution=[{type:'if',condition:m.solution[1].condition,then:seq('DAAEAA'),else:seq('AADAA')}];return m;};
-const m21=()=>structuredClone(missionVariants(missions.find(m=>m.id===21))[0]);
+const m20=()=>{const m=structuredClone(missionVariants(legacyMissions.find(m=>m.id===20))[1]);m.start={row:4,col:2,direction:'N'};m.goal={row:2,col:4};m.grid={width:5,height:5,obstacles:[{row:4,col:1}]};m.barriers[0].row=3;m.barriers[1]={...m.barriers[1],row:4,col:4,properties:{capacidade:3},passableWhen:cmp(world('pacotes'),'lte',own('capacidade')),failureCode:'capacityExceeded'};m.solution=[{type:'if',condition:m.solution[1].condition,then:seq('DAAEAA'),else:seq('AADAA')}];return m;};
+const m21=()=>structuredClone(missionVariants(legacyMissions.find(m=>m.id===21))[0]);
 function freeze(value){if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
 function finish(s){let guard=0;while(canStep(s)){assert(++guard<2000);s=stepSession(s);}return s;}
 const unchanged=(before,after)=>{for(const key of ['row','col','direction','variables','memory','collectedIds','collectedCount','consumedIds','usedInteractions'])assert.deepEqual(after[key],before[key],key);};

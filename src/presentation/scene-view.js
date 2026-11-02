@@ -21,9 +21,9 @@ export function renderSceneBoard(mission,state,activeNode=null,{effects=[],mood=
   const robot=here(state),goal=here(mission.goal),obstacle=mission.grid.obstacles.some(here),inReach=here(reach),failed=here(failedPosition);
   const entities=scene.entities.filter(here),features=scene.features.filter(here),barriers=scene.barriers.filter(here);
   const objects=entities.map(e=>{
-   const label=e.visual.label??mission.presentation?.entityLabel??'Objeto',role=['collectible','trigger','delivery'].includes(e.visual.role)?` ${e.visual.role}`:'';
+   const baseLabel=e.visual.label??mission.presentation?.entityLabel??'Objeto',label=e.quantity===undefined?baseLabel:`${baseLabel}: ${e.quantity}${e.quantity===0?' (vazio)':''}`,role=['collectible','trigger','delivery'].includes(e.visual.role)?` ${e.visual.role}`:'';
    const active=state.events.some(event=>['interacted','inspected'].includes(event.type)&&event.entityId===e.id)?' interaction-target':'';
-   return `<span class="entity${role}${active}" role="img" aria-label="${h(label)}" title="${h(label)}">${sprite(e.asset,e.visual.glyph??mission.presentation?.entityGlyph??'●',e.asset.id)}${e.badge?`<small>${h(e.badge)}</small>`:''}</span>`;
+   return `<span class="entity${role}${active}${e.quantity===0&&e.quantityEmpty==='hideImage'?' quantity-empty':''}" role="img" aria-label="${h(label)}" title="${h(label)}">${sprite(e.asset,e.visual.glyph??mission.presentation?.entityGlyph??'●',e.asset.id)}${e.quantity!==undefined?`<small class="quantity-badge">${e.quantity===0&&e.quantityEmpty==='hideImage'?'Vazio · ':''}${h(e.quantity)}</small>`:''}${e.badge?`<small>${h(e.badge)}</small>`:''}</span>`;
   }).join('');
   const passageImages=barriers.map(b=>{
    const label=`${b.visual.label??'Passagem'}: ${b.open?'livre':'fechada'}`;

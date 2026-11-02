@@ -3,7 +3,7 @@ import {themeConfig} from './theme-config.js';
 import {passage,cellProperties} from '../rules.js';
 import {objectProperties} from '../properties.js';
 const directions={N:'n',L:'e',S:'s',O:'w'};
-const groups={button:['off','on'],lever:['off','on'],plate:['off','on'],bridge:['closed','open','overload'],door:['closed','open','locked'],gate:['closed','open'],traffic:['red','yellow','green'],station:['idle','active'],lock:['red','blue','green'],key:['red','blue','green'],terminal:['idle','active'],sign:['red','blue','green']};
+const groups={shapekey:['redround','redsquare','blueround','bluesquare'],stack:['idle'],bin:['idle'],button:['off','on'],lever:['off','on'],plate:['off','on'],bridge:['closed','open','overload'],door:['closed','open','locked'],gate:['closed','open'],traffic:['red','yellow','green'],station:['idle','active'],lock:['red','blue','green'],key:['red','blue','green'],terminal:['idle','active'],sign:['red','blue','green']};
 const own=(object,key)=>object&&Object.hasOwn(object,key)?object[key]:undefined;
 function selectedState(binding,state,properties) {
  if(typeof binding==='string')return binding;
@@ -25,7 +25,10 @@ export function resolveScene(mission,state,overrides={}) {
  const entities=(mission.entities??[]).filter(entity=>!state.consumedIds.includes(entity.id)&&!(entity.collectible&&state.collectedIds.includes(entity.id))).map(entity=>{
   const visual=mission.presentation?.entities?.[entity.id]??{};
   const fallback=entity.collectible?'collectibles/crystal':visual.role==='delivery'?'reactive/station_idle':'reactive/terminal_idle';
-  return {...entity,visual,badge:config.entities?.[entity.id]?.badge??null,asset:objectAsset(config.entities?.[entity.id],state,objectProperties(entity,state),fallback)};
+  const descriptor=config.entities?.[entity.id],quantity=descriptor?.quantity;
+  const amount=quantity?own(quantity.source==='variable'?state.variables:objectProperties(entity,state),quantity.name):undefined;
+  const number=Number.isSafeInteger(amount)&&amount>=0&&amount<=10000?amount:undefined;
+  return {...entity,visual,...(number!==undefined?{quantity:number,quantityEmpty:quantity.empty??'show'}:{}),badge:config.entities?.[entity.id]?.badge??null,asset:objectAsset(config.entities?.[entity.id],state,objectProperties(entity,state),fallback)};
  });
  const barriers=(mission.barriers??[]).map(barrier=>{
   const result=passage(mission,state,barrier),visual=mission.presentation?.barriers?.[barrier.id]??{};

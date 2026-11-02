@@ -17,10 +17,10 @@ const mission=id=>missions.find(m=>m.id===id);
 const end=(m,p=m.solution)=>simulate(m,p).at(-1);
 const text=file=>readFile(new URL('../'+file,import.meta.url),'utf8');
 
-test('catálogo fechado: 85 SVGs reais, distintos, seguros e compactos',async()=>{
- const expected={robots:16,tiles:15,goals:3,obstacles:4,collectibles:5,reactive:30,fx:7,ui:5};
+test('catálogo fechado: 91 SVGs (85 preservados e 6 aditivos) reais, distintos, seguros e compactos',async()=>{
+ const expected={robots:16,tiles:15,goals:3,obstacles:4,collectibles:5,reactive:36,fx:7,ui:5};
  for(const [group,count] of Object.entries(expected))assert.equal(Object.keys(assetRegistry).filter(key=>key.startsWith(group+'/')).length,count);
- const report=await validateAssets();assert.equal(report.files,85);assert(report.bytes<750*1024);
+ const report=await validateAssets();assert.equal(report.files,91);assert(report.bytes<750*1024);
  const contents=new Set();for(const file of Object.values(assetRegistry)){const svg=await text('src/assets/'+file);assert(validateSvg(svg,file));assert(!contents.has(svg),file);contents.add(svg);}
  for(const direction of ['n','e','s','w'])assert.equal(new Set(await Promise.all([1,2,3,4].map(mk=>text(`src/assets/robots/mk${mk}/${direction}.svg`)))).size,4);
  for(const theme of ['grass','trail','yard','factory','parking'])assert.equal(new Set(await Promise.all(['a','b','c'].map(v=>text(`src/assets/tiles/${theme}/${v}.svg`)))).size,3);
@@ -93,7 +93,7 @@ test('cenário mantém meta legível sob robô e coleções só somem pelo estad
  const collect=mission(7),before=initialState(collect),after=applyCommand(collect,before,{type:'move'});assert.equal(resolveScene(collect,before).entities.length,2);assert.equal(resolveScene(collect,after).entities.length,1);
 });
 test('galeria lista todos os arquivos nos dois tamanhos, quatro modelos por direção, fundos claro/escuro',async()=>{
- const html=await text('docs/V08-GALLERY.html');for(const file of Object.values(assetRegistry))assert(html.includes(`../src/assets/${file}`));assert.equal((html.match(/<figure>/g)??[]).length,85);assert.equal((html.match(/class="robot-row"/g)??[]).length,4);assert(html.includes('width="48"'));assert(html.includes('width="64"'));assert(html.includes('class="dark"'));assert(!/https?:|<script|cdn/i.test(html));
+ const html=await text('docs/V08-GALLERY.html');for(const file of Object.values(assetRegistry))assert(html.includes(`../src/assets/${file}`));assert.equal((html.match(/<figure>/g)??[]).length,91);assert.equal((html.match(/class="robot-row"/g)??[]).length,4);assert(html.includes('width="48"'));assert(html.includes('width="64"'));assert(html.includes('class="dark"'));assert(!/https?:|<script|cdn/i.test(html));
 });
 test('movimento reduzido preserva ícones/estados; efeitos não agendam execução',async()=>{
  const css=await text('src/presentation/visual.css'),effects=await text('src/presentation/visual-effects.js');assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);assert.match(css,/animation:none;transition:none/);assert(!/setTimeout|setInterval|stepExecution|applyCommand/.test(effects));
@@ -102,17 +102,18 @@ test('SVGs publicados são somente catálogo autorizado; artefato rejeita injeç
  const temp=await mkdtemp(join(tmpdir(),'algo-v08-'));
  try {
   await cp('src',join(temp,'src'),{recursive:true});await cp('studio',join(temp,'studio'),{recursive:true});await cp('index.html',join(temp,'index.html'));
-  const validate=()=>execFileSync(process.execPath,['scripts/validate-dist.js',temp],{stdio:'pipe'});validate();assert.equal((await validateAssets(temp)).files,85);
+  const validate=()=>execFileSync(process.execPath,['scripts/validate-dist.js',temp],{stdio:'pipe'});validate();assert.equal((await validateAssets(temp)).files,91);
   for(const name of ['src/bad.svg','src/bad.html','src/assets/bad.svg','src/assets/bad.js']){const path=join(temp,name);await writeFile(path,'<svg/>');assert.throws(validate);await rm(path);}
   const svg=join(temp,'src/assets/ui/success.svg'),original=await readFile(svg);await writeFile(svg,'<svg onload="alert(1)"/>');assert.throws(validate);await writeFile(svg,original);
   const sym=join(temp,'src/assets/ui/linked.svg');await symlink(svg,sym);assert.throws(validate);await rm(sym);
   const source=join(temp,'src/ui.js'),js=await readFile(source,'utf8');await writeFile(source,js+"\nimport '/outside.js';");assert.throws(validate);
  }finally{await rm(temp,{recursive:true,force:true});}
 });
-test('contratos legados: 24 missões intactas e baseline explícita V0.9.1 da Missão 20',async()=>{
+test('contratos legados preservados; alterações curriculares auditadas em suíte V092',async()=>{
  const {createHash}=await import('node:crypto'),baseline=JSON.parse(await text('tests/fixtures/v071-domain-baseline.json'));
- const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');assert.equal(digest(missions),baseline.v091Missions??baseline.missions);for(const m of missions.filter(m=>m.id!==20))assert.equal(digest(m),baseline.missionDigests[m.id]);
- for(const original of baseline.variants){const expected=original.v091??original,m=mission(expected.missionId),scenario=missionVariants(m).find(s=>s.variantId===expected.variantId),states=simulate(freeze(scenario),freeze(structuredClone(m.solution)));assert.equal(digest(states),expected.trace);assert.equal(states.at(-1).instructionPointer,expected.instructions);assert.equal(states.at(-1).status,expected.status);}
+ const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
+ for(const m of missions.filter(m=>m.id<=25&&![20,21,22,24].includes(m.id)))assert.equal(digest(m),baseline.missionDigests[m.id]);
+ for(const original of baseline.variants){const expected=original.v091??original;if([21,22,24].includes(expected.missionId))continue;const m=mission(expected.missionId),scenario=missionVariants(m).find(s=>s.variantId===expected.variantId),states=simulate(freeze(scenario),freeze(structuredClone(m.solution)));if(m.id!==20)assert.equal(digest(states),expected.trace);assert.equal(states.at(-1).instructionPointer,expected.instructions);assert.equal(states.at(-1).status,expected.status);}
 });
 test('seletores visuais malformados usam fallback sem ler código ou URLs',()=>{
  const m=structuredClone(mission(18));m.presentation.visual={entities:{controle:{assetGroup:'button',state:{source:'variable',name:'aberta',values:[null,{},'on',{value:false,state:'file://evil'}]}}}};

@@ -40,7 +40,7 @@ export function validateSvg(source,label='SVG') {
 }
 export async function validateAssets(root='.') {
  const directory=resolve(root,'src/assets'),expected=new Set(Object.values(assetRegistry));
- assert(expected.size===85,'Catálogo deve conter exatamente 85 arquivos');
+ assert(expected.size===91,'Catálogo deve conter exatamente 91 arquivos (85 legados + 6 aditivos V0.9.2)');
  const actual=new Set();let bytes=0;
  async function walk(path) {
   const stat=await lstat(path);assert(!stat.isSymbolicLink(),`Link simbólico: ${path}`);

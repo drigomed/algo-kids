@@ -13,7 +13,7 @@ export function createPlaytest(mission,{all=true,scenario=0,instructionLimit=100
  return {snapshot,scenarios:chosen,sessions:chosen.map(m=>createSession(m,snapshot.solution,{instructionLimit})),index:0,reports:[],trace:[],reachedIds:[],done:false,interrupted:false,all:all||(scenarios.length===1&&(!snapshot.variants||scenario>=0))};
 }
 export function testState(test){return test.sessions[test.index].execution.state;}
-function report(test,session){const s=session.execution.state;return {scenario:test.scenarios[test.index].variantId??String(test.index),label:test.scenarios[test.index].variantLabel??'Cenário',status:s.status,category:classifyResult(s),reason:s.reason??'',row:s.row,col:s.col,direction:s.direction,instructions:s.instructionPointer,...(Object.hasOwn(s,'energyRemaining')?{energyInitial:s.energyInitial,energyRemaining:s.energyRemaining,energySpent:s.energySpent}:{})};}
+function report(test,session){const s=session.execution.state;const counts=(test.resolvedCounts??[]).filter(c=>c.scenario===test.index).map(({scenario,...c})=>c);return {scenario:test.scenarios[test.index].variantId??String(test.index),label:test.scenarios[test.index].variantLabel??'Cenário',status:s.status,category:classifyResult(s),reason:s.reason??'',row:s.row,col:s.col,direction:s.direction,instructions:s.instructionPointer,...(counts.length?{loopCounts:counts}:{}),...(Object.hasOwn(s,'energyRemaining')?{energyInitial:s.energyInitial,energyRemaining:s.energyRemaining,energySpent:s.energySpent}:{})};}
 export function stepPlaytest(test){
  if(test.done)return test;
  const sessions=[...test.sessions],current=sessions[test.index];
@@ -22,7 +22,8 @@ export function stepPlaytest(test){
   return test.index===sessions.length-1?{...test,reports,done:true}:{...test,reports,index:test.index+1};
  }
  const session=stepSession(current);sessions[test.index]=session;
- return {...test,sessions,reachedIds:[...new Set([...test.reachedIds,...session.execution.state.events.map(e=>e.entityId).filter(Boolean)])],trace:[...test.trace,{scenario:test.index,path:session.execution.activePath,instructions:session.execution.state.instructionPointer,events:structuredClone(session.execution.state.events)}].slice(-2000)};
+ const counts=session.execution.state.events.filter(e=>e.type==='loopCheck'&&e.count&&e.completed===0).map(e=>({scenario:test.index,path:[...e.path],count:structuredClone(e.count),times:e.times}));
+ return {...test,sessions,...(counts.length?{resolvedCounts:[...(test.resolvedCounts??[]),...counts]}:{}),reachedIds:[...new Set([...test.reachedIds,...session.execution.state.events.map(e=>e.entityId).filter(Boolean)])],trace:[...test.trace,{scenario:test.index,path:session.execution.activePath,instructions:session.execution.state.instructionPointer,events:structuredClone(session.execution.state.events)}].slice(-2000)};
 }
 export function interruptPlaytest(test){
  if(test.done)return test;const sessions=[...test.sessions];sessions[test.index]=interruptSession(sessions[test.index]);

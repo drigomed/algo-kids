@@ -1,0 +1,53 @@
+{
+  "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "reducedMotion": true,
+  "errors": [],
+  "results": [
+    {
+      "label": "Jogo 01 — celular",
+      "viewport": 390,
+      "width": 390
+    },
+    {
+      "label": "Jogo 30 — programa dinâmico",
+      "viewport": 390,
+      "width": 390
+    },
+    {
+      "label": "Jogo 30 — três variantes pelos controles",
+      "status": "won"
+    },
+    {
+      "label": "Jogo — desktop",
+      "viewport": 1366,
+      "width": 1351
+    },
+    {
+      "label": "Studio — desktop",
+      "viewport": 1366,
+      "width": 1351
+    },
+    {
+      "label": "Studio 30 — três variantes e contagem resolvida",
+      "status": "won"
+    },
+    {
+      "label": "Studio — 360px",
+      "viewport": 360,
+      "width": 360
+    },
+    {
+      "label": "Studio — fonte dinâmica e undo em Chromium",
+      "status": "ok"
+    },
+    {
+      "label": "Quatro chaves — celular",
+      "viewport": 390,
+      "width": 390
+    },
+    {
+      "label": "Galeria — 91 assets locais carregados",
+      "status": "ok"
+    }
+  ]
+}

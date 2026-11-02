@@ -48,3 +48,10 @@ Leia `README.md`, `docs/PRODUCT.md`, `docs/ROADMAP.md`, `docs/MVP.md`, `docs/V02
 - Em cada tarefa, informar arquivos alterados, testes executados e limitações.
 - Não fazer deploy público nem conectar serviços externos sem aprovação.
 - Não copiar marcas, textos ou layout dos exemplos de produtos comerciais usados como inspiração.
+
+## V0.9.2 — Currículo e contagem observada
+- Ler docs/V092.md, V092-JSON-CONTRACT.md, V092-MISSION-AUDIT.md e V092-VALIDATION.md. Estas regras incrementais substituem as restrições históricas conflitantes acima.
+- Preservar 01–08 integralmente e 09–19/23/25 por padrão. Somente 20/21/22/24 recebem mudanças autorizadas; 26–33 são novos cenários.
+- for contém exatamente times literal 1–20 OU count de memória numérica; snapshot 0–20 por ativação. Nunca embutir valor resolvido na AST. Checks e limites legados intactos.
+- Pilha/lixeira são entidades/barreiras/guardas declarativas, nunca exceções por IDs no motor. E/OU infantis são fluxo com SE, não novos operadores.
+- 91 SVGs: 85 legados byte a byte mais 6 aditivos. V2.0 só planejamento. Sem merge automático/deploy manual.

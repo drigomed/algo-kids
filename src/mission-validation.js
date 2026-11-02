@@ -20,10 +20,11 @@ export function validateVisual(visual,path='presentation.visual'){
  }
 }
 function validateVisualObject(value,path){
- if(!record(value)||Object.keys(value).some(k=>!['assetGroup','state','badge'].includes(k))||!visualGroups.includes(value.assetGroup))throw new Error(`${path}: papel gráfico não autorizado`);
+ if(!record(value)||Object.keys(value).some(k=>!['assetGroup','state','badge','quantity'].includes(k))||!visualGroups.includes(value.assetGroup))throw new Error(`${path}: papel gráfico não autorizado`);
  if(Object.hasOwn(value,'badge')&&typeof value.badge!=='string')throw new Error(`${path}.badge: rótulo inválido`);
+ if(value.quantity!==undefined&&(!record(value.quantity)||Object.keys(value.quantity).some(k=>!['source','name','empty'].includes(k))||(value.quantity.empty!==undefined&&!['hideImage','show'].includes(value.quantity.empty))||!['variable','property'].includes(value.quantity.source)||!validVariable(value.quantity.name)))throw new Error(`${path}.quantity: vínculo inválido`);
  const binding=value.state;if(binding===undefined)return;
- const states=['off','on','closed','open','overload','locked','red','blue','green','yellow','idle','active'];
+ const states=['off','on','closed','open','overload','locked','red','blue','green','yellow','idle','active','redround','redsquare','blueround','bluesquare'];
  if(typeof binding==='string'){if(!states.includes(binding))throw new Error(`${path}.state: estado inválido`);return;}
  if(!record(binding)||Object.keys(binding).some(k=>!['source','name','values'].includes(k))||!['variable','property'].includes(binding.source)||!validVariable(binding.name)||!Array.isArray(binding.values)||binding.values.some(item=>!record(item)||Object.keys(item).some(k=>!['value','state'].includes(k))||!scalar(item.value)||!states.includes(item.state)))throw new Error(`${path}.state: vínculo inválido`);
 }

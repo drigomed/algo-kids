@@ -1,3 +1,4 @@
+import {demoMissionsV092} from './demo-missions-v092.js';
 import {demoMissionsV07} from './demo-missions-v07.js';
 import {demoMissionsV06} from './demo-missions-v06.js';
 import {demoMissionsV05} from './demo-missions-v05.js';
@@ -82,3 +83,5 @@ missions.push(...demoMissionsV05);
 missions.push(...demoMissionsV06);
 
 missions.push(...demoMissionsV07);
+
+missions.push(...demoMissionsV092);

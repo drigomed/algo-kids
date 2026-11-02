@@ -1,4 +1,4 @@
-import {validateLoopNode,loopContext,semanticSignature,MAX_WHILE_HISTORY} from './loops.js';
+import {resolveForCount,validateLoopNode,loopContext,semanticSignature,MAX_WHILE_HISTORY} from './loops.js';
 import {validateSwitchNode,evaluateSwitch,switchBranchPath} from './switches.js';
 import {nodeAt,sequenceAt,MAX_NODES,MAX_DEPTH} from './tree.js';
 export {MAX_NODES,MAX_DEPTH} from './tree.js';
@@ -48,7 +48,7 @@ function checkLoop(mission,program,execution,frames) {
   const frame=frames.at(-1),activePath=[...frame.path],node=nodeAt(program,activePath).node;
   const context=loopContext(frames);
   let result;
-  try {result=node.type==='for'?frame.completed<node.times:evaluateCondition(mission,execution.state,node.condition);}
+  try {result=node.type==='for'?frame.completed<frame.times:evaluateCondition(mission,execution.state,node.condition);}
   catch(error) {
     if(!(error instanceof ExecutionFault))throw error;
     return {...execution,frames:[],activePath,decision:execution.decision,state:actionFailure({...execution.state,instructionPointer:execution.state.instructionPointer+1},error.reason,{action:node.type,loop:context,condition:structuredClone(node.condition),...error.details})};
@@ -79,7 +79,13 @@ export function stepExecution(mission, program, execution) {
   const frame = frames.at(-1), index = frame.index++;
   const activePath = [...frame.path, index], node = listAt(program, frame.path)[index];
   if(['for','while'].includes(node.type)) {
-    frames.push({kind:'loop',loopType:node.type,path:activePath,completed:0,...(node.type==='for'?{times:node.times}:{history:[]})});
+    let times;
+    try {if(node.type==='for')times=resolveForCount(node,execution.state);}
+    catch(error) {
+      if(!(error instanceof ExecutionFault))throw error;
+      return {...execution,frames:[],activePath,state:actionFailure({...execution.state,instructionPointer:execution.state.instructionPointer+1},error.reason,{action:'for',count:structuredClone(node.count),loop:{loopType:'for',path:[...activePath],iteration:1,count:structuredClone(node.count)},...error.details})};
+    }
+    frames.push({kind:'loop',loopType:node.type,path:activePath,completed:0,...(node.type==='for'?{times,...(node.count?{count:structuredClone(node.count)}:{})}:{history:[]})});
     return checkLoop(mission,program,execution,frames);
   }
   let state, decision = execution.decision;
