@@ -9,7 +9,7 @@
         {
           "id": "principal",
           "trace": "93fe9ded05488636ff0a3b03da70a5a71b4a3a3a4d6ddb0353dd78652c3aa95a",
-          "board": "86bd520aa518c4cfe59753596a26b7f3a95f6e91b92c3a822b7758febe856b4b"
+          "board": "da3b4e650affed02163c4bc16ead232e1e12928f731e782211c4047617812b39"
         }
       ]
     },
@@ -21,7 +21,7 @@
         {
           "id": "principal",
           "trace": "36243f335165cfabe984b0eda2c9d9de6013064e182878ac1942221389575da3",
-          "board": "30a2cfb8fb350d0fab958af8e3bc567a971d6685f0b92a60fd54e4caeaad9995"
+          "board": "ae104ba21163f4718687006ba83b1f65b1a4675186af1c313ae029a026f0a8e9"
         }
       ]
     },
@@ -33,7 +33,7 @@
         {
           "id": "principal",
           "trace": "41c5c293b7c9268cff80617090daf612c062a0db5b7be25e25fb9bffd2707b79",
-          "board": "a2ae07e582051dc4e831ed9875c28731f36357d556f6862089a46952dfcfb4d7"
+          "board": "b60678fbc901125efb989681ee3161824e62fef0f528433f01f1655ec1c7eecc"
         }
       ]
     },
@@ -45,7 +45,7 @@
         {
           "id": "principal",
           "trace": "234cddfd101116e0970e8fe308e51a84fda7eddd89f6bb065e35994f258f12f4",
-          "board": "7c7915fb2d4985ec66d1bbc2132fc05ed61cb57cee92623a69a574480b88565f"
+          "board": "1cfc1f738c0ace0f2c965e97f380d57c0e3791913a5f828491ba99aeafef0779"
         }
       ]
     },
@@ -57,7 +57,7 @@
         {
           "id": "principal",
           "trace": "e437e90778d93af106810c4c37b5c433bf387ae918a86ee8f036cc7b5a4cf9aa",
-          "board": "ccda1be6fb26a493103610f63e8c6ac238d4c093407bdd8e61eecf0c41dcfc9c"
+          "board": "116ec8390bc299dbf8ca49d07c1358bf836cbfdc485ea95f4e3aa35789486465"
         }
       ]
     },
@@ -69,7 +69,7 @@
         {
           "id": "principal",
           "trace": "69e5f09ecfab3e2d79f9d3f1c5a32ec357ea4d5303d76351fadd4c26584dda80",
-          "board": "0bca1699f6840ce96f89fd68cb8ad21e540738913cfa79b6582499aaf59a6301"
+          "board": "d13076fb90198e454633e31d40def5be8dc1e38c9b6fbc1ba52d73db0dba6ae2"
         }
       ]
     },
@@ -81,7 +81,7 @@
         {
           "id": "principal",
           "trace": "76e4b484851eb900371872f321c6c1dc58705add3e2401796ed20bd72fd93b90",
-          "board": "cdf2cfb134de7abafb992fb365b03ed07f41b8a523f423dbf94628ec80af6a5a"
+          "board": "ba9b2a0bf6e38f8bbdfe731e5923246eb462f231a95a8a7987ddbbee67ce9758"
         }
       ]
     },
@@ -93,7 +93,7 @@
         {
           "id": "principal",
           "trace": "cdda474061efb5ca40c5e5458e9e6ada63d1bdf375734d6c3df8936763533486",
-          "board": "d806d71c5f7ae2a0765dbbd946c9af98c1a6ed16511643d2b9d171bc43a20fe7"
+          "board": "ca9a9222937a01202a531a2c47c68f7e42c04089e74b5cfc85e3be06d7de9eb3"
         }
       ]
     },
@@ -617,5 +617,6 @@
     "src/assets/ui/interrupted.svg": "b32cc6a0af89d5434c7a78cb3a3133b3eff8d760debd4777371caca1c1579473",
     "src/assets/ui/stalled.svg": "c1436fa83877e95a73fa6558c91e7eb853ba2cc02cca49f5cec7ebeabcd793ee",
     "src/assets/ui/success.svg": "152bb148d16a34d29c9ffef9777d72bf3f8a74ff085631ac58c53a1b4ff51a1f"
-  }
+  },
+  "boardNormalization": "file://<checkout>/src/assets/ → assets/; HTML e nomes de sprites preservados"
 }

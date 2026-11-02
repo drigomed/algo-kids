@@ -47,6 +47,8 @@ As contagens incluem checks. Referências e alternativas são aceitas; um par de
 - **Segurança/Studio:** vínculos inválidos, memória não declarada, labels/badges longos e descritores com scripts/URL são rejeitados; texto hostil é escapado. Formulários e round-trip completos/drafts parciais mantêm novos metadados. Studio não consulta progresso oficial.
 - **Assets:** 91 hashes da base conferidos, nenhum SVG novo ou alterado. Header usa MK1 leste local, decorativo e relativo. Galeria/segurança V08 continuam na suíte.
 
+Portabilidade dos snapshots: a primeira CI identificou raiz absoluta do checkout nos URLs file:// de assets dentro do HTML. A baseline foi recalculada a partir do renderer V092 histórico, normalizando somente file://<checkout>/src/assets/ para assets/. Todo o HTML, nomes/caminhos relativos e sprites continuam comparados; a validação não depende do diretório da máquina. A suíte completa também passou com 823 testes numa cópia em /tmp/algo-v093-portability, fora do checkout original.
+
 Ajustes históricos limitados: V08 verifica antes/depois de inspeção em vez de aceitar vazamento inicial; V08/V092 comparam domínio separadamente da apresentação autorizada. Testes de caixa da V092 executam o transporte físico antes de descartar e preservam contraprovas de pilha vazia/retirada dupla. Novas baselines continuam estritas nas primeiras oito missões; nenhum teste histórico foi apagado.
 
 ## Auditoria de identificação
