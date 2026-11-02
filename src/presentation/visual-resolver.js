@@ -1,3 +1,4 @@
+import {presentedProperties,presentedState,observationPending,mapDetails} from './map-identification.js';
 import {asset} from './asset-registry.js';
 import {themeConfig} from './theme-config.js';
 import {passage,cellProperties} from '../rules.js';
@@ -26,9 +27,9 @@ export function resolveScene(mission,state,overrides={}) {
   const visual=mission.presentation?.entities?.[entity.id]??{};
   const fallback=entity.collectible?'collectibles/crystal':visual.role==='delivery'?'reactive/station_idle':'reactive/terminal_idle';
   const descriptor=config.entities?.[entity.id],quantity=descriptor?.quantity;
-  const amount=quantity?own(quantity.source==='variable'?state.variables:objectProperties(entity,state),quantity.name):undefined;
+  const amount=quantity?own(quantity.source==='variable'?presentedState(entity,state,descriptor).variables:presentedProperties(entity,state,descriptor),quantity.name):undefined;
   const number=Number.isSafeInteger(amount)&&amount>=0&&amount<=10000?amount:undefined;
-  return {...entity,visual,...(number!==undefined?{quantity:number,quantityEmpty:quantity.empty??'show'}:{}),badge:config.entities?.[entity.id]?.badge??null,asset:objectAsset(config.entities?.[entity.id],state,objectProperties(entity,state),fallback)};
+  return {...entity,visual,...(number!==undefined?{quantity:number,quantityEmpty:quantity.empty??'show'}:{}),badge:config.entities?.[entity.id]?.badge??null,details:mapDetails(descriptor,presentedState(entity,state,descriptor),presentedProperties(entity,state,descriptor)),asset:observationPending(descriptor,state)?asset('reactive/terminal_idle'):objectAsset(descriptor,presentedState(entity,state,descriptor),presentedProperties(entity,state,descriptor),fallback)};
  });
  const barriers=(mission.barriers??[]).map(barrier=>{
   const result=passage(mission,state,barrier),visual=mission.presentation?.barriers?.[barrier.id]??{};
@@ -37,12 +38,13 @@ export function resolveScene(mission,state,overrides={}) {
   const failure=events.find(e=>e.type==='collision'&&e.barrierId===barrier.id);
   const overload=safeGroup==='bridge'&&(failure?.reason==='capacityExceeded'||result.failureCode==='capacityExceeded');
   const status=overload?'overload':result.passable?'open':safeGroup==='door'&&(failure?.reason==='locked'||result.failureCode==='locked')?'locked':'closed';
-  return {...barrier,visual,open:result.passable,asset:asset(`reactive/${safeGroup}_${status}`,`reactive/${safeGroup}_closed`)};
+  const descriptor=config.barriers?.[barrier.id]??{};
+  return {...barrier,visual,badge:descriptor.badge??null,properties:presentedProperties(barrier,state,descriptor),details:mapDetails(descriptor,presentedState(barrier,state,descriptor),presentedProperties(barrier,state,descriptor)),open:result.passable,asset:asset(`reactive/${safeGroup}_${status}`,`reactive/${safeGroup}_closed`)};
  });
  const features=(mission.grid.cells??[]).flatMap(cell=>Object.entries(cellProperties(mission,state,cell)).map(([name,value])=>{
-  const metadata=mission.presentation?.properties?.[name]??{},choice=metadata.values?.find(item=>item.value===value);
-  const configuration=config.properties?.[name];
-  return {row:cell.row,col:cell.col,name,value,label:`${metadata.label??'Marca'}: ${choice?.label??String(value)}`,glyph:choice?.glyph??'◇',asset:configuration?objectAsset(configuration,state,cellProperties(mission,state,cell),'reactive/sign_red'):null};
+  const configuration=config.properties?.[name],shown=presentedProperties(cell,state,configuration)[name];
+  const metadata=mission.presentation?.properties?.[name]??{},choice=metadata.values?.find(item=>item.value===shown),pending=observationPending(configuration,state);
+  return {row:cell.row,col:cell.col,name,value:shown,displayValue:choice?.label??String(shown),badge:configuration?.badge??null,label:`${metadata.label??'Marca'}: ${choice?.label??String(shown)}`,glyph:pending?'?':choice?.glyph??'◇',asset:pending?asset('reactive/terminal_idle'):configuration?objectAsset(configuration,presentedState(cell,state,configuration),presentedProperties(cell,state,configuration),'reactive/sign_red'):null};
  }));
  return {config,robot:{...robotAsset,skin:config.robotSkin,direction:directions[state.direction]??'n'},goal:asset(`goals/${config.goalSkin}`,'goals/star'),obstacle:asset(`obstacles/${config.obstacleSkin}`),environment:{theme:config.environmentTheme},entities,barriers,features,terrain:(row,col)=>asset(`tiles/${config.environmentTheme}/${terrainVariant(row,col,config.environmentTheme)}`)};
 }

@@ -8,21 +8,24 @@ import {missionVariants} from './missions.js';
 import {missionSchema,visualGroups} from './studio/authoring-schema.js';
 const visualKeys=new Set(['boardStyle','chapter','robotSkin','environmentTheme','goalSkin','obstacleSkin','entities','barriers','properties','barrierDefaults','variantLooks']);
 const enums={boardStyle:['normal','blueprint'],chapter:['navigator','collector','reactive','advanced'],robotSkin:['mk1','mk2','mk3','mk4'],environmentTheme:['grass','trail','yard','factory','parking'],goalSkin:['star','beacon','landing-pad'],obstacleSkin:['rock','crate','cone','bollard']};
-export function validateVisual(visual,path='presentation.visual'){
+export function validateVisual(visual,path='presentation.visual',mission){
  if(visual===undefined)return;if(!record(visual))throw new Error(`${path}: configuração visual inválida`);
  for(const [key,value] of Object.entries(visual)){
   if(!visualKeys.has(key))throw new Error(`${path}.${key}: campo visual não autorizado`);
   if(enums[key]&&!enums[key].includes(value))throw new Error(`${path}.${key}: escolha um valor do catálogo`);
   if(['entities','barriers','properties'].includes(key)){
-   if(!record(value))throw new Error(`${path}.${key}: mapa inválido`);for(const [name,item] of Object.entries(value))validateVisualObject(item,`${path}.${key}.${name}`);
-  }else if(key==='barrierDefaults')validateVisualObject(value,`${path}.${key}`);
-  else if(key==='variantLooks'){if(!record(value))throw new Error('Variantes visuais inválidas');for(const [id,item] of Object.entries(value))validateVisual(item,`${path}.${key}.${id}`);}
+   if(!record(value))throw new Error(`${path}.${key}: mapa inválido`);for(const [name,item] of Object.entries(value))validateVisualObject(item,`${path}.${key}.${name}`,mission);
+  }else if(key==='barrierDefaults')validateVisualObject(value,`${path}.${key}`,mission);
+  else if(key==='variantLooks'){if(!record(value))throw new Error('Variantes visuais inválidas');for(const [id,item] of Object.entries(value))validateVisual(item,`${path}.${key}.${id}`,mission);}
  }
 }
-function validateVisualObject(value,path){
- if(!record(value)||Object.keys(value).some(k=>!['assetGroup','state','badge','quantity'].includes(k))||!visualGroups.includes(value.assetGroup))throw new Error(`${path}: papel gráfico não autorizado`);
- if(Object.hasOwn(value,'badge')&&typeof value.badge!=='string')throw new Error(`${path}.badge: rótulo inválido`);
+function validateVisualObject(value,path,mission){
+ if(!record(value)||Object.keys(value).some(k=>!['assetGroup','state','badge','quantity','observedProperties','details'].includes(k))||!visualGroups.includes(value.assetGroup))throw new Error(`${path}: papel gráfico não autorizado`);
+ if(Object.hasOwn(value,'badge')&&(typeof value.badge!=='string'||value.badge.length>24))throw new Error(`${path}.badge: rótulo inválido`);
  if(value.quantity!==undefined&&(!record(value.quantity)||Object.keys(value.quantity).some(k=>!['source','name','empty'].includes(k))||(value.quantity.empty!==undefined&&!['hideImage','show'].includes(value.quantity.empty))||!['variable','property'].includes(value.quantity.source)||!validVariable(value.quantity.name)))throw new Error(`${path}.quantity: vínculo inválido`);
+ if(value.observedProperties!==undefined&&(!record(value.observedProperties)||Object.entries(value.observedProperties).some(([k,v])=>!validVariable(k)||!validVariable(v))))throw new Error(`${path}: observação inválida`);
+ if(value.details!==undefined&&(!Array.isArray(value.details)||value.details.length>4||value.details.some(d=>!record(d)||Object.keys(d).some(k=>!['source','name','label'].includes(k))||!['property','variable'].includes(d.source)||!validVariable(d.name)||(d.label!==undefined&&(typeof d.label!=='string'||d.label.length>16)))))throw new Error(`${path}: detalhes inválidos`);
+ if(mission&&Object.values(value.observedProperties??{}).some(name=>!Object.hasOwn(mission.robotMemory??{},name)))throw new Error(`${path}: memória de observação não declarada`);
  const binding=value.state;if(binding===undefined)return;
  const states=['off','on','closed','open','overload','locked','red','blue','green','yellow','idle','active','redround','redsquare','blueround','bluesquare'];
  if(typeof binding==='string'){if(!states.includes(binding))throw new Error(`${path}.state: estado inválido`);return;}
@@ -37,7 +40,8 @@ export function diagnose(mission){
  for(const key of ['title','instructions','hint'])check([key],()=>{if((key==='title'||Object.hasOwn(mission,key))&&typeof mission[key]!=='string')throw new Error('Metadado deve ser texto');});
  check(['demo'],()=>{if(Object.hasOwn(mission,'demo')&&typeof mission.demo!=='boolean')throw new Error('demo deve ser booleano');});
  check(['variants'],()=>{if(Array.isArray(mission.variants))for(const variant of mission.variants){if(!record(variant))continue;if(variant.label!==undefined&&typeof variant.label!=='string')throw new Error('Rótulo de variante deve ser texto');for(const key of Object.keys(variant))if(key!=='label'&&!Object.hasOwn(missionSchema.fields,key))throw new Error(`Override não reconhecido: ${key}`);}});
- check(['presentation','visual'],()=>validateVisual(mission.presentation?.visual));
+ check(['presentation'],()=>{for(const kind of ['entities','barriers','properties'])for(const item of Object.values(mission.presentation?.[kind]??{})){if(!record(item)||(item.label!==undefined&&(typeof item.label!=='string'||item.label.length>128)))throw new Error('Rótulo de mapa deve ser texto de até 128 caracteres');}});
+ check(['presentation','visual'],()=>validateVisual(mission.presentation?.visual,'presentation.visual',mission));
  check(['grid'],()=>{if(mission.grid?.width>12||mission.grid?.height>12)throw new Error('Studio: máximo 12×12 na interface (o motor não foi alterado)');});
  check([],()=>validateMission(mission));check(['robotMemory'],()=>validateMemory(mission.robotMemory));
  for(const [i,entity] of (Array.isArray(mission.entities)?mission.entities:[]).entries()){
@@ -49,7 +53,7 @@ export function diagnose(mission){
  for(const [i,barrier] of (Array.isArray(mission.barriers)?mission.barriers:[]).entries())check(['barriers',i,'passableWhen'],()=>validatePassageCondition(barrier.passableWhen,mission.initialVariables??{},barrier));
  check(['commandOptions'],()=>validateCommandOptions(mission));
  if(!errors.length){for(const [i,scenario] of missionVariants(mission).entries()){
-  check(mission.variants?['variants',i]:[],()=>validateVisual(scenario.presentation?.visual));
+  check(mission.variants?['variants',i]:[],()=>validateVisual(scenario.presentation?.visual,'presentation.visual',scenario));
   check(['solution'],()=>validateProgram(mission.solution??[],scenario));
  }}
  if(!mission.solution?.length)warnings.push({path:['solution'],message:'Solução vazia: rascunho estrutural não comprova uma missão pronta para jogar.'});

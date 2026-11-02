@@ -19,3 +19,5 @@ Prioridades:
 Considere `README.md`, `AGENTS.md` e `docs/*.md` como a documentação de referência. Quando mudar escopo, atualize os documentos antes da implementação.
 
 V0.9.2: base main 05eccf6, branch feat/v092-curriculum-decisions-loops; seguir docs/V092.md e contratos incrementais, preservar 01–08, executar teste/build/assets/dist, atualizar auditoria, abrir PR sem merge ou deploy manual.
+
+V0.9.3: base main ee40b0d; branch feat/v093-ux-progression-map-labels. Executar testes/build/assets/dist e Chromium, auditar 33/71; progresso e prévia separados da engine; sem merge/deploy manual.

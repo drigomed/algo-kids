@@ -1,3 +1,5 @@
+import {presentedProperties} from './presentation/map-identification.js';
+import {themeConfig} from './presentation/theme-config.js';
 import {energyMessage} from './energy.js';
 import {stalledMessage,stoppedMessage} from './loops.js';
 import {renderLoopPalette,loopMessage} from './loop-view.js';
@@ -86,7 +88,7 @@ export function collisionMessage(mission,state) {
   return state.lastEvent==='boundary'?'Opa, o tabuleiro acaba aqui! Que tal mudar o caminho?':state.lastEvent==='barrier'?'Esta passagem está bloqueada para o estado atual. O programa parou.':'Uma rocha no caminho! Vamos tentar contornar?';
 }
 export function passageIndicators(mission,state) {
-  return (mission.barriers??[]).flatMap(barrier=>Object.entries(objectProperties(barrier,state)).map(([name,value])=>`${mission.presentation?.barriers?.[barrier.id]?.label??'Passagem'} · ${mission.presentation?.barriers?.[barrier.id]?.propertyLabels?.[name]??'Informação'}: ${typeof value==='boolean'?(value?'Sim':'Não'):value}`)).join(' | ');
+  return (mission.barriers??[]).flatMap(barrier=>Object.entries(presentedProperties(barrier,state,themeConfig(mission).barriers?.[barrier.id])).map(([name,value])=>`${mission.presentation?.barriers?.[barrier.id]?.label??'Passagem'} · ${mission.presentation?.barriers?.[barrier.id]?.propertyLabels?.[name]??'Informação'}: ${typeof value==='boolean'?(value?'Sim':'Não'):value}`)).join(' | ');
 }
 export function resultLabel(category) {return {interrupted:'Interrompido por você',success:'Objetivo concluído',failure:'Programa interrompido',incomplete:'Programa incompleto',inProgress:'Em andamento'}[category];}
 

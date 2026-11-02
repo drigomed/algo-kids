@@ -1,0 +1,56 @@
+{
+  "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "motion": [
+    "reduce",
+    "no-preference"
+  ],
+  "errors": [],
+  "results": [
+    {
+      "label": "Catálogo inicial bloqueado e header MK1 — 360px",
+      "viewport": 360,
+      "width": 360
+    },
+    {
+      "label": "Vitória salva e reload abre missão 02",
+      "status": "ok"
+    },
+    {
+      "label": "Prévia 3/3 durante autoria sem mudar tabuleiro/treino/progresso",
+      "status": "ok"
+    },
+    {
+      "label": "Retirada, posse em 3,1 e descarte físico observados",
+      "status": "ok"
+    },
+    {
+      "label": "30: transporte real e três variantes concluídas antes de desbloquear 31",
+      "status": "ok"
+    },
+    {
+      "label": "Quatro chaves, inspeção protegida e prévia 4/4 — 390px",
+      "viewport": 390,
+      "width": 390
+    },
+    {
+      "label": "27: controle A/B, porta e desvio — 390px",
+      "viewport": 390,
+      "width": 390
+    },
+    {
+      "label": "Desktop com movimento normal",
+      "viewport": 1366,
+      "width": 1351
+    },
+    {
+      "label": "Studio livre e transporte validado — 360px",
+      "viewport": 360,
+      "width": 360
+    },
+    {
+      "label": "Grade 3×3 importada com identificação — 390px",
+      "viewport": 390,
+      "width": 390
+    }
+  ]
+}

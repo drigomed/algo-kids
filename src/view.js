@@ -1,3 +1,4 @@
+import {resolveScene} from './presentation/visual-resolver.js';
 import {renderSceneBoard} from './presentation/scene-view.js';
 import {renderLoop} from './loop-view.js';
 import {renderBranch} from './branch-view.js';
@@ -73,8 +74,9 @@ export function eventMessages(mission,state) {
   return [...new Set(messages)];
 }
 export function describeEnvironment(mission,state) {
-  const features=(mission.grid.cells??[]).map(cell=>`${Object.entries(cellProperties(mission,state,cell)).map(([name,value])=>`${mission.presentation?.properties?.[name]?.label??'Marca'}: ${propertyVisual(mission,name,value).label}`).join(', ')} na linha ${cell.row+1}, coluna ${cell.col+1}`);
-  const barriers=(mission.barriers??[]).map(b=>`${mission.presentation?.barriers?.[b.id]?.label??'Passagem'} ${passage(mission,state,b).passable?'livre':'fechada'} na linha ${b.row+1}, coluna ${b.col+1}`);
-  const entities=(mission.entities??[]).filter(e=>!state.consumedIds?.includes(e.id)&&(!e.collectible||!state.collectedIds.includes(e.id))).map(e=>`${mission.presentation?.entities?.[e.id]?.label??mission.presentation?.entityLabel??'Objeto'} na linha ${e.row+1}, coluna ${e.col+1}`);
-  return [...features,...barriers,...entities].join('; ');
+ const scene=resolveScene(mission,state);
+ const features=scene.features.map(f=>`${f.label} na linha ${f.row+1}, coluna ${f.col+1}`);
+ const barriers=scene.barriers.map(b=>`${b.visual.label??'Passagem'} ${b.open?'livre':'fechada'}${b.details?.length?' ('+b.details.join('; ')+')':''} na linha ${b.row+1}, coluna ${b.col+1}`);
+ const entities=scene.entities.map(e=>`${e.visual.label??mission.presentation?.entityLabel??'Objeto'}${e.quantity!==undefined?' ('+e.quantity+')':''}${e.details?.length?' ('+e.details.join('; ')+')':''} na linha ${e.row+1}, coluna ${e.col+1}`);
+ return [...features,...barriers,...entities].join('; ');
 }
