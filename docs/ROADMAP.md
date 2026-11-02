@@ -98,3 +98,12 @@ Ver [V20-PLATFORM-VISION.md](V20-PLATFORM-VISION.md) para papéis, modelo concei
 - Revisar densidade de campos, foco após histórico e quatro objetos coexistentes com instrutor em aparelho real.
 - E/OU nativos somente após necessidade comprovada; sem implementação nesta versão.
 - V2.0 continua planejamento institucional descrito em V20-PLATFORM-VISION.md, sem backend antecipado.
+
+## V0.9.3 — Clareza e autonomia (entrega para revisão)
+
+- Lixeira fisicamente separada e transporte real nas 30/31/33; energia 20/32 permite referência 18/30 e margem explícita.
+- Header reutiliza MK1 leste. Prévia de qualquer variante durante autoria, sem execução/progresso e sem revelar segredos de inspeção.
+- Progresso sequencial por prefixo, persistência local versionada e degradável. Nenhum histórico volátil anterior pode ser recuperado.
+- Identificações declarativas de entidades, barreiras e propriedades, com metadados editáveis no Studio. Auditoria das 33 missões/71 cenários.
+- Pendente revisão humana de legibilidade, foco, toque físico e uso com criança. Versão não certifica experiência em Safari/iOS ou leitor de tela.
+- V2.0 continua somente planejamento; sem contas, escolas, telemetria ou backend antecipados.

@@ -58,8 +58,8 @@ test('porta/chave, placa/ponte, pacote/estação e botão refletem o estado corr
  const button=mission(18),s=initialState(button);assert.equal(resolveScene(button,s).entities[0].asset.id,'reactive/button_off');assert.equal(resolveScene(button,applyCommand(button,s,button.solution[0])).entities[0].asset.id,'reactive/button_on');
 });
 test('cores por propriedades, chaves simultâneas e inspeção preservada nas demos 17/21/22',()=>{
- for(const m of missionVariants(mission(17)))assert.equal(resolveScene(m,initialState(m)).features[0].asset.id,m.initialVariables.cor==='vermelho'?'reactive/sign_red':'reactive/sign_blue');
- for(const id of [21,22])for(const m of missionVariants(mission(id))){const scene=resolveScene(m,initialState(m));assert.equal(scene.entities.length,4);assert.equal(scene.entities[0].asset.id,`reactive/lock_${{vermelho:'red',azul:'blue',verde:'green'}[m.initialVariables.cor]}`);assert.deepEqual(scene.entities.slice(1).map(e=>e.asset.id),['reactive/key_red','reactive/key_blue','reactive/key_green']);assert.equal(scene.barriers[0].asset.id,'reactive/door_locked');const html=renderSceneBoard(m,initialState(m));assert.match(html,/entity-stack/);assert.match(html,/Chave vermelha/);}
+ for(const m of missionVariants(mission(17))){const start=initialState(m);assert.equal(resolveScene(m,start).features[0].asset.id,'reactive/terminal_idle');assert.equal(resolveScene(m,applyCommand(m,start,m.solution[0])).features[0].asset.id,m.initialVariables.cor==='vermelho'?'reactive/sign_red':'reactive/sign_blue');}
+ for(const id of [21,22])for(const m of missionVariants(mission(id))){const scene=resolveScene(m,initialState(m));assert.equal(scene.entities.length,4);assert.equal(scene.entities[0].asset.id,'reactive/terminal_idle');const seen=simulate(m,m.solution).find(s=>s.lastEvent==='inspected');assert.equal(resolveScene(m,seen).entities[0].asset.id,`reactive/lock_${{vermelho:'red',azul:'blue',verde:'green'}[m.initialVariables.cor]}`);assert.deepEqual(scene.entities.slice(1).map(e=>e.asset.id),['reactive/key_red','reactive/key_blue','reactive/key_green']);assert.equal(scene.barriers[0].asset.id,'reactive/door_locked');const html=renderSceneBoard(m,initialState(m));assert.match(html,/entity-stack/);assert.match(html,/Chave vermelha/);}
 });
 test('sobrecarga exige motivo físico, sem alterar capacidade nem posição',()=>{
  const m=missionVariants(mission(20))[1],s=freeze(initialState(m)),scene=resolveScene(m,s);assert.equal(scene.barriers.find(b=>b.id==='ponte-a').asset.id,'reactive/bridge_overload');assert.equal(scene.barriers.find(b=>b.id==='ponte-b').asset.id,'reactive/bridge_open');
@@ -111,8 +111,9 @@ test('SVGs publicados são somente catálogo autorizado; artefato rejeita injeç
 });
 test('contratos legados preservados; alterações curriculares auditadas em suíte V092',async()=>{
  const {createHash}=await import('node:crypto'),baseline=JSON.parse(await text('tests/fixtures/v071-domain-baseline.json'));
+ const withoutVisual=x=>Array.isArray(x)?x.map(withoutVisual):x&&typeof x==='object'?Object.fromEntries(Object.entries(x).filter(([k])=>k!=='presentation').map(([k,v])=>[k,withoutVisual(v)])):x;const legacy=JSON.parse(await text('tests/fixtures/v091-curriculum-baseline.json')).missions;
  const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
- for(const m of missions.filter(m=>m.id<=25&&![20,21,22,24].includes(m.id)))assert.equal(digest(m),baseline.missionDigests[m.id]);
+ for(const m of missions.filter(m=>m.id<=25&&![20,21,22,24].includes(m.id)))assert.equal(digest(withoutVisual(m)),digest(withoutVisual(legacy.find(old=>old.id===m.id))));
  for(const original of baseline.variants){const expected=original.v091??original;if([21,22,24].includes(expected.missionId))continue;const m=mission(expected.missionId),scenario=missionVariants(m).find(s=>s.variantId===expected.variantId),states=simulate(freeze(scenario),freeze(structuredClone(m.solution)));if(m.id!==20)assert.equal(digest(states),expected.trace);assert.equal(states.at(-1).instructionPointer,expected.instructions);assert.equal(states.at(-1).status,expected.status);}
 });
 test('seletores visuais malformados usam fallback sem ler código ou URLs',()=>{

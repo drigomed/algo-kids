@@ -55,3 +55,10 @@ Leia `README.md`, `docs/PRODUCT.md`, `docs/ROADMAP.md`, `docs/MVP.md`, `docs/V02
 - for contém exatamente times literal 1–20 OU count de memória numérica; snapshot 0–20 por ativação. Nunca embutir valor resolvido na AST. Checks e limites legados intactos.
 - Pilha/lixeira são entidades/barreiras/guardas declarativas, nunca exceções por IDs no motor. E/OU infantis são fluxo com SE, não novos operadores.
 - 91 SVGs: 85 legados byte a byte mais 6 aditivos. V2.0 só planejamento. Sem merge automático/deploy manual.
+
+## V0.9.3 — Progresso e identificação
+- Ler docs/V093.md, V093-MAP-IDENTIFICATION-AUDIT.md e V093-VALIDATION.md. Preservar 01–08 integralmente; alterações de mundo somente em 30/31/33 (lixeira em 3,1 e ciclo de transporte).
+- Progresso oficial usa prefixo na ordem do catálogo, salvo apenas após session.completed; não há migração de conquistas voláteis V092. Importação/Studio nunca escrevem progresso oficial.
+- Prévia é estado inicial independente, sem tocar AST/target/session, efeitos, caches ou timers reais. Nunca simular solution para prévia.
+- Identidade fixa e detalhes são metadados. Propriedade oculta usa memória observada e sprite neutro; não reler mundo por badge/quantity/aria nem revelar resposta no nome da variante.
+- 91 SVGs preservados por hash; sem nova arte, backend, dependências, merge automático ou deploy manual.

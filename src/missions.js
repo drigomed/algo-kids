@@ -1,3 +1,4 @@
+import {identifyCatalogMission} from './map-labels-v093.js';
 import {demoMissionsV092} from './demo-missions-v092.js';
 import {demoMissionsV07} from './demo-missions-v07.js';
 import {demoMissionsV06} from './demo-missions-v06.js';
@@ -85,3 +86,5 @@ missions.push(...demoMissionsV06);
 missions.push(...demoMissionsV07);
 
 missions.push(...demoMissionsV092);
+
+for(let i=0;i<missions.length;i++)missions[i]=identifyCatalogMission(missions[i]);

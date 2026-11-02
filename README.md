@@ -1,10 +1,12 @@
-# V0.9.2 — Escolhas e repetições
+# V0.9.3 — Clareza, prévia e progresso local
 
-33 missões, 71 cenários. A evolução inclui REPITA da memória, pilha/lixeira declarativas, quatro novos desafios de seleção e quatro de repetição; 01–08 preservadas. [Notas](docs/V092.md), [auditoria](docs/V092-MISSION-AUDIT.md), [contrato](docs/V092-JSON-CONTRACT.md) e [validação](docs/V092-VALIDATION.md). Nenhum merge/deploy manual faz parte da entrega.
+33 missões e 71 cenários. As missões 01–08 mantêm conteúdo, comandos, soluções e tabuleiros. O jogo agora tem progresso sequencial local, prévia independente de variantes, identificação declarativa no mapa e transporte real até a lixeira nas 30/31/33. [Notas](docs/V093.md) · [Auditoria de identificação](docs/V093-MAP-IDENTIFICATION-AUDIT.md) · [Validação e capturas](docs/V093-VALIDATION.md).
+
+**Primeiro acesso após a V0.9.3:** começa na missão 01. A V0.9.2 guardava conquistas somente em memória, sem registro persistente para migrar ou recuperar após recarga. A partir desta versão, concluir todas as variantes com a mesma AST libera a missão seguinte e salva apenas IDs oficiais no navegador (`algo-kids-progress/v1`). Recarga abre a primeira missão não concluída. Sem conta/sincronização; limpar dados ou impedir armazenamento pode perder progresso. Falha ao salvar mantém a vitória da sessão e é informada. Missões importadas e Studio permanecem livres e não registram conquistas oficiais.
 
 # Missões do Robô — Pequenos Programadores
 
-V0.9.2 do Algo Kids: jogo educativo em português e Studio local de autoria de missões, com o mesmo motor e 91 SVGs locais (85 originais V0.8 + 6 aditivos). Monte o programa antes de executar e leve o robô até a estrela.
+V0.9.3 do Algo Kids: jogo educativo em português e Studio local de autoria de missões, com o mesmo motor e 91 SVGs locais (85 originais V0.8 + 6 aditivos). Monte o programa antes de executar e leve o robô até a estrela.
 
 ## Executar
 
@@ -76,7 +78,7 @@ Na V0.7, **REPITA N VEZES** executa seu CORPO exatamente N vezes (1–20 conform
 
 Selecione **Adicionar aqui** no CORPO e use sua paleta local. Volte explicitamente ao programa principal para inserir os comandos posteriores. Trocar presets da mesma categoria preserva o corpo; remover um bloco preenchido pede confirmação. Uma execução longa continua sujeita ao orçamento defensivo; a V0.7.1 também detecta ciclos sem progresso, mantendo a interface pausável. Não há expansão da AST nem mudança na física.
 
-As demos 24/25 verificam repetição contada e corredor de comprimento variável. São fixtures técnicas, não novas etapas pedagógicas definitivas. Consulte [V07.md](docs/V07.md) para contratos, eventos, orçamento, resultados e revisão no celular; [V07-example.json](docs/V07-example.json) exemplifica autoria inteiramente declarativa. **751 testes passaram**, além de build e validação do artefato estático (147 arquivos, 289 referências). Há revisão local em Chromium; a revisão em aparelho físico permanece pendente; a entrega é por PR, sem merge automático.
+As demos 24/25 verificam repetição contada e corredor de comprimento variável. São fixtures técnicas, não novas etapas pedagógicas definitivas. Consulte [V07.md](docs/V07.md) para contratos, eventos, orçamento, resultados e revisão no celular; [V07-example.json](docs/V07-example.json) exemplifica autoria inteiramente declarativa. **823 testes passaram**, além de build e validação do artefato estático (151 arquivos, 305 referências). Há revisão local em Chromium; a revisão em aparelho físico permanece pendente; a entrega é por PR, sem merge automático.
 
 Na V0.7.1, um **ENQUANTO** que reencontra a mesma situação com condição verdadeira termina como falha por falta de progresso. A comparação inclui posição, direção, mundo, memória, coleta, consumo e interações; não considera somente se o robô andou. O histórico é separado por ativação, com janela de 256 assinaturas; o orçamento continua protegendo execuções longas. REPITA finito e algoritmos que alteram estado continuam funcionando.
 
@@ -96,7 +98,7 @@ Execute `npm run dev` e abra **http://localhost:5173/studio/**. Após integrar/p
 
 Crie mapa por toque/clique/teclado, edite regras em formulários estruturados, configure variantes e monte a solução por blocos. Use Testar todas as variantes para conferir o programa de referência. Exportar gera JSON puro; importar reproduz regras/tipos/AST e não altera o catálogo. O Studio mantém um único rascunho em localStorage, com desfazer/refazer em memória. Se armazenamento falhar, continua funcionando e orienta exportar o trabalho.
 
-[Uso e limites](docs/V09.md) · [Contrato mission-json/v1](docs/V09-JSON-CONTRACT.md) · [Exemplo reativo exportado](docs/V09-example.json). O jogo infantil na raiz, as definições 01–08 e os 85 SVGs legados permanecem preservados; mudanças curriculares autorizadas estão descritas em V092.md. Nenhuma missão é publicada automaticamente pelo Studio. Capturas reais de Chromium estão em docs/review-v092; UX em aparelho físico e com crianças permanece pendente.
+[Uso e limites](docs/V09.md) · [Contrato mission-json/v1](docs/V09-JSON-CONTRACT.md) · [Exemplo reativo exportado](docs/V09-example.json). O jogo infantil na raiz, as definições 01–08 e os 85 SVGs legados permanecem preservados; mudanças curriculares autorizadas estão descritas em V092.md. Nenhuma missão é publicada automaticamente pelo Studio. Capturas reais de Chromium da versão atual estão em docs/review-v093; UX em aparelho físico e com crianças permanece pendente.
 
 A [visão V2.0](docs/V20-PLATFORM-VISION.md) planeja níveis versionados, escolas, administradores, instrutores, alunos, turmas, matrículas, atribuições e progresso. **Não há backend, login, gestão institucional ou dados de alunos na V0.9.**
 

@@ -193,3 +193,19 @@
 #stop[hidden]{display:none}
 #feedback.stalled{background:#f8e7d8;color:#6e4935}
 #feedback.stopped{background:#edf0f4;color:#3e5165}
+/* V0.9.3: navegação e consulta, sem alterar comandos iniciais. */
+.brand-icon img{display:block;width:46px;height:46px;object-fit:contain}
+.brand-icon{flex-shrink:0}
+#missions .mission:disabled{opacity:.65;cursor:not-allowed;background:#ecefe8;box-shadow:none}
+#missions .mission:disabled small:last-child{font-size:11px;font-weight:400;color:#40584d;white-space:normal}
+.progress-storage{font-size:13px;padding:10px;border:1px solid #d6b87c;border-radius:10px;background:#fff9e6}
+.variant-preview{border:1px solid #b8c9d6;border-radius:14px;padding:12px;margin-top:18px;background:#f0f6fa;min-width:0}
+.variant-preview summary{min-height:44px;cursor:pointer;font-weight:700;display:list-item;padding:10px}
+.variant-preview label{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.variant-preview select{min-height:44px;max-width:100%;font-size:16px;padding:8px;border:1px solid #b8c9d6;border-radius:8px}
+#preview-board{display:grid;grid-template-columns:repeat(var(--columns),minmax(0,1fr));grid-template-rows:repeat(var(--rows),minmax(0,1fr));gap:5px;padding:10px;margin-top:12px;border-radius:16px;background:#dbe6d3;width:100%;min-width:0}
+#preview-board .cell{position:relative;min-width:0;min-height:0;border-radius:8px;display:grid;place-items:center}
+.next-mission{padding:12px;margin-top:12px;border-radius:12px;background:#e1f1e6}
+.next-mission button{min-height:44px;padding:12px;background:#286b57;color:white;border-radius:10px;font-weight:700}
+.topbar .brand-icon{background:#e4eee1;border:1px solid #b8ccbd}
+#missions .mission:disabled small:last-child{letter-spacing:normal;line-height:1.25}

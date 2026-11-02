@@ -14,11 +14,12 @@ import {renderSceneBoard} from '../src/presentation/scene-view.js';
 import {resolveScene} from '../src/presentation/visual-resolver.js';
 import {studioController,gameController} from './helpers/controllers.js';
 import {seq} from '../src/lock-mission-data.js';
-import {removeBox,discardBox,inspectBoxes,observedCount} from '../src/demo-missions-v092.js';
+import {removeBox,discardBox,transportCycle,inspectBoxes,observedCount} from '../src/demo-missions-v092.js';
 const clone=structuredClone;
 const mission=id=>clone(missions.find(m=>m.id===id));
 const end=(m,p=m.solution)=>simulate(m,p).at(-1);
 const scenarios=id=>missionVariants(mission(id));
+const withoutVisual=x=>Array.isArray(x)?x.map(withoutVisual):x&&typeof x==='object'?Object.fromEntries(Object.entries(x).filter(([k])=>k!=='presentation').map(([k,v])=>[k,withoutVisual(v)])):x;
 const hash=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
 const baseline=JSON.parse(readFileSync(new URL('./fixtures/v091-curriculum-baseline.json',import.meta.url)));
 const finishSession=s=>{let steps=0;while(canStep(s)){assert(++steps<2000);s=stepSession(s);}return s;};
@@ -26,14 +27,14 @@ const finishTest=t=>{let steps=0;while(!t.done){assert(++steps<10000);t=stepPlay
 const events=states=>states.flatMap(s=>s.events);
 const freeze=o=>{if(o&&typeof o==='object'){Object.values(o).forEach(freeze);Object.freeze(o);}return o;};
 for(const old of baseline.missions.filter(m=>![20,21,22,24].includes(m.id)))test(`V092 preserva definição e traces V091 da ${old.id}`,()=>{
- const current=mission(old.id);assert.equal(hash(current),hash(old));const before=missionVariants(old);for(const [i,s]of missionVariants(current).entries())assert.deepEqual(simulate(s,current.solution),simulate(before[i],old.solution));
+ const current=mission(old.id);assert.equal(hash(withoutVisual(current)),hash(withoutVisual(old)));const before=missionVariants(old);for(const [i,s]of missionVariants(current).entries())assert.deepEqual(simulate(s,current.solution),simulate(before[i],old.solution));
 });
 test('catálogo: 33 missões / 71 cenários, 27 novos; AST única não mutada',()=>{
  assert.equal(missions.length,33);assert.equal(new Set(missions.map(m=>m.id)).size,33);assert.deepEqual(missions.map(m=>m.id),Array.from({length:33},(_,i)=>i+1));assert.equal(missions.reduce((n,m)=>n+missionVariants(m).length,0),71);
  for(const [id,count]of [[26,4],[27,4],[28,4],[29,4],[30,3],[31,4],[32,2],[33,2]]){const m=freeze(mission(id));assert.equal(missionVariants(m).length,count);const original=canonical(m.solution);for(const s of missionVariants(m)){validateMission(s);validateProgram(m.solution,s);assert.equal(end(freeze(s),m.solution).status,'won');}assert.equal(canonical(m.solution),original);}
 });
 test('20: somente inspeção removida; mapas, física, variantes, solução e falhas iguais',()=>{
- const old=clone(baseline.missions.find(m=>m.id===20));delete old.commandOptions;delete old.robotMemory;delete old.presentation.memory;old.hint=mission(20).hint;assert.deepEqual(mission(20),old);
+ const old=clone(baseline.missions.find(m=>m.id===20));delete old.commandOptions;delete old.robotMemory;delete old.presentation.memory;old.hint=mission(20).hint;assert.deepEqual(withoutVisual(mission(20)),withoutVisual(old));
  for(const [i,s]of scenarios(20).entries()){assert.equal(end(s).status,'won');assert.equal(end(s,seq('AEADAADAEA')).status,i?'collision':'won');assert.equal(end(s,seq('ADAEAAEADA')).status,i?'won':'collision');assert.throws(()=>validateProgram([baseline.missions[19].commandOptions[0].node],s));}
 });
 for(const id of [21,22])test(`${id}: porta observada à frente antes de alcançar chaves, três variantes`,()=>{
@@ -71,12 +72,12 @@ for(const id of [30,31,33])test(`${id}: pilha bloqueia, retirada e descarte atô
  const m=mission(id);for(const s of missionVariants(m)){
  const n=s.initialVariables.restantes,st=end(s);assert.equal(st.status,'won');assert.deepEqual(st.variables,{restantes:0,carregando:false,descartadas:n});assert.equal(events(simulate(s,m.solution)).filter(e=>e.type==='interacted').length,2*n);assert.equal(connected(s,[{row:2,col:2}]),false);
  if(n){assert.equal(end(s,seq('A')).reason,'stackBlocked');const fail=end(s,[removeBox,removeBox]);assert.equal(fail.reason,'preconditionFailed');assert.equal(fail.variables.restantes,n-1);assert.equal(fail.variables.carregando,true);assert.equal(fail.variables.descartadas,0);}
- const bad=end(s,[discardBox]);assert.equal(bad.reason,'preconditionFailed');assert.deepEqual(bad.variables,s.initialVariables);if(s.energy)assert.equal(bad.energySpent,0);
+ const bad=end(s,[discardBox]);assert.equal(bad.reason,'outOfReach');assert.deepEqual(bad.variables,s.initialVariables);if(s.energy)assert.equal(bad.energySpent,0);
  assert.deepEqual(initialState(s).variables,s.initialVariables);const scene=resolveScene(s,initialState(s));assert.equal(scene.entities.find(e=>e.id==='pilha').quantity,n);assert.equal(resolveScene(s,st).entities.find(e=>e.id==='pilha').quantity,0);assert.equal(resolveScene(s,st).entities.find(e=>e.id==='lixeira').quantity,n);assert.match(renderSceneBoard(s,st),new RegExp(`Lixeira: ${n}`));
  }
 });
 test('30: inspeção essencial; contagem literal fixa não generaliza e retirada extra falha',()=>{
- const m=mission(30);for(const s of missionVariants(m))assert.equal(end(s,m.solution.slice(1)).reason,'memoryUnknown');const unrolled=[inspectBoxes,{type:'for',times:1,body:[removeBox,discardBox]},...seq('AAA')];assert.deepEqual(missionVariants(m).map(s=>end(s,unrolled).status),['won','collision','collision']);assert.equal(end(scenarios(30)[0],[removeBox,discardBox,removeBox]).reason,'preconditionFailed');
+ const m=mission(30);for(const s of missionVariants(m))assert.equal(end(s,m.solution.slice(1)).reason,'memoryUnknown');const unrolled=[inspectBoxes,{type:'for',times:1,body:transportCycle()},...seq('AAA')];assert.deepEqual(missionVariants(m).map(s=>end(s,unrolled).status),['won','collision','collision']);assert.equal(end(scenarios(30)[0],[...transportCycle(),removeBox]).reason,'preconditionFailed');
  const extra=clone(m.solution);extra[1].body=[removeBox];assert.equal(end(scenarios(30)[1],extra).reason,'preconditionFailed');
 });
 test('31: sem inspeção, N=0 faz um check gratuito sem corpo',()=>{
@@ -102,7 +103,7 @@ test('fonte dinâmica rejeita infinito/NaN em runtime sem efeitos; memória desc
  const m=dynamic(1);for(const value of [NaN,Infinity,-Infinity]){const e=createExecution(m,m.solution);e.state.memory.quantidadeObservada.value=value;const next=stepExecution(m,m.solution,e);assert.equal(next.state.reason,'loopCountInvalid');assert.deepEqual(next.state.variables,e.state.variables);}
 });
 test('for congela quantidade na ativação, frames imutáveis mesmo alterando memória no corpo',()=>{
- const m=dynamic(2);m.goal={row:2,col:4};const write={type:'setMemory',variable:'quantidadeObservada',value:0};m.commandOptions.push({id:'zerar',label:'Zerar memória',node:write});m.solution=[{type:'for',count:observedCount,body:[write,removeBox,discardBox]}];let e=createExecution(m,m.solution);const start=freeze(e);e=stepExecution(m,m.solution,start);assert.equal(e.frames.find(f=>f.kind==='loop').times,2);assert.deepEqual(start.frames,[{path:[],index:0}]);const states=simulate(m,m.solution);assert.equal(states.at(-1).variables.descartadas,2);assert.equal(states.at(-1).memory.quantidadeObservada.value,0);
+ const m=dynamic(2);m.goal={row:2,col:4};const write={type:'setMemory',variable:'quantidadeObservada',value:0};m.commandOptions.push({id:'zerar',label:'Zerar memória',node:write});m.solution=[{type:'for',count:observedCount,body:[write,...transportCycle()]}];let e=createExecution(m,m.solution);const start=freeze(e);e=stepExecution(m,m.solution,start);assert.equal(e.frames.find(f=>f.kind==='loop').times,2);assert.deepEqual(start.frames,[{path:[],index:0}]);const states=simulate(m,m.solution);assert.equal(states.at(-1).variables.descartadas,2);assert.equal(states.at(-1).memory.quantidadeObservada.value,0);
 });
 test('autorização canônica, exclusão times/count e memória numérica',()=>{
  const m=dynamic(1),node=m.solution[0];const shuffled={...node,count:{name:'quantidadeObservada',kind:'memoryVariable'}};validateProgram([shuffled],m);assert.equal(loopPermissions(m),loopPermissions({...m,loopOptions:[{...m.loopOptions[0],count:{name:'quantidadeObservada',kind:'memoryVariable'}},...m.loopOptions.slice(1)]}));assert.deepEqual(createLoop(m,'observado'),{type:'for',count:observedCount,body:[]});
@@ -131,24 +132,24 @@ test('jogo: construir REPITA dinâmico usando controles e testar todas as varian
  const c=await gameController();const m=mission(30);m.id='copia-pilha';await c.import(m);assert.deepEqual(c.get().program,[]);
  const button=dataset=>({dataset,disabled:false,hidden:false,closest(){return this;}});
  c.element('.palette').onclick({target:button({commandOption:'inspecionar'})});c.addLoop('observado');c.element('#program').onclick({target:button({target:'1.body'})});assert.match(c.element('#program').innerHTML,/data-inline-option="retirar"/);
- for(const id of ['retirar','descartar'])c.element('#program').onclick({target:button({inlineOption:id,target:'1.body'})});c.element('#root-target').onclick();for(let i=0;i<3;i++)c.add('move');assert.deepEqual(c.get().program,m.solution);assert.match(c.element('#program').innerHTML,/Quantidade observada/);
+ for(const node of transportCycle())c.element('#program').onclick({target:button({...(node.type==='interact'?{inlineOption:node.actionId}:{inlineAdd:node.type}),target:'1.body'})});c.element('#root-target').onclick();for(let i=0;i<3;i++)c.add('move');assert.deepEqual(c.get().program,m.solution);assert.match(c.element('#program').innerHTML,/Quantidade observada/);
  c.element('#run').onclick();while(c.timers.size)c.next();assert.equal(c.get().session.execution.state.status,'won');c.element('#test-variants').onclick();while(c.timers.size)c.next();assert(c.get().session.completed);assert.deepEqual(c.get().completed,[]);assert.match(c.element('#board').innerHTML,/Lixeira: 3/);c.element('#back-missions').onclick();assert.equal(c.get().mission.id,1);
 });
 test('loop labels explicitam origem, quantidade resolvida e erro',()=>{
  const m=mission(30);assert.match(loopTitle(m,m.solution[1]),/Quantidade observada/);assert.doesNotMatch(renderLoopPalette(m),/undefined/);let e=createExecution(scenarios(30)[1],m.solution);e=stepExecution(scenarios(30)[1],m.solution,e);e=stepExecution(scenarios(30)[1],m.solution,e);assert.match(renderLoopTrace(m,e,m.solution),/de 2.*memória/);
 });
 test('contagem dinâmica cobra só ações, preserva limite/stop e reavalia na próxima ativação',()=>{
- const m=dynamic(2);m.energy={initial:14,costs:{move:2,turnLeft:1,turnRight:1,interact:2,inspect:0,setMemory:0}};assert.equal(end(m).energyRemaining,0);assert.equal(events(simulate(m,m.solution)).filter(e=>e.type==='loopCheck').length,3);
- const limited=simulate(m,m.solution,{instructionLimit:1}).at(-1);assert.equal(limited.status,'limit');assert.equal(limited.energyRemaining,14);assert.equal(limited.variables.descartadas,0);
- const e=stepExecution(m,m.solution,createExecution(m,m.solution)),stopped=interruptExecution(e);assert.equal(stopped.state.energyRemaining,14);assert.equal(stopped.state.instructionPointer,1);assert.deepEqual(stopped.frames,[]);assert.equal(createExecution(m,m.solution).state.memory.quantidadeObservada.value,2);
- const write={type:'setMemory',variable:'quantidadeObservada',value:0};m.commandOptions.push({id:'zero',label:'Guardar zero',node:write});const p=[{type:'for',count:observedCount,body:[removeBox,discardBox,write]},{type:'for',count:observedCount,body:[removeBox]}];const trace=events(simulate(m,p)).filter(e=>e.type==='loopCheck');assert.equal(trace.at(-1).times,0);assert.equal(trace.at(-1).result,false);assert.equal(trace.filter(e=>e.path[0]===0&&e.result).length,2);
+ const m=dynamic(2);m.energy={initial:30,costs:{move:2,turnLeft:1,turnRight:1,interact:2,inspect:0,setMemory:0}};assert.equal(end(m).energyRemaining,0);assert.equal(events(simulate(m,m.solution)).filter(e=>e.type==='loopCheck').length,3);
+ const limited=simulate(m,m.solution,{instructionLimit:1}).at(-1);assert.equal(limited.status,'limit');assert.equal(limited.energyRemaining,30);assert.equal(limited.variables.descartadas,0);
+ const e=stepExecution(m,m.solution,createExecution(m,m.solution)),stopped=interruptExecution(e);assert.equal(stopped.state.energyRemaining,30);assert.equal(stopped.state.instructionPointer,1);assert.deepEqual(stopped.frames,[]);assert.equal(createExecution(m,m.solution).state.memory.quantidadeObservada.value,2);
+ const write={type:'setMemory',variable:'quantidadeObservada',value:0};m.commandOptions.push({id:'zero',label:'Guardar zero',node:write});const p=[{type:'for',count:observedCount,body:[...transportCycle(),write]},{type:'for',count:observedCount,body:[removeBox]}];const trace=events(simulate(m,p)).filter(e=>e.type==='loopCheck');assert.equal(trace.at(-1).times,0);assert.equal(trace.at(-1).result,false);assert.equal(trace.filter(e=>e.path[0]===0&&e.result).length,2);
 });
 test('Studio alterna preset literal/dinâmico pelos selects sem perder corpo; cancelar conserva fonte',()=>{
  const c=studioController(),m=mission(30);c.app.importText(serializeMission(m));const body=clone(m.solution[1].body);c.change({field:'loop-option',path:'1'},'uma');assert.equal(c.app.getDraft().mission.solution[1].times,1);assert.equal(c.app.getDraft().mission.solution[1].count,undefined);assert.deepEqual(c.app.getDraft().mission.solution[1].body,body);c.change({field:'loop-option',path:'1'},'observado');assert.deepEqual(c.app.getDraft().mission.solution[1],m.solution[1]);c.allow(false);const before=c.app.getDraft();c.change({forSource:JSON.stringify(['loopOptions',0])},'literal');assert.deepEqual(c.app.getDraft(),before);
 });
 test('novas missões rejeitam decisões fixas e omissões entre variantes, inclusive 31/33',()=>{
  for(const id of [26,27,28,29]){const m=mission(id);const linear=id===26?[...m.solution.slice(0,7),m.commandOptions.find(o=>o.node.type==='interact').node,...m.solution.slice(8)]:id===27?m.solution[0].then:[m.commandOptions[0].node,...seq('AAAA')];const outcomes=missionVariants(m).map(s=>end(s,linear).status);assert(outcomes.includes('won'),`${id}: negativo deve vencer um cenário`);assert(outcomes.some(s=>s!=='won'),`${id}: negativo deve falhar noutro`);}
- for(const id of [31,33]){const p=[removeBox,discardBox,...seq('AAA')];const ss=scenarios(id);assert.equal(ss.some(s=>end(s,p).status==='won'),true);assert.equal(ss.some(s=>end(s,p).status!=='won'),true);}
+ for(const id of [31,33]){const p=[...transportCycle(),...seq('AAA')];const ss=scenarios(id);assert.equal(ss.some(s=>end(s,p).status==='won'),true);assert.equal(ss.some(s=>end(s,p).status!=='won'),true);}
 });
 test('bindings visuais de quantidade seguros; pilha vazia desaparece e lixeira vazia segue visível',()=>{
  const m=scenarios(31)[0],scene=resolveScene(m,initialState(m));assert.equal(scene.entities.find(e=>e.id==='pilha').quantityEmpty,'hideImage');assert.equal(scene.entities.find(e=>e.id==='lixeira').quantityEmpty,'show');const html=renderSceneBoard(m,initialState(m));assert.match(html,/quantity-empty/);assert.match(html,/Pilha de caixas: 0 \(vazio\)/);assert.match(html,/reactive\/bin_idle/);

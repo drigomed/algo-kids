@@ -1,0 +1,458 @@
+[
+  {
+    "id": 1,
+    "variant": "principal",
+    "labels": []
+  },
+  {
+    "id": 2,
+    "variant": "principal",
+    "labels": []
+  },
+  {
+    "id": 3,
+    "variant": "principal",
+    "labels": []
+  },
+  {
+    "id": 4,
+    "variant": "principal",
+    "labels": []
+  },
+  {
+    "id": 5,
+    "variant": "principal",
+    "labels": []
+  },
+  {
+    "id": 6,
+    "variant": "principal",
+    "labels": []
+  },
+  {
+    "id": 7,
+    "variant": "principal",
+    "labels": []
+  },
+  {
+    "id": 8,
+    "variant": "principal",
+    "labels": []
+  },
+  {
+    "id": 9,
+    "variant": "cima",
+    "labels": []
+  },
+  {
+    "id": 9,
+    "variant": "direita",
+    "labels": []
+  },
+  {
+    "id": 10,
+    "variant": "perto",
+    "labels": []
+  },
+  {
+    "id": 10,
+    "variant": "desvio",
+    "labels": []
+  },
+  {
+    "id": 11,
+    "variant": "direto",
+    "labels": []
+  },
+  {
+    "id": 11,
+    "variant": "lateral",
+    "labels": []
+  },
+  {
+    "id": 11,
+    "variant": "direita",
+    "labels": []
+  },
+  {
+    "id": 12,
+    "variant": "duplo",
+    "labels": [
+      {
+        "kind": "Entidade",
+        "id": "cristal-1",
+        "badge": "+2"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "variant": "simples",
+    "labels": [
+      {
+        "kind": "Entidade",
+        "id": "cristal-1",
+        "badge": "+1"
+      },
+      {
+        "kind": "Entidade",
+        "id": "cristal-2",
+        "badge": "+1"
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "variant": "verde",
+    "labels": []
+  },
+  {
+    "id": 13,
+    "variant": "vermelho",
+    "labels": []
+  },
+  {
+    "id": 14,
+    "variant": "perto",
+    "labels": []
+  },
+  {
+    "id": 14,
+    "variant": "desvio",
+    "labels": []
+  },
+  {
+    "id": 15,
+    "variant": "ativa",
+    "labels": []
+  },
+  {
+    "id": 15,
+    "variant": "inativa",
+    "labels": []
+  },
+  {
+    "id": 16,
+    "variant": "perto",
+    "labels": []
+  },
+  {
+    "id": 16,
+    "variant": "desvio",
+    "labels": []
+  },
+  {
+    "id": 17,
+    "variant": "vermelha",
+    "labels": []
+  },
+  {
+    "id": 17,
+    "variant": "azul",
+    "labels": []
+  },
+  {
+    "id": 18,
+    "variant": "principal",
+    "labels": []
+  },
+  {
+    "id": 19,
+    "variant": "principal",
+    "labels": []
+  },
+  {
+    "id": 20,
+    "variant": "leve",
+    "labels": []
+  },
+  {
+    "id": 20,
+    "variant": "maior",
+    "labels": []
+  },
+  {
+    "id": 21,
+    "variant": "vermelho",
+    "labels": []
+  },
+  {
+    "id": 21,
+    "variant": "azul",
+    "labels": []
+  },
+  {
+    "id": 21,
+    "variant": "verde",
+    "labels": []
+  },
+  {
+    "id": 22,
+    "variant": "vermelho",
+    "labels": []
+  },
+  {
+    "id": 22,
+    "variant": "azul",
+    "labels": []
+  },
+  {
+    "id": 22,
+    "variant": "verde",
+    "labels": []
+  },
+  {
+    "id": 23,
+    "variant": "zero",
+    "labels": []
+  },
+  {
+    "id": 23,
+    "variant": "um",
+    "labels": []
+  },
+  {
+    "id": 23,
+    "variant": "outro",
+    "labels": []
+  },
+  {
+    "id": 24,
+    "variant": "leste",
+    "labels": []
+  },
+  {
+    "id": 24,
+    "variant": "norte",
+    "labels": []
+  },
+  {
+    "id": 25,
+    "variant": "curto",
+    "labels": []
+  },
+  {
+    "id": 25,
+    "variant": "longo",
+    "labels": []
+  },
+  {
+    "id": 26,
+    "variant": "vermelho-redonda",
+    "labels": [
+      {
+        "kind": "Entidade",
+        "id": "chave-vermelho-redonda",
+        "badge": "V ●"
+      },
+      {
+        "kind": "Entidade",
+        "id": "chave-vermelho-quadrada",
+        "badge": "V ■"
+      },
+      {
+        "kind": "Entidade",
+        "id": "chave-azul-redonda",
+        "badge": "A ●"
+      },
+      {
+        "kind": "Entidade",
+        "id": "chave-azul-quadrada",
+        "badge": "A ■"
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "variant": "vermelho-quadrada",
+    "labels": [
+      {
+        "kind": "Entidade",
+        "id": "chave-vermelho-redonda",
+        "badge": "V ●"
+      },
+      {
+        "kind": "Entidade",
+        "id": "chave-vermelho-quadrada",
+        "badge": "V ■"
+      },
+      {
+        "kind": "Entidade",
+        "id": "chave-azul-redonda",
+        "badge": "A ●"
+      },
+      {
+        "kind": "Entidade",
+        "id": "chave-azul-quadrada",
+        "badge": "A ■"
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "variant": "azul-redonda",
+    "labels": [
+      {
+        "kind": "Entidade",
+        "id": "chave-vermelho-redonda",
+        "badge": "V ●"
+      },
+      {
+        "kind": "Entidade",
+        "id": "chave-vermelho-quadrada",
+        "badge": "V ■"
+      },
+      {
+        "kind": "Entidade",
+        "id": "chave-azul-redonda",
+        "badge": "A ●"
+      },
+      {
+        "kind": "Entidade",
+        "id": "chave-azul-quadrada",
+        "badge": "A ■"
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "variant": "azul-quadrada",
+    "labels": [
+      {
+        "kind": "Entidade",
+        "id": "chave-vermelho-redonda",
+        "badge": "V ●"
+      },
+      {
+        "kind": "Entidade",
+        "id": "chave-vermelho-quadrada",
+        "badge": "V ■"
+      },
+      {
+        "kind": "Entidade",
+        "id": "chave-azul-redonda",
+        "badge": "A ●"
+      },
+      {
+        "kind": "Entidade",
+        "id": "chave-azul-quadrada",
+        "badge": "A ■"
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "variant": "permissoes0",
+    "labels": []
+  },
+  {
+    "id": 27,
+    "variant": "permissoes1",
+    "labels": []
+  },
+  {
+    "id": 27,
+    "variant": "permissoes2",
+    "labels": []
+  },
+  {
+    "id": 27,
+    "variant": "permissoes3",
+    "labels": []
+  },
+  {
+    "id": 28,
+    "variant": "cenario0",
+    "labels": []
+  },
+  {
+    "id": 28,
+    "variant": "cenario1",
+    "labels": []
+  },
+  {
+    "id": 28,
+    "variant": "cenario2",
+    "labels": []
+  },
+  {
+    "id": 28,
+    "variant": "cenario3",
+    "labels": []
+  },
+  {
+    "id": 29,
+    "variant": "cenario0",
+    "labels": []
+  },
+  {
+    "id": 29,
+    "variant": "cenario1",
+    "labels": []
+  },
+  {
+    "id": 29,
+    "variant": "cenario2",
+    "labels": []
+  },
+  {
+    "id": 29,
+    "variant": "cenario3",
+    "labels": []
+  },
+  {
+    "id": 30,
+    "variant": "caixas1",
+    "labels": []
+  },
+  {
+    "id": 30,
+    "variant": "caixas2",
+    "labels": []
+  },
+  {
+    "id": 30,
+    "variant": "caixas3",
+    "labels": []
+  },
+  {
+    "id": 31,
+    "variant": "caixas0",
+    "labels": []
+  },
+  {
+    "id": 31,
+    "variant": "caixas1",
+    "labels": []
+  },
+  {
+    "id": 31,
+    "variant": "caixas2",
+    "labels": []
+  },
+  {
+    "id": 31,
+    "variant": "caixas3",
+    "labels": []
+  },
+  {
+    "id": 32,
+    "variant": "horizontal",
+    "labels": []
+  },
+  {
+    "id": 32,
+    "variant": "vertical",
+    "labels": []
+  },
+  {
+    "id": 33,
+    "variant": "caixas1",
+    "labels": []
+  },
+  {
+    "id": 33,
+    "variant": "caixas2",
+    "labels": []
+  }
+]

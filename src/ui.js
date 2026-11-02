@@ -1,3 +1,6 @@
+import {createProgressStore,currentMission,isUnlocked} from './progress.js';
+import {variantPreview} from './variant-preview.js';
+import {variantName} from './presentation/map-identification.js';
 import {loadImportedGame} from './imported-game.js';
 import {renderEnergy} from './presentation/energy-view.js';
 import {energyMessage} from './energy.js';
@@ -20,13 +23,16 @@ import {renderProgram, renderBoard, encodePath, decodePath, escapeHtml, worldInd
 
 const $ = selector => document.querySelector(selector);
 let imported=false,officialSnapshot=null;
-let mission = missions[0], program = [], target = [], session = createSession(mission, program);
+const progressStore=createProgressStore(missions,()=>window.localStorage),loadedProgress=progressStore.load();
+const completed=loadedProgress.completed;let progressMessage=loadedProgress.message;
+let previewVariantIndex=0,lastPreviewKey='';
+let mission = currentMission(missions,completed), program = [], target = [], session = createSession(mission, program);
 const visualEffects=createVisualEffects();
 let visualEpoch=0,lastBoardKey='',lastResultKey='';
 installAssetFallback(document);
 let playbackGeneration=0;
 let timer = null, running = false, editorMessage = '', lastTraceKey='', lastLoopKey='', lastFeedbackKey='';
-const completed = new Set();
+
 const state = () => session.execution.state;
 const scenario = () => session.scenarios[session.scenarioIndex];
 function stopPlayback() { clearTimeout(timer); timer = null; running = false; playbackGeneration++; }
@@ -35,7 +41,7 @@ function scheduleTick(delay) {
   timer=setTimeout(()=>{if(running&&generation===playbackGeneration)tick();},delay);
 }
 function reset() {
-  stopPlayback(); visualEpoch++; session = createSession(mission, program); editorMessage = ''; render();
+  stopPlayback(); previewVariantIndex=0; lastPreviewKey='';visualEpoch++; session = createSession(mission, program); editorMessage = ''; render();
 }
 function edit(operation) {
   if (running) return;
@@ -77,8 +83,11 @@ function render() {
   const focusTarget=focus?.dataset.target, focusOption=focus?.dataset.commandOption, focusSwitch=focus?.dataset.switchOption, focusLoop=focus?.dataset.loopOption;
   const inlineField=['inlineAdd','inlineOption','inlineSwitch','inlineLoop'].find(key=>focus?.dataset[key]!==undefined);
   const listScroll = $('#program').scrollTop, missionScroll = $('#missions').scrollLeft;
-  $('#missions').innerHTML = missions.map(m => `<button class="mission ${m === mission ? 'selected' : ''} ${completed.has(m.id) ? 'completed' : ''}" data-mission="${m.id}" ${imported?'disabled':''} aria-current="${m === mission ? 'step' : 'false'}"><span>${completed.has(m.id) ? '✓' : String(m.id).padStart(2,'0')}</span><div><small>MISSÃO ${String(m.id).padStart(2,'0')}</small><strong>${escapeHtml(m.title)}</strong></div></button>`).join('');
+  $('#missions').innerHTML = missions.map(m => `<button class="mission ${m === mission ? 'selected' : ''} ${completed.has(m.id) ? 'completed' : ''}" data-mission="${m.id}" ${imported||!isUnlocked(missions,completed,m.id)?'disabled':''} aria-current="${m === mission ? 'step' : 'false'}"><span>${completed.has(m.id)?'✓':!isUnlocked(missions,completed,m.id)?'🔒':String(m.id).padStart(2,'0')}</span><div><small>MISSÃO ${String(m.id).padStart(2,'0')}</small><strong>${escapeHtml(m.title)}</strong>${!isUnlocked(missions,completed,m.id)?'<small>Conclua a missão anterior</small>':''}</div></button>`).join('');
   $('#missions').scrollLeft = missionScroll;
+  $('#progress-storage').textContent=progressMessage;$('#progress-storage').hidden=!progressMessage;
+  const nextIndex=missions.findIndex(m=>m===mission)+1;$('#next-mission').hidden=imported||!completed.has(mission.id)||nextIndex>=missions.length;
+  renderPreview();
   $('#mission-number').textContent = imported?'MISSÃO IMPORTADA':`${mission.demo?'DEMONSTRAÇÃO':'MISSÃO'} ${String(mission.id).padStart(2,'0')} / ${missions.length}`;
   $('#mission-title').textContent = mission.title;
   $('#lesson-type').textContent = imported?'MISSÃO IMPORTADA':mission.demo ? 'CENÁRIO DEMO' : mission.id >= 13 ? 'MUNDO REATIVO' : mission.id >= 9 ? 'DECISÕES' : mission.id >= 7 ? 'COLETA' : 'SEQUÊNCIA';
@@ -164,14 +173,14 @@ function render() {
   $('#step').disabled = running || !program.length || !canStep(session);
   document.querySelectorAll('[data-add],#clear,#root-target').forEach(button => button.disabled = running);
   $('#variant-tests').hidden = session.scenarios.length < 2;
-  $('#variant-status').textContent = `${session.scenarioIndex === 0 ? 'Treino' : 'Teste'} ${session.scenarioIndex + 1}/${session.scenarios.length}: ${current.variantLabel}. ${session.completed ? 'Todas as versões passaram!' : `${session.passed.length}/${session.scenarios.length} versões concluídas.`}`;
+  $('#variant-status').textContent = `${session.scenarioIndex === 0 ? 'Treino' : 'Teste'} ${session.scenarioIndex + 1}/${session.scenarios.length}: ${variantName(current,session.scenarioIndex)}. ${session.completed ? 'Todas as versões passaram!' : `${session.passed.length}/${session.scenarios.length} versões concluídas.`}`;
   $('#test-variants').disabled = running || session.interrupted || s.status!=='won' || session.scenarioIndex !== 0 || !session.passed.includes(0);
   $('#back-training').disabled = running || session.scenarioIndex === 0;
 }
 function step() {
   if (!canStep(session)) return;
   session = stepSession(session);
-  if (session.completed&&!imported) completed.add(mission.id);
+  if(session.completed&&!imported&&!completed.has(mission.id)&&isUnlocked(missions,completed,mission.id)){completed.add(mission.id);progressMessage=progressStore.save(completed).message;}
   if (!canStep(session)) stopPlayback();
   render();
 }
@@ -257,7 +266,8 @@ $('#program').onchange = event => {
 $('#missions').onclick = event => {
   const button = event.target.closest('[data-mission]'); if (!button) return;
   if(imported)return;
-  mission = missions.find(m => m.id === Number(button.dataset.mission)); program = []; target = [];
+  const selected=missions.find(m=>String(m.id)===button.dataset.mission);if(!selected||!isUnlocked(missions,completed,selected.id))return;
+  mission = selected; program = []; target = [];
   $('#hint-text').hidden = true; reset();
 };
 $('#hint').onclick = () => { $('#hint-text').hidden = !$('#hint-text').hidden; $('#hint-text').textContent = mission.hint??'Observe a direção do robô e monte seu caminho.'; };
@@ -270,8 +280,21 @@ $('#import-mission').onchange=async event=>{
   if(file.size>1024*1024)throw new Error('Arquivo excede 1 MiB');
   const next=loadImportedGame(await file.text(),null);
   stopPlayback();if(!imported)officialSnapshot={mission,program,target,session};
-  ({mission,program,target,session}=next);imported=true;visualEpoch++;$('#import-message').textContent='Missão importada · arquivo local, sem publicação.';render();
+  ({mission,program,target,session}=next);previewVariantIndex=0;lastPreviewKey='';imported=true;visualEpoch++;$('#import-message').textContent='Missão importada · arquivo local, sem publicação.';render();
  }catch(error){$('#import-message').textContent=error.message;}finally{event.target.value='';}
 };
-$('#back-missions').onclick=()=>{if(!imported)return;stopPlayback();({mission,program,target,session}=officialSnapshot);officialSnapshot=null;imported=false;visualEpoch++;$('#import-message').textContent='Catálogo restaurado. Programa e progresso anteriores preservados.';render();};
+$('#back-missions').onclick=()=>{if(!imported)return;stopPlayback();({mission,program,target,session}=officialSnapshot);officialSnapshot=null;previewVariantIndex=0;lastPreviewKey='';imported=false;visualEpoch++;$('#import-message').textContent='Catálogo restaurado. Programa e progresso anteriores preservados.';render();};
+function renderPreview(){
+ const scenes=session.scenarios;$('#variant-preview').hidden=scenes.length<2;if(scenes.length<2)return;
+ const key=`${visualEpoch}:${previewVariantIndex}`;$('#preview-variant').disabled=running;
+ if(key===lastPreviewKey)return;
+ $('#preview-variant').innerHTML=scenes.map((m,i)=>`<option value="${i}" ${i===previewVariantIndex?'selected':''}>${i+1}/${scenes.length} · ${escapeHtml(variantName(m,i))}</option>`).join('');$('#preview-variant').value=String(previewVariantIndex);
+ const preview=variantPreview(scenes,previewVariantIndex),board=$('#preview-board');board.style.setProperty('--columns',preview.width);board.style.setProperty('--rows',preview.height);board.style.aspectRatio=`${preview.width} / ${preview.height}`;board.setAttribute('aria-label',preview.label);board.innerHTML=preview.html;
+ $('#preview-energy').innerHTML=preview.energy;$('#preview-indicators').textContent=preview.indicators;lastPreviewKey=key;
+}
+$('#preview-variant').onchange=event=>{
+ if(running)return;const index=Number(event.target.value);if(!Number.isInteger(index)||index<0||index>=session.scenarios.length)return;
+ previewVariantIndex=index;renderPreview();
+};
+$('#advance-mission').onclick=()=>{if(imported||!completed.has(mission.id))return;const next=missions[missions.indexOf(mission)+1];if(!next||!isUnlocked(missions,completed,next.id))return;mission=next;program=[];target=[];$('#hint-text').hidden=true;reset();};
 render();

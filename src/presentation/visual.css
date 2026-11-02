@@ -64,3 +64,21 @@
 :is(#board,.ak-scene) .entity.quantity-empty .ak-sprite{visibility:hidden}
 :is(#board,.ak-scene) .entity .quantity-badge{font-size:clamp(11px,2vw,16px);border:2px solid #304c48;z-index:8;bottom:0;right:0}
 :is(#board,.ak-scene) .ak-cell:has(.ak-robot) .entity:has(.quantity-badge){inset:0 45% 45% 0;z-index:8;pointer-events:none}
+/* Identificadores opt-in. Nenhuma classe é aplicada aos objetos 01–08. */
+:is(#board,.ak-scene) .ak-map-id{position:absolute;top:-3px;left:50%;transform:translateX(-50%);z-index:12;display:block;max-width:115%;padding:1px 3px;border:1px solid #37584b;border-radius:4px;background:#fffdf4;color:#203e36;font:700 11px/1.15 system-ui;white-space:nowrap;pointer-events:none}
+:is(#board,.ak-scene) .ak-map-details{position:absolute;left:0;right:0;bottom:-2px;display:flex;flex-direction:column;align-items:center;gap:0;z-index:12;font:600 10px/1.1 system-ui;color:#203e36;pointer-events:none}
+:is(#board,.ak-scene) .ak-map-details>span{background:#fffdf4;border-radius:3px;padding:0 2px;max-width:115%;overflow-wrap:anywhere}
+:is(#board,.ak-scene) .entity-stack .ak-map-id{top:auto;bottom:0;font-size:10px;max-width:100%;padding:0 2px}
+:is(#board,.ak-scene) .entity-stack:has(.ak-map-id){z-index:12}
+:is(#board,.ak-scene) .ak-identified-feature{width:100%;height:100%;inset:0;z-index:6}
+:is(#board,.ak-scene) .ak-identified-feature .ak-sprite{width:55%;height:55%;margin:0 auto}
+:is(#board,.ak-scene) .ak-identified-feature small{font:600 10px/1.15 system-ui;position:absolute;bottom:0;left:0;right:0;background:#fffdf4;border-radius:3px;color:#203e36}
+:is(#board,.ak-scene) .entity:has(.ak-map-id),:is(#board,.ak-scene) .ak-identified-feature{z-index:9}
+:is(#board,.ak-scene) .ak-cell:has(.ak-robot) .entity:has(.ak-map-id) .ak-sprite{opacity:.35}
+:is(#board,.ak-scene) .ak-cell:has(.entity) .barrier .ak-map-id{top:auto;bottom:-3px}
+:is(#board,.ak-scene) .ak-identified-feature small{top:auto;width:100%;padding:1px}
+:is(#board,.ak-scene) .ak-map-id{white-space:normal;overflow-wrap:anywhere;text-align:center}
+:is(#board,.ak-scene) .barrier:has(.ak-map-id){z-index:9}
+:is(#board,.ak-scene) .ak-cell:has(.ak-robot) .barrier:has(.ak-map-id)>.ak-sprite{opacity:.25}
+:is(#board,.ak-scene) .ak-map-id{width:max-content;max-width:calc(100% + 22px)}
+:is(#board,.ak-scene) .entity-stack .ak-map-id{max-width:100%;white-space:nowrap}
