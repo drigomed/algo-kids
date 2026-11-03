@@ -8,13 +8,13 @@ import {nodeAt,sequenceInfo} from '../src/tree.js';
 import {renderProgram} from '../src/view.js';
 import {renderSwitchPalette,renderDecisionTrace,commandMessages,failureMessage} from '../src/command-view.js';
 import {insertionLabel} from '../src/branch-view.js';
-import {missions,missionVariants} from '../src/missions.js';
+import {missions,missionVariants} from './helpers/historical-catalog.js';
 import {createSession,stepSession,canStep,startVariantTests} from '../src/session.js';
 const move={type:'move'},right={type:'turnRight'},left={type:'turnLeft'};
 const sel=(name='mode',kind='worldVariable')=>({kind,name});
 const set=(variable,value)=>({type:'set',variable,value});
 const memory=(variable,value)=>({type:'setMemory',variable,value});
-const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
+const freeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
 const end=(m,p,options)=>simulate(m,p,options).at(-1);
 const finish=s=>{let guard=0;while(canStep(s)){assert(++guard<2000);s=stepSession(s);}return s;};
 function base(type='number',initial=0,values=[0,1,2],kind='worldVariable') {

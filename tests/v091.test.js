@@ -1,4 +1,4 @@
-import {studioController,gameController} from './helpers/controllers.js';
+import {studioController,gameController} from './helpers/historical-controllers.js';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -6,7 +6,7 @@ import {runInThisContext} from 'node:vm';
 import {initialState,applyCommand,simulate,terminal,classifyResult,createExecution,stepExecution,interruptExecution} from '../src/engine.js';
 import {defaultEnergy,validateEnergy,energyMessage} from '../src/energy.js';
 import {semanticSignature} from '../src/loops.js';
-import {missions,missionVariants} from '../src/missions.js';
+import {missions,missionVariants} from './helpers/historical-catalog.js';
 import {newMission,createDraft} from '../src/studio/model.js';
 import {serializeDraft,parseDraft,parseMission,serializeMission,downloadDraft} from '../src/mission-io.js';
 import {diagnose} from '../src/mission-validation.js';
@@ -16,8 +16,8 @@ import {renderEnergy} from '../src/presentation/energy-view.js';
 import {resultPresentation} from '../src/presentation/visual-resolver.js';
 const move={type:'move'},left={type:'turnLeft'},right={type:'turnRight'};
 const seq=text=>[...text].map(c=>({type:{A:'move',E:'turnLeft',D:'turnRight'}[c]}));
-const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
-const basic=()=>({...newMission(),solution:seq('AAA')});
+const freeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
+const basic=()=>{const mission={...newMission(),solution:seq('AAA')};delete mission.interactionPolicy;return mission;}; // Legacy reach fixtures.
 const powered=()=>({...basic(),energy:defaultEnergy()});
 const end=(m,p=m.solution,options)=>simulate(m,p,options).at(-1);
 function finished(test){while(!test.done)test=stepPlaytest(test);return test;}

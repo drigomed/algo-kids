@@ -9,7 +9,7 @@ import {objectProperties} from '../src/properties.js';
 import {configureCommand} from '../src/commands.js';
 import {configureCondition} from '../src/condition-options.js';
 import {editProgram} from '../src/program.js';
-import {missions,missionVariants} from '../src/missions.js';
+import {missions,missionVariants} from './helpers/historical-catalog.js';
 import {createSession,stepSession,startVariantTests,canStep} from '../src/session.js';
 import {renderBoard,renderProgram} from '../src/view.js';
 import {collisionMessage,passageIndicators,commandDescription,renderMemory,renderCommandPalette,resultLabel} from '../src/command-view.js';
@@ -24,7 +24,7 @@ const end=(m,p)=>simulate(m,p).at(-1);
 // Fixture física sintética: os testes unitários de capacidade não dependem do mapa pedagógico 20.
 const m20=()=>{const m=structuredClone(missionVariants(legacyMissions.find(m=>m.id===20))[1]);m.start={row:4,col:2,direction:'N'};m.goal={row:2,col:4};m.grid={width:5,height:5,obstacles:[{row:4,col:1}]};m.barriers[0].row=3;m.barriers[1]={...m.barriers[1],row:4,col:4,properties:{capacidade:3},passableWhen:cmp(world('pacotes'),'lte',own('capacidade')),failureCode:'capacityExceeded'};m.solution=[{type:'if',condition:m.solution[1].condition,then:seq('DAAEAA'),else:seq('AADAA')}];return m;};
 const m21=()=>structuredClone(missionVariants(legacyMissions.find(m=>m.id===21))[0]);
-function freeze(value){if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
+function freeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
 function finish(s){let guard=0;while(canStep(s)){assert(++guard<2000);s=stepSession(s);}return s;}
 const unchanged=(before,after)=>{for(const key of ['row','col','direction','variables','memory','collectedIds','collectedCount','consumedIds','usedInteractions'])assert.deepEqual(after[key],before[key],key);};
 

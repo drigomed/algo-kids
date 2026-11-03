@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
-import {missions,missionVariants} from '../src/missions.js';
+import {missions,missionVariants} from './helpers/historical-catalog.js';
 import {simulate,createExecution,stepExecution,initialState,applyCommand,validateMission,validateProgram,interruptExecution} from '../src/engine.js';
 import {createSession,stepSession,canStep,startVariantTests} from '../src/session.js';
 import {loopPermissions,createLoop,canonical} from '../src/loops.js';
@@ -12,7 +12,7 @@ import {createPlaytest,stepPlaytest,referenceValidated} from '../src/studio/play
 import {renderLoopPalette,loopTitle,renderLoopTrace} from '../src/loop-view.js';
 import {renderSceneBoard} from '../src/presentation/scene-view.js';
 import {resolveScene} from '../src/presentation/visual-resolver.js';
-import {studioController,gameController} from './helpers/controllers.js';
+import {studioController,gameController} from './helpers/historical-controllers.js';
 import {seq} from '../src/lock-mission-data.js';
 import {removeBox,discardBox,transportCycle,inspectBoxes,observedCount} from '../src/demo-missions-v092.js';
 const clone=structuredClone;
@@ -168,6 +168,6 @@ test('jogo: ESCOLHA importado construído com quatro casos reais vence quatro va
 test('for.count preserva limites estruturais de profundidade e 300 nós',()=>{
  const m=dynamic(2);let nested=[{type:'turnLeft'}];for(let i=0;i<8;i++)nested=[{type:'for',count:observedCount,body:nested}];validateProgram(nested,m);assert.throws(()=>validateProgram([{type:'for',count:observedCount,body:nested}],m));const program=[{type:'for',count:observedCount,body:Array.from({length:299},()=>({type:'turnRight'}))}];validateProgram(program,m);program[0].body.push({type:'turnRight'});assert.throws(()=>validateProgram(program,m));
 });
-test('relatório conserva fonte/quantidade resolvida após truncar trace longo',()=>{
- const m=dynamic(20);m.solution=[{type:'for',count:observedCount,body:Array.from({length:299},()=>({type:'turnLeft'}))}];const t=finishTest(createPlaytest(m,{instructionLimit:10000}));assert.equal(t.trace.length,2000);assert.deepEqual(t.reports[0].loopCounts,[{path:[0],count:observedCount,times:20}]);assert.equal(t.reports[0].status,'finished');
+test('relatório conserva fonte/quantidade resolvida e trace completo (V094)',()=>{
+ const m=dynamic(20);m.solution=[{type:'for',count:observedCount,body:Array.from({length:299},()=>({type:'turnLeft'}))}];const t=finishTest(createPlaytest(m,{instructionLimit:10000}));assert.equal(t.trace.length,6001);assert.deepEqual(t.reports[0].loopCounts,[{path:[0],count:observedCount,times:20}]);assert.equal(t.reports[0].status,'finished');
 });

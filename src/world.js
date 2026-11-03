@@ -13,6 +13,7 @@ export function validateMission(m, {checkVariants=true} = {}) {
   assertJsonData(m, 'mission');
   validateMemory(m.robotMemory);
   validateEnergy(m.energy);
+  if(m.interactionPolicy!==undefined&&m.interactionPolicy!=='here')throw new Error('interactionPolicy: use here');
   if (!m?.grid || !Array.isArray(m.grid.obstacles)) throw new Error('Grade inválida');
   const inside = p => p && Number.isInteger(p.row) && Number.isInteger(p.col) && p.row >= 0 && p.col >= 0 && p.row < m.grid.height && p.col < m.grid.width;
   if (!Number.isInteger(m.grid.width) || !Number.isInteger(m.grid.height) || m.grid.width < 1 || m.grid.height < 1 || !inside(m.start) || !inside(m.goal) || !directions.includes(m.start.direction)) throw new Error('Missão inválida');
@@ -56,6 +57,7 @@ export function validateMission(m, {checkVariants=true} = {}) {
   validateSwitchOptions(m);
   validateLoopOptions(m);
   validateConditionOptions(m);
+  if(m.completionGuard!==undefined){if(!record(m.completionGuard)||Object.keys(m.completionGuard).some(k=>!['condition','reason'].includes(k))||!validVariable(m.completionGuard.reason))throw new Error('completionGuard inválido');validateCondition(m.completionGuard.condition,variables,0,m.robotMemory??{});}
   if (m.winCondition) validateCondition(m.winCondition, variables, 0, m.robotMemory??{});
   if(checkVariants && m.variants!==undefined) {
     if(!Array.isArray(m.variants)||!m.variants.length||m.variants.length>20)throw new Error('variants: lista inválida');

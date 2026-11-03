@@ -62,3 +62,12 @@ Leia `README.md`, `docs/PRODUCT.md`, `docs/ROADMAP.md`, `docs/MVP.md`, `docs/V02
 - Prévia é estado inicial independente, sem tocar AST/target/session, efeitos, caches ou timers reais. Nunca simular solution para prévia.
 - Identidade fixa e detalhes são metadados. Propriedade oculta usa memória observada e sprite neutro; não reler mundo por badge/quantity/aria nem revelar resposta no nome da variante.
 - 91 SVGs preservados por hash; sem nova arte, backend, dependências, merge automático ou deploy manual.
+
+## V0.9.4 — Escopo fechado e autorizado
+- Ler docs/V094-SCOPE.md, V094.md, V094-JSON-CONTRACT.md e V094-VALIDATION.md. Substituem restrições históricas conflitantes somente no escopo autorizado.
+- Catálogo atual: 32 missões/68 cenários, 28 removida e demais IDs preservados. Referência 05 sem dois comandos após a chegada; 08/16 com energia 9/6.
+- Interações oficiais e novas missões Studio usam interactionPolicy here; JSON legado sem política mantém seus alcances explícitos. Nunca migrar AST/rotas silenciosamente.
+- Vitória exige não haver comandos restantes; permitir checks finais falsos contabilizados. completionGuard é genérica e não conhece a missão 19.
+- Histórico completo por execução e variantes, sem truncar nem integrar ao estado semântico/progresso. Reset/edição inicia outro histórico.
+- unlockAll=1 libera acesso, nunca conquistas fora do prefixo. Suítes antigas usam catálogo V093 congelado; suíte V094 e engine.test.js exercitam catálogo atual.
+- 91 SVGs preservados, sem novas dependências, merge automático ou deploy manual.

@@ -10,3 +10,6 @@
 .studio-destructive{padding:10px;border:1px solid #dec7bb;border-radius:8px}.studio-destructive summary{min-height:44px;cursor:pointer}
 #program-destination{position:sticky;top:110px;z-index:6;background:#f1e9f7;border-radius:8px;padding:10px;color:#5c4270}
 @media(max-width:800px){.studio-command-group button{flex:1 1 120px}.studio-document .studio-file{width:100%}.studio-app #program .row-controls{justify-content:stretch}.studio-app #program .row-controls button{flex:1}.studio-app #program [data-edit=remove]{flex:2}.studio-app #program{overflow-x:hidden}}
+.studio-app #program{height:auto;max-height:none;overflow:visible}
+
+#program-tools[hidden]{display:none!important}

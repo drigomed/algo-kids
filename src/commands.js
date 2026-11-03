@@ -18,7 +18,7 @@ export function validateCommandShape(node,mission) {
     fields(node,['type','variable','value']);validateMemoryComparison(node,mission.robotMemory??{});
   } else if(node?.type==='interact') {
     fields(node,['type','relativeTo','actionId','entityId']);
-    if(!['front','here'].includes(node.relativeTo)||!validVariable(node.actionId)||(node.entityId!==undefined&&!validSelector(node.entityId)))throw new Error('interact: alcance ou ação inválida');
+    if((mission.interactionPolicy==='here'&&node.relativeTo!=='here')||!['front','here'].includes(node.relativeTo)||!validVariable(node.actionId)||(node.entityId!==undefined&&!validSelector(node.entityId)))throw new Error('interact: alcance ou ação inválida');
   } else throw new Error('Comando explícito desconhecido');
 }
 function matches(node,template) {
@@ -71,6 +71,7 @@ export function validateInteractions(entity,mission) {
     fields(action,['id','relativeTo','once','when','effects','consume']);
     if(!validVariable(action.id)||ids.has(action.id)||!Array.isArray(action.relativeTo)||!action.relativeTo.length||new Set(action.relativeTo).size!==action.relativeTo.length||action.relativeTo.some(value=>!['front','here'].includes(value))||(action.once!==undefined&&typeof action.once!=='boolean')||(action.consume!==undefined&&typeof action.consume!=='boolean'))throw new Error('interactions: ação inválida');
     ids.add(action.id);
+    if(mission.interactionPolicy==='here'&&action.relativeTo.some(p=>p!=='here'))throw new Error('Interação deve ocorrer na mesma casa');
     if(action.when!==undefined)validateCondition(action.when,mission.initialVariables??{},0,mission.robotMemory??{});
     validateEffects(action.effects,mission.initialVariables??{},0,{count:0},mission.robotMemory??{});
   }

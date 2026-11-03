@@ -1,12 +1,12 @@
-# V0.9.3 — Clareza, prévia e progresso local
+# V0.9.4 — Execução completa e currículo revisado
 
-33 missões e 71 cenários. As missões 01–08 mantêm conteúdo, comandos, soluções e tabuleiros. O jogo agora tem progresso sequencial local, prévia independente de variantes, identificação declarativa no mapa e transporte real até a lixeira nas 30/31/33. [Notas](docs/V093.md) · [Auditoria de identificação](docs/V093-MAP-IDENTIFICATION-AUDIT.md) · [Validação e capturas](docs/V093-VALIDATION.md).
+32 missões e 68 cenários. Paleta oculta durante execução, algoritmo sem scroll interno e memória de cálculo completa. Interações oficiais somente na própria casa; missão 19 com autorização de entrega e 23 com destinos A/B/Triagem. Use `?unlockAll=1` para explorar todas as missões sem conceder conquistas. [Notas](docs/V094.md) · [Escopo fechado](docs/V094-SCOPE.md) · [Validação](docs/V094-VALIDATION.md).
 
 **Primeiro acesso após a V0.9.3:** começa na missão 01. A V0.9.2 guardava conquistas somente em memória, sem registro persistente para migrar ou recuperar após recarga. A partir desta versão, concluir todas as variantes com a mesma AST libera a missão seguinte e salva apenas IDs oficiais no navegador (`algo-kids-progress/v1`). Recarga abre a primeira missão não concluída. Sem conta/sincronização; limpar dados ou impedir armazenamento pode perder progresso. Falha ao salvar mantém a vitória da sessão e é informada. Missões importadas e Studio permanecem livres e não registram conquistas oficiais.
 
 # Missões do Robô — Pequenos Programadores
 
-V0.9.3 do Algo Kids: jogo educativo em português e Studio local de autoria de missões, com o mesmo motor e 91 SVGs locais (85 originais V0.8 + 6 aditivos). Monte o programa antes de executar e leve o robô até a estrela.
+V0.9.4 do Algo Kids: jogo educativo em português e Studio local de autoria de missões, com o mesmo motor e 91 SVGs locais (85 originais V0.8 + 6 aditivos). Monte o programa antes de executar e leve o robô até a estrela.
 
 ## Executar
 
@@ -33,9 +33,9 @@ URL pública esperada: **https://drigomed.github.io/algo-kids/**. O endereço s�
 
 ## Jogar
 
-As definições e soluções 01–19 e 21–25 continuam preservadas; a V0.9.1 corrige somente o mapa e a referência da Missão 20 para uma bifurcação real. As missões 01–06 mantêm seus comandos e jogabilidade; a V0.8 atualiza somente sua arte. Os cenários 17–25 são demonstrações temporárias do motor; a V0.7 acrescenta somente as fixtures 24–25. Toque em Avançar, Virar à esquerda ou Virar à direita para adicionar comandos. As setas da lista reordenam; × remove. Executar começa do início; Pausar/Continuar controla a execução; Passo a passo executa um comando. Reiniciar mantém o programa; Limpar apaga os comandos. Alterar um programa pausado reinicia a posição do robô. A direção inicial aparece pela seta sobre o robô; norte fica no topo.
+As versões anteriores são descritas nos documentos históricos; a V094 revisa os mapas listados no escopo fechado. Historicamente, a V0.9.1 corrige somente o mapa e a referência da Missão 20 para uma bifurcação real. As missões 01–06 mantêm seus comandos e jogabilidade; a V0.8 atualiza somente sua arte. Os cenários 17–25 são demonstrações temporárias do motor; a V0.7 acrescenta somente as fixtures 24–25. Toque em Avançar, Virar à esquerda ou Virar à direita para adicionar comandos. As setas da lista reordenam; × remove. Executar começa do início; Pausar/Continuar controla a execução; Passo a passo executa um comando. Reiniciar mantém o programa; Limpar apaga os comandos. Alterar um programa pausado reinicia a posição do robô. A direção inicial aparece pela seta sobre o robô; norte fica no topo.
 
-Nas missões 07–08, entrar na casa recolhe o objeto automaticamente. O contador mostra os objetos e a meta da missão. A estrela só encerra a execução quando a meta também estiver satisfeita. Reiniciar restaura todos os objetos e variáveis, preservando o programa.
+Nas missões 07–08, entrar na casa recolhe o objeto automaticamente. O contador mostra os objetos e a meta da missão. A estrela exige a meta satisfeita e o programa sem comandos pendentes; chegar com comandos sobrando falha. Reiniciar restaura todos os objetos e variáveis, preservando o programa.
 
 Nas missões 09–12, adicione **SE / SENÃO**. Escolha **Caminho à frente livre** ou **Contador atingiu uma quantidade**, com variável e quantidade configuráveis. Toque em **Adicionar aqui** no ramo ENTÃO ou SENÃO e use a paleta para inserir os comandos nesse ramo. Também é possível inserir outro SE. **Programa principal** volta a inserir após os blocos principais. As setas reordenam dentro do mesmo ramo; × remove um bloco inteiro, incluindo seus ramos.
 
@@ -52,7 +52,7 @@ O tabuleiro diferencia sinais, objetos, placas, estações e passagens abertas/f
 Nos cenários 17–19, a paleta oferece comandos autorizados pela configuração:
 - **Inspecionar** observa uma propriedade na casa à frente e guarda uma cópia.
 - **Guardar valor** define um valor permitido na memória do robô.
-- **Interagir** executa uma ação declarada no objeto à frente ou na casa atual.
+- **Interagir** executa uma ação declarada no objeto na casa atual. JSON legado sem política mantém o alcance explicitamente declarado.
 
 A memória é separada do estado do mundo e aparece com **?** enquanto desconhecida. O SE pode consultar a informação guardada; tentar decidir antes de defini-la encerra a execução com uma dica, sem executar SENÃO. Alterar o mundo depois de inspecionar não atualiza a memória automaticamente.
 

@@ -34,7 +34,8 @@ export function validateProgram(program, mission) {
 export function createExecution(mission, program, {instructionLimit = DEFAULT_LIMIT} = {}) {
   validateMission(mission); validateProgram(program, mission);
   if (!Number.isInteger(instructionLimit) || instructionLimit < 1 || instructionLimit > 10000) throw new Error('Limite de instruções inválido');
-  return {state: initialState(mission), frames: [{path: [], index: 0}], activePath: null, decision: null, instructionLimit};
+  let start=initialState(mission);if(start.status==='won'&&program.length)start=actionFailure(start,'commandsRemaining',{action:'program'});
+  return enforceGuard(mission,{calculationHistory:[],state:start, frames: terminal(start)?[]:[{path: [], index: 0}], activePath: null, decision: null, instructionLimit});
 }
 const listAt=sequenceAt;
 // Retira listas concluídas, mas para no controlador: o próximo check exige outro passo.
@@ -66,7 +67,7 @@ function checkLoop(mission,program,execution,frames) {
   return {...execution,state,frames,activePath};
 }
 // Um único passo para comandos ou decisões. Frames são copiados: a execução anterior é preservada.
-export function stepExecution(mission, program, execution) {
+function advanceExecution(mission, program, execution) {
   if (terminal(execution.state)) return execution;
   const frames = execution.frames.map(frame => ({...frame, path: [...frame.path]}));
   normalize(program, frames);
@@ -117,6 +118,33 @@ export function stepExecution(mission, program, execution) {
   if (!frames.length && !terminal(state)) state = {...state, status: 'finished', lastEvent: 'finished'};
   return {...execution, state, frames, activePath, decision};
 }
+function pendingFailure(execution){const failed=actionFailure(execution.state,'commandsRemaining',{action:'program'});return {...execution,frames:[],state:{...failed,events:[...execution.state.events.filter(e=>e.type!=='won'),...failed.events]}};}
+function reconcileGoal(program,previous,next){
+ if(next.state.status==='won'){
+  const frames=next.frames.map(f=>({...f,path:[...f.path]}));normalize(program,frames);
+  if(!frames.length)return {...next,frames};
+  if(frames.at(-1).kind!=='loop')return pendingFailure({...next,frames});
+  return {...next,frames,goalCandidate:true,state:{...next.state,status:'running',lastEvent:'goalReached',events:next.state.events.map(e=>e.type==='won'?{type:'goalReached'}:e)}};
+ }
+ if(previous.goalCandidate){
+  if(next.state.events.some(e=>e.type==='loopCheck'&&e.result))return pendingFailure(next);
+  if(next.state.status==='finished')return {...next,goalCandidate:false,state:{...next.state,status:'won',lastEvent:'won',events:[...next.state.events,{type:'won'}]}};
+  if(!terminal(next.state)&&next.frames.at(-1)?.kind!=='loop')return pendingFailure(next);
+ }
+ return next;
+}
+function remember(previous,next){
+ if(next===previous)return previous;
+ const record={instruction:next.state.instructionPointer,path:next.activePath?[...next.activePath]:null,status:next.state.status,row:next.state.row,col:next.state.col,direction:next.state.direction,events:structuredClone(next.state.events)};
+ return {...next,calculationHistory:[...(previous.calculationHistory??[]),record]};
+}
+// Histórico limitado pelo orçamento de execução, não por uma janela de apresentação.
+function enforceGuard(mission,next){
+ if(!['finished','won'].includes(next.state.status)||!mission.completionGuard)return next;
+ try{if(evaluateCondition(mission,next.state,mission.completionGuard.condition))return next;return {...next,frames:[],state:actionFailure(next.state,mission.completionGuard.reason,{action:'program'})};}
+ catch(error){if(!(error instanceof ExecutionFault))throw error;return {...next,frames:[],state:actionFailure(next.state,error.reason,{action:'program',...error.details})};}
+}
+export function stepExecution(mission,program,execution){if(terminal(execution.state))return execution;return remember(execution,enforceGuard(mission,reconcileGoal(program,execution,advanceExecution(mission,program,execution))));}
 export function simulate(mission, program, options) {
   let execution = createExecution(mission, program, options);
   const states = [execution.state];
@@ -128,8 +156,10 @@ export function simulate(mission, program, options) {
 }
 
 // Interromper não conta como instrução e preserva todo o estado semântico.
-export function interruptExecution(execution) {
+function stopExecution(execution) {
   if(execution.state.status!=='running')return execution;
   const loop=loopContext(execution.frames);
   return {...execution,frames:[],state:{...execution.state,status:'stopped',reason:'userStopped',lastEvent:'stopped',events:[{type:'userStopped',path:execution.activePath?[...execution.activePath]:null,...(loop?{loop}:{})}]}};
 }
+
+export function interruptExecution(execution){return remember(execution,stopExecution(execution));}

@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {initialState, applyCommand, simulate, validateMission, createExecution, stepExecution, terminal, evaluateCondition} from '../src/engine.js';
-import {missions, missionVariants} from '../src/missions.js';
+import {missions, missionVariants} from './helpers/historical-catalog.js';
 import {createSession, stepSession, canStep, startVariantTests} from '../src/session.js';
 import {editProgram, sequenceAt, countNodes} from '../src/program.js';
 import {renderProgram, renderBoard} from '../src/view.js';
@@ -9,7 +9,7 @@ const seq = text => text.split('').map(c => ({type:{A:'move',E:'turnLeft',D:'tur
 const conditional = (condition, then, otherwise = []) => ({type:'if', condition, then, else:otherwise});
 const atLeast = (variable, value) => ({type:'stateAtLeast', variable, value});
 const base = () => ({grid:{width:5,height:5,obstacles:[]},start:{row:4,col:0,direction:'L'},goal:{row:4,col:4},initialVariables:{score:0,enabled:false,label:'início'},entities:[{id:'objeto-a',row:4,col:1,collectible:true,onEnter:[{type:'increment',variable:'score',amount:3},{type:'set',variable:'enabled',value:true},{type:'set',variable:'label',value:'descoberta'}]}]});
-function deepFreeze(value) { if (value && typeof value === 'object') { Object.values(value).forEach(deepFreeze); Object.freeze(value); } return value; }
+function deepFreeze(value) { if (value && typeof value === 'object' && !Object.isFrozen(value)) { Object.values(value).forEach(deepFreeze); Object.freeze(value); } return value; }
 function end(mission, program) { return simulate(mission, program).at(-1); }
 function finishSession(session) { let guard = 0; while (canStep(session)) { assert(++guard < 2000); session = stepSession(session); } return session; }
 

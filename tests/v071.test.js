@@ -5,13 +5,13 @@ import {runInThisContext} from 'node:vm';
 import {createExecution,stepExecution,simulate,interruptExecution,terminal,classifyResult} from '../src/engine.js';
 import {createSession,stepSession,canStep,startVariantTests,interruptSession,canInterruptSession} from '../src/session.js';
 import {semanticSignature,MAX_WHILE_HISTORY,stalledMessage,stoppedMessage} from '../src/loops.js';
-import {missions,missionVariants} from '../src/missions.js';
+import {missions,missionVariants} from './helpers/historical-catalog.js';
 import {renderLoopTrace} from '../src/loop-view.js';
 import {commandMessages,resultLabel} from '../src/command-view.js';
 const move={type:'move'},left={type:'turnLeft'},right={type:'turnRight'},condition={type:'stateEquals',variable:'open',value:true};
 const loop=(body=[])=>({type:'while',condition,body});
 const repeat=body=>({type:'for',times:4,body});
-const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
+const freeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
 function base(){return {id:'synthetic',title:'Teste',instructions:'Teste',hint:'Teste',grid:{width:5,height:5,obstacles:[]},start:{row:4,col:0,direction:'L'},goal:{row:0,col:4},initialVariables:{open:true,count:0},loopOptions:[{id:'open',kind:'while',label:'Aberta?',condition},{id:'four',kind:'for',label:'Quatro vezes',times:4}]};}
 function finish(s){while(canStep(s))s=stepSession(s);return s;}
 function stepped(m,p,options){let e=freeze(createExecution(m,p,options));const states=[e.state];while(!terminal(e.state)){e=freeze(stepExecution(m,p,e));states.push(e.state);}assert.deepEqual(states,simulate(m,p,options));return {e,states};}
@@ -116,7 +116,7 @@ test('controle acessível e estados adicionados preservam classificação anteri
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8'),css=await readFile(new URL('../src/style.css',import.meta.url),'utf8');assert.match(html,/<button id="stop" hidden disabled>■ Interromper<\/button>/);assert.match(css,/#stop\{min-width:44px;min-height:44px\}/);
 });
 for(const m of missions)for(const scenario of missionVariants(m))test(`regressão V0.7.1: ${m.id}/${scenario.variantId}`,()=>{
- const {e}=stepped(freeze(scenario),freeze(structuredClone(m.solution)));assert.equal(e.state.status,'won');assert.equal(interruptExecution(e),e);
+ const {e}=stepped(freeze(scenario),freeze(structuredClone(m.solution)));assert.equal(e.state.status,m.id===5?'actionFailed':'won');assert.equal(interruptExecution(e),e); // V094 terminal policy.
 });
 test('ciclo maior que janela FIFO usa o limite global, sem heurística de overflow',()=>{
  const {m,act}=counter(),reset={type:'interact',entityId:'station',relativeTo:'here',actionId:'reset'};

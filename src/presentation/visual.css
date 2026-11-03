@@ -82,3 +82,6 @@
 :is(#board,.ak-scene) .ak-cell:has(.ak-robot) .barrier:has(.ak-map-id)>.ak-sprite{opacity:.25}
 :is(#board,.ak-scene) .ak-map-id{width:max-content;max-width:calc(100% + 22px)}
 :is(#board,.ak-scene) .entity-stack .ak-map-id{max-width:100%;white-space:nowrap}
+/* Três faixas para informação coexistente: identidade, valor e passagem. */
+:is(#board,.ak-scene) .ak-cell:has(.ak-identified-feature) .barrier .ak-map-id{top:auto;bottom:-3px}
+:is(#board,.ak-scene) .ak-cell:has(.barrier) .ak-identified-feature small{bottom:14px}

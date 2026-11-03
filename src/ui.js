@@ -1,4 +1,5 @@
-import {createProgressStore,currentMission,isUnlocked} from './progress.js';
+import {calculationLog} from './calculation-view.js';
+import {explorationEnabled,createProgressStore,currentMission,isUnlocked} from './progress.js';
 import {variantPreview} from './variant-preview.js';
 import {variantName} from './presentation/map-identification.js';
 import {loadImportedGame} from './imported-game.js';
@@ -24,6 +25,8 @@ import {renderProgram, renderBoard, encodePath, decodePath, escapeHtml, worldInd
 const $ = selector => document.querySelector(selector);
 let imported=false,officialSnapshot=null;
 const progressStore=createProgressStore(missions,()=>window.localStorage),loadedProgress=progressStore.load();
+const unlockAll=explorationEnabled(window.location?.search??'');
+const accessible=id=>unlockAll||isUnlocked(missions,completed,id);
 const completed=loadedProgress.completed;let progressMessage=loadedProgress.message;
 let previewVariantIndex=0,lastPreviewKey='';
 let mission = currentMission(missions,completed), program = [], target = [], session = createSession(mission, program);
@@ -83,12 +86,12 @@ function render() {
   const focusTarget=focus?.dataset.target, focusOption=focus?.dataset.commandOption, focusSwitch=focus?.dataset.switchOption, focusLoop=focus?.dataset.loopOption;
   const inlineField=['inlineAdd','inlineOption','inlineSwitch','inlineLoop'].find(key=>focus?.dataset[key]!==undefined);
   const listScroll = $('#program').scrollTop, missionScroll = $('#missions').scrollLeft;
-  $('#missions').innerHTML = missions.map(m => `<button class="mission ${m === mission ? 'selected' : ''} ${completed.has(m.id) ? 'completed' : ''}" data-mission="${m.id}" ${imported||!isUnlocked(missions,completed,m.id)?'disabled':''} aria-current="${m === mission ? 'step' : 'false'}"><span>${completed.has(m.id)?'✓':!isUnlocked(missions,completed,m.id)?'🔒':String(m.id).padStart(2,'0')}</span><div><small>MISSÃO ${String(m.id).padStart(2,'0')}</small><strong>${escapeHtml(m.title)}</strong>${!isUnlocked(missions,completed,m.id)?'<small>Conclua a missão anterior</small>':''}</div></button>`).join('');
+  $('#missions').innerHTML = missions.map(m => `<button class="mission ${m === mission ? 'selected' : ''} ${completed.has(m.id) ? 'completed' : ''}" data-mission="${m.id}" ${imported||!accessible(m.id)?'disabled':''} aria-current="${m === mission ? 'step' : 'false'}"><span>${completed.has(m.id)?'✓':!accessible(m.id)?'🔒':String(m.id).padStart(2,'0')}</span><div><small>MISSÃO ${String(m.id).padStart(2,'0')}</small><strong>${escapeHtml(m.title)}</strong>${!accessible(m.id)?'<small>Conclua a missão anterior</small>':''}</div></button>`).join('');
   $('#missions').scrollLeft = missionScroll;
-  $('#progress-storage').textContent=progressMessage;$('#progress-storage').hidden=!progressMessage;
+  $('#progress-storage').textContent=progressMessage||(unlockAll?'Modo de exploração: todas as missões abertas. O progresso salvo continua seguindo a sequência.':'');$('#progress-storage').hidden=!$('#progress-storage').textContent;
   const nextIndex=missions.findIndex(m=>m===mission)+1;$('#next-mission').hidden=imported||!completed.has(mission.id)||nextIndex>=missions.length;
   renderPreview();
-  $('#mission-number').textContent = imported?'MISSÃO IMPORTADA':`${mission.demo?'DEMONSTRAÇÃO':'MISSÃO'} ${String(mission.id).padStart(2,'0')} / ${missions.length}`;
+  $('#mission-number').textContent = imported?'MISSÃO IMPORTADA':`${mission.demo?'DEMONSTRAÇÃO':'MISSÃO'} ${String(mission.id).padStart(2,'0')} · ${missions.indexOf(mission)+1}/${missions.length}`;
   $('#mission-title').textContent = mission.title;
   $('#lesson-type').textContent = imported?'MISSÃO IMPORTADA':mission.demo ? 'CENÁRIO DEMO' : mission.id >= 13 ? 'MUNDO REATIVO' : mission.id >= 9 ? 'DECISÕES' : mission.id >= 7 ? 'COLETA' : 'SEQUÊNCIA';
   $('#instructions').textContent = mission.instructions??'';
@@ -119,7 +122,7 @@ function render() {
   const loopTrace=renderLoopTrace(current,session.execution,program);
   const loopKey=`${session.scenarioIndex}:${s.instructionPointer}:${loopTrace}`;
   if(lastLoopKey!==loopKey){$('#loop-trace').innerHTML=loopTrace;$('#loop-trace').hidden=!loopTrace;lastLoopKey=loopKey;}
-  $('.palette').hidden=target.length>0;
+  $('.palette').hidden=running||target.length>0;
   const trace=renderDecisionTrace(current,s);
   const traceKey=`${session.scenarioIndex}:${s.instructionPointer}:${trace}`;
   if(lastTraceKey!==traceKey){$('#decision-trace').innerHTML=trace;lastTraceKey=traceKey;}
@@ -134,14 +137,6 @@ function render() {
   $('#count').textContent = `${count} ${count === 1 ? 'bloco' : 'blocos'}`;
   $('#program').innerHTML = program.length ? renderProgram(program, imported?{...current,editorDecisions:true}:current, session.execution, target, running) : '<li class="empty"><span>＋</span><strong>Uma aventura começa<br>com uma ideia.</strong><small>Adicione seu primeiro comando acima.</small></li>';
   $('#program').scrollTop = listScroll;
-  if (running) {
-    const active = $('#program [aria-current="step"]');
-    if (active) {
-      const item = active.getBoundingClientRect(), viewport = $('#program').getBoundingClientRect();
-      if (item.top < viewport.top) $('#program').scrollTop -= viewport.top - item.top + 8;
-      else if (item.bottom > viewport.bottom) $('#program').scrollTop += Math.min(item.bottom - viewport.bottom + 8, item.top - viewport.top - 8);
-    }
-  }
   if (focusField && focusPath !== undefined) document.querySelector(`[data-field="${focusField}"][data-path="${focusPath}"]`)?.focus({preventScroll:true});
   if(!focusField&&focusTarget!==undefined) {
     const attribute=inlineField?{'inlineAdd':'data-inline-add','inlineOption':'data-inline-option','inlineSwitch':'data-inline-switch','inlineLoop':'data-inline-loop'}[inlineField]:null;
@@ -175,6 +170,7 @@ function render() {
   $('#variant-tests').hidden = session.scenarios.length < 2;
   $('#variant-status').textContent = `${session.scenarioIndex === 0 ? 'Treino' : 'Teste'} ${session.scenarioIndex + 1}/${session.scenarios.length}: ${variantName(current,session.scenarioIndex)}. ${session.completed ? 'Todas as versões passaram!' : `${session.passed.length}/${session.scenarios.length} versões concluídas.`}`;
   $('#test-variants').disabled = running || session.interrupted || s.status!=='won' || session.scenarioIndex !== 0 || !session.passed.includes(0);
+  $('#calculation-count').textContent=String((session.executionArchives??[]).reduce((n,p)=>n+(p.execution.calculationHistory?.length??0),session.execution.calculationHistory?.length??0));if($('#calculation-log').open)$('#calculation-entries').innerHTML=calculationLog(session);
   $('#back-training').disabled = running || session.scenarioIndex === 0;
 }
 function step() {
@@ -266,7 +262,7 @@ $('#program').onchange = event => {
 $('#missions').onclick = event => {
   const button = event.target.closest('[data-mission]'); if (!button) return;
   if(imported)return;
-  const selected=missions.find(m=>String(m.id)===button.dataset.mission);if(!selected||!isUnlocked(missions,completed,selected.id))return;
+  const selected=missions.find(m=>String(m.id)===button.dataset.mission);if(!selected||!accessible(selected.id))return;
   mission = selected; program = []; target = [];
   $('#hint-text').hidden = true; reset();
 };
@@ -296,5 +292,6 @@ $('#preview-variant').onchange=event=>{
  if(running)return;const index=Number(event.target.value);if(!Number.isInteger(index)||index<0||index>=session.scenarios.length)return;
  previewVariantIndex=index;renderPreview();
 };
-$('#advance-mission').onclick=()=>{if(imported||!completed.has(mission.id))return;const next=missions[missions.indexOf(mission)+1];if(!next||!isUnlocked(missions,completed,next.id))return;mission=next;program=[];target=[];$('#hint-text').hidden=true;reset();};
+$('#calculation-log').ontoggle=()=>{if($('#calculation-log').open)$('#calculation-entries').innerHTML=calculationLog(session);};
+$('#advance-mission').onclick=()=>{if(imported||!completed.has(mission.id))return;const next=missions[missions.indexOf(mission)+1];if(!next||!accessible(next.id))return;mission=next;program=[];target=[];$('#hint-text').hidden=true;reset();};
 render();

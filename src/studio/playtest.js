@@ -23,7 +23,7 @@ export function stepPlaytest(test){
  }
  const session=stepSession(current);sessions[test.index]=session;
  const counts=session.execution.state.events.filter(e=>e.type==='loopCheck'&&e.count&&e.completed===0).map(e=>({scenario:test.index,path:[...e.path],count:structuredClone(e.count),times:e.times}));
- return {...test,sessions,...(counts.length?{resolvedCounts:[...(test.resolvedCounts??[]),...counts]}:{}),reachedIds:[...new Set([...test.reachedIds,...session.execution.state.events.map(e=>e.entityId).filter(Boolean)])],trace:[...test.trace,{scenario:test.index,path:session.execution.activePath,instructions:session.execution.state.instructionPointer,events:structuredClone(session.execution.state.events)}].slice(-2000)};
+ return {...test,sessions,...(counts.length?{resolvedCounts:[...(test.resolvedCounts??[]),...counts]}:{}),reachedIds:[...new Set([...test.reachedIds,...session.execution.state.events.map(e=>e.entityId).filter(Boolean)])],trace:[...test.trace,{scenario:test.index,path:session.execution.activePath,instructions:session.execution.state.instructionPointer,events:structuredClone(session.execution.state.events)}]};
 }
 export function interruptPlaytest(test){
  if(test.done)return test;const sessions=[...test.sessions];sessions[test.index]=interruptSession(sessions[test.index]);

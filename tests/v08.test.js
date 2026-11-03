@@ -10,9 +10,9 @@ import {resolveScene,resultPresentation,terrainVariant} from '../src/presentatio
 import {createVisualEffects} from '../src/presentation/visual-effects.js';
 import {renderResultBanner,renderSceneBoard} from '../src/presentation/scene-view.js';
 import {validateSvg,validateAssets} from '../scripts/validate-assets.js';
-import {missions,missionVariants} from '../src/missions.js';
+import {missions,missionVariants} from './helpers/historical-catalog.js';
 import {initialState,simulate,applyCommand,interruptExecution,createExecution,stepExecution} from '../src/engine.js';
-const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
+const freeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
 const mission=id=>missions.find(m=>m.id===id);
 const end=(m,p=m.solution)=>simulate(m,p).at(-1);
 const text=file=>readFile(new URL('../'+file,import.meta.url),'utf8');
@@ -114,7 +114,7 @@ test('contratos legados preservados; alterações curriculares auditadas em suí
  const withoutVisual=x=>Array.isArray(x)?x.map(withoutVisual):x&&typeof x==='object'?Object.fromEntries(Object.entries(x).filter(([k])=>k!=='presentation').map(([k,v])=>[k,withoutVisual(v)])):x;const legacy=JSON.parse(await text('tests/fixtures/v091-curriculum-baseline.json')).missions;
  const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
  for(const m of missions.filter(m=>m.id<=25&&![20,21,22,24].includes(m.id)))assert.equal(digest(withoutVisual(m)),digest(withoutVisual(legacy.find(old=>old.id===m.id))));
- for(const original of baseline.variants){const expected=original.v091??original;if([21,22,24].includes(expected.missionId))continue;const m=mission(expected.missionId),scenario=missionVariants(m).find(s=>s.variantId===expected.variantId),states=simulate(freeze(scenario),freeze(structuredClone(m.solution)));if(m.id!==20)assert.equal(digest(states),expected.trace);assert.equal(states.at(-1).instructionPointer,expected.instructions);assert.equal(states.at(-1).status,expected.status);}
+ for(const original of baseline.variants){const expected=original.v091??original;if([21,22,24].includes(expected.missionId))continue;const m=mission(expected.missionId),scenario=missionVariants(m).find(s=>s.variantId===expected.variantId),states=simulate(freeze(scenario),freeze(structuredClone(m.solution)));if(m.id!==20&&m.id!==5)assert.equal(digest(states),expected.trace);assert.equal(states.at(-1).instructionPointer,expected.instructions);assert.equal(states.at(-1).status,m.id===5?'actionFailed':expected.status); /* V094 strict completion. */}
 });
 test('seletores visuais malformados usam fallback sem ler código ou URLs',()=>{
  const m=structuredClone(mission(18));m.presentation.visual={entities:{controle:{assetGroup:'button',state:{source:'variable',name:'aberta',values:[null,{},'on',{value:false,state:'file://evil'}]}}}};
