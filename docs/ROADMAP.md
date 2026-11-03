@@ -107,3 +107,11 @@ Ver [V20-PLATFORM-VISION.md](V20-PLATFORM-VISION.md) para papéis, modelo concei
 - Identificações declarativas de entidades, barreiras e propriedades, com metadados editáveis no Studio. Auditoria das 33 missões/71 cenários.
 - Pendente revisão humana de legibilidade, foco, toque físico e uso com criança. Versão não certifica experiência em Safari/iOS ou leitor de tela.
 - V2.0 continua somente planejamento; sem contas, escolas, telemetria ou backend antecipados.
+
+## V0.9.4 — Revisão autorizada
+
+- Escopo fechado em V094-SCOPE.md: 32 missões/68 cenários, sem renumerar após remoção da 28.
+- Conclusão estrita, memória de cálculo completa, paleta oculta no playback e algoritmo sem scroll interno.
+- Exploração via unlockAll=1; interações oficiais na mesma casa; mapas/estados/autorizações revisados.
+- Contratos JSON incrementais e compatibilidade legada documentados em V094-JSON-CONTRACT.md.
+- Sem nova AST, arte, dependências, backend, merge automático ou deploy manual.

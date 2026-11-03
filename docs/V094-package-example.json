@@ -1,0 +1,551 @@
+{
+  "id": 23,
+  "title": "Um pacote, três destinos",
+  "demo": true,
+  "interactionPolicy": "here",
+  "instructions": "Retire o pacote na casa de retirada. ESCOLHA: código A entrega em A; B entrega em B; qualquer outro vai para Triagem. Cada versão tem sua própria meta.",
+  "hint": "Use os casos A e B; OUTRO VALOR atende C e X. Entre na casa da estação antes de entregar.",
+  "start": {
+    "row": 4,
+    "col": 0,
+    "direction": "N"
+  },
+  "goal": {
+    "row": 0,
+    "col": 0
+  },
+  "grid": {
+    "width": 5,
+    "height": 5,
+    "obstacles": [
+      {
+        "row": 2,
+        "col": 0
+      },
+      {
+        "row": 2,
+        "col": 1
+      },
+      {
+        "row": 2,
+        "col": 3
+      },
+      {
+        "row": 3,
+        "col": 3
+      },
+      {
+        "row": 4,
+        "col": 1
+      },
+      {
+        "row": 4,
+        "col": 2
+      },
+      {
+        "row": 4,
+        "col": 3
+      }
+    ]
+  },
+  "initialVariables": {
+    "codigo": "A",
+    "carregando": false,
+    "entregue": false,
+    "foraDosCasos": true
+  },
+  "entities": [
+    {
+      "id": "origem",
+      "row": 3,
+      "col": 0,
+      "collectible": false,
+      "onEnter": [],
+      "interactions": [
+        {
+          "id": "retirar",
+          "relativeTo": [
+            "here"
+          ],
+          "when": {
+            "type": "stateEquals",
+            "variable": "carregando",
+            "value": false
+          },
+          "effects": [
+            {
+              "type": "set",
+              "variable": "carregando",
+              "value": true
+            },
+            {
+              "type": "set",
+              "variable": "foraDosCasos",
+              "value": true
+            },
+            {
+              "when": {
+                "type": "stateEquals",
+                "variable": "codigo",
+                "value": "A"
+              },
+              "actions": [
+                {
+                  "type": "set",
+                  "variable": "foraDosCasos",
+                  "value": false
+                }
+              ]
+            },
+            {
+              "when": {
+                "type": "stateEquals",
+                "variable": "codigo",
+                "value": "B"
+              },
+              "actions": [
+                {
+                  "type": "set",
+                  "variable": "foraDosCasos",
+                  "value": false
+                }
+              ]
+            }
+          ],
+          "once": false,
+          "consume": false
+        }
+      ],
+      "properties": {}
+    },
+    {
+      "id": "estacaoA",
+      "row": 0,
+      "col": 0,
+      "collectible": false,
+      "onEnter": [],
+      "interactions": [
+        {
+          "id": "entregar",
+          "relativeTo": [
+            "here"
+          ],
+          "when": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "stateEquals",
+                "variable": "carregando",
+                "value": true
+              },
+              {
+                "type": "stateEquals",
+                "variable": "codigo",
+                "value": "A"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "type": "set",
+              "variable": "carregando",
+              "value": false
+            },
+            {
+              "type": "set",
+              "variable": "entregue",
+              "value": true
+            }
+          ],
+          "once": false,
+          "consume": false
+        }
+      ],
+      "properties": {}
+    },
+    {
+      "id": "estacaoB",
+      "row": 0,
+      "col": 2,
+      "collectible": false,
+      "onEnter": [],
+      "interactions": [
+        {
+          "id": "entregar",
+          "relativeTo": [
+            "here"
+          ],
+          "when": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "stateEquals",
+                "variable": "carregando",
+                "value": true
+              },
+              {
+                "type": "stateEquals",
+                "variable": "codigo",
+                "value": "B"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "type": "set",
+              "variable": "carregando",
+              "value": false
+            },
+            {
+              "type": "set",
+              "variable": "entregue",
+              "value": true
+            }
+          ],
+          "once": false,
+          "consume": false
+        }
+      ],
+      "properties": {}
+    },
+    {
+      "id": "estacaoTriagem",
+      "row": 0,
+      "col": 4,
+      "collectible": false,
+      "onEnter": [],
+      "interactions": [
+        {
+          "id": "entregar",
+          "relativeTo": [
+            "here"
+          ],
+          "when": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "stateEquals",
+                "variable": "carregando",
+                "value": true
+              },
+              {
+                "type": "stateEquals",
+                "variable": "foraDosCasos",
+                "value": true
+              }
+            ]
+          },
+          "effects": [
+            {
+              "type": "set",
+              "variable": "carregando",
+              "value": false
+            },
+            {
+              "type": "set",
+              "variable": "entregue",
+              "value": true
+            }
+          ],
+          "once": false,
+          "consume": false
+        }
+      ],
+      "properties": {}
+    }
+  ],
+  "winCondition": {
+    "type": "stateEquals",
+    "variable": "entregue",
+    "value": true
+  },
+  "commandOptions": [
+    {
+      "id": "retirar",
+      "label": "Retirar pacote aqui",
+      "node": {
+        "type": "interact",
+        "relativeTo": "here",
+        "entityId": "origem",
+        "actionId": "retirar"
+      }
+    },
+    {
+      "id": "entregarA",
+      "label": "Entregar em A aqui",
+      "node": {
+        "type": "interact",
+        "relativeTo": "here",
+        "entityId": "estacaoA",
+        "actionId": "entregar"
+      }
+    },
+    {
+      "id": "entregarB",
+      "label": "Entregar em B aqui",
+      "node": {
+        "type": "interact",
+        "relativeTo": "here",
+        "entityId": "estacaoB",
+        "actionId": "entregar"
+      }
+    },
+    {
+      "id": "entregarTriagem",
+      "label": "Entregar em Triagem aqui",
+      "node": {
+        "type": "interact",
+        "relativeTo": "here",
+        "entityId": "estacaoTriagem",
+        "actionId": "entregar"
+      }
+    }
+  ],
+  "switchOptions": [
+    {
+      "id": "destino",
+      "label": "Escolher pelo código do pacote",
+      "selector": {
+        "kind": "worldVariable",
+        "name": "codigo"
+      },
+      "cases": [
+        {
+          "value": "A",
+          "label": "A"
+        },
+        {
+          "value": "B",
+          "label": "B"
+        }
+      ],
+      "defaultLabel": "Triagem · qualquer outro código"
+    }
+  ],
+  "solution": [
+    {
+      "type": "move"
+    },
+    {
+      "type": "interact",
+      "relativeTo": "here",
+      "entityId": "origem",
+      "actionId": "retirar"
+    },
+    {
+      "type": "turnRight"
+    },
+    {
+      "type": "move"
+    },
+    {
+      "type": "move"
+    },
+    {
+      "type": "turnLeft"
+    },
+    {
+      "type": "move"
+    },
+    {
+      "type": "switch",
+      "selector": {
+        "kind": "worldVariable",
+        "name": "codigo"
+      },
+      "cases": [
+        {
+          "value": "A",
+          "body": [
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnLeft"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "turnRight"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "interact",
+              "relativeTo": "here",
+              "entityId": "estacaoA",
+              "actionId": "entregar"
+            }
+          ]
+        },
+        {
+          "value": "B",
+          "body": [
+            {
+              "type": "move"
+            },
+            {
+              "type": "move"
+            },
+            {
+              "type": "interact",
+              "relativeTo": "here",
+              "entityId": "estacaoB",
+              "actionId": "entregar"
+            }
+          ]
+        }
+      ],
+      "default": [
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnRight"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnLeft"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "interact",
+          "relativeTo": "here",
+          "entityId": "estacaoTriagem",
+          "actionId": "entregar"
+        }
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "id": "A",
+      "label": "Código A",
+      "initialVariables": {
+        "codigo": "A",
+        "carregando": false,
+        "entregue": false,
+        "foraDosCasos": true
+      },
+      "goal": {
+        "row": 0,
+        "col": 0
+      }
+    },
+    {
+      "id": "B",
+      "label": "Código B",
+      "initialVariables": {
+        "codigo": "B",
+        "carregando": false,
+        "entregue": false,
+        "foraDosCasos": true
+      },
+      "goal": {
+        "row": 0,
+        "col": 2
+      }
+    },
+    {
+      "id": "C",
+      "label": "Código C",
+      "initialVariables": {
+        "codigo": "C",
+        "carregando": false,
+        "entregue": false,
+        "foraDosCasos": true
+      },
+      "goal": {
+        "row": 0,
+        "col": 4
+      }
+    },
+    {
+      "id": "X",
+      "label": "Código X",
+      "initialVariables": {
+        "codigo": "X",
+        "carregando": false,
+        "entregue": false,
+        "foraDosCasos": true
+      },
+      "goal": {
+        "row": 0,
+        "col": 4
+      }
+    }
+  ],
+  "presentation": {
+    "variables": {
+      "foraDosCasos": "Encaminhar à Triagem"
+    },
+    "visual": {
+      "chapter": "advanced",
+      "environmentTheme": "yard",
+      "obstacleSkin": "crate",
+      "goalSkin": "star",
+      "entities": {
+        "origem": {
+          "assetGroup": "package",
+          "badge": "Retirada"
+        },
+        "estacaoA": {
+          "assetGroup": "station",
+          "badge": "A"
+        },
+        "estacaoB": {
+          "assetGroup": "station",
+          "badge": "B"
+        },
+        "estacaoTriagem": {
+          "assetGroup": "station",
+          "badge": "Triagem"
+        }
+      }
+    },
+    "stateIndicators": [
+      {
+        "variable": "codigo",
+        "label": "Código do pacote"
+      },
+      {
+        "variable": "carregando",
+        "label": "Carregando pacote"
+      },
+      {
+        "variable": "entregue",
+        "label": "Entregue"
+      }
+    ],
+    "entities": {
+      "origem": {
+        "label": "Retirada do pacote",
+        "interactionMessage": "Pacote retirado!"
+      },
+      "estacaoA": {
+        "label": "Estação A",
+        "interactionMessage": "Entrega em A concluída!"
+      },
+      "estacaoB": {
+        "label": "Estação B",
+        "interactionMessage": "Entrega em B concluída!"
+      },
+      "estacaoTriagem": {
+        "label": "Estação Triagem",
+        "interactionMessage": "Entrega em Triagem concluída!"
+      }
+    }
+  }
+}

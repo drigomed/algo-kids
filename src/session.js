@@ -7,7 +7,7 @@ export function createSession(mission, program, options) {
   scenarios.forEach(scenario=>validateProgram(snapshot,scenario));
   const execution = createExecution(scenarios[0], snapshot, options);
   const passed = execution.state.status === 'won' ? [0] : [];
-  return {scenarios, program: snapshot, options, scenarioIndex: 0, passed, testing: false,
+  return {executionArchives:[],scenarios, program: snapshot, options, scenarioIndex: 0, passed, testing: false,
     completed: passed.length === scenarios.length, execution};
 }
 export function canStep(session) {
@@ -17,7 +17,7 @@ export function stepSession(session) {
   if (!canStep(session)) return session;
   if (session.execution.state.status === 'won') {
     const scenarioIndex = session.scenarioIndex + 1;
-    return {...session, scenarioIndex, execution: createExecution(session.scenarios[scenarioIndex], session.program, session.options)};
+    return {...session,executionArchives:[...(session.executionArchives??[]),{scenarioIndex:session.scenarioIndex,execution:session.execution}], scenarioIndex, execution: createExecution(session.scenarios[scenarioIndex], session.program, session.options)};
   }
   const execution = stepExecution(session.scenarios[session.scenarioIndex], session.program, session.execution);
   const passed = execution.state.status === 'won' ? [...new Set([...session.passed, session.scenarioIndex])] : [...session.passed];
@@ -25,7 +25,7 @@ export function stepSession(session) {
 }
 export function startVariantTests(session) {
   if (session.interrupted || session.scenarioIndex !== 0 || session.execution.state.status !== 'won' || !session.passed.includes(0) || session.scenarios.length < 2) throw new Error('Conclua primeiro o treino com este programa.');
-  return {...session, testing: true, scenarioIndex: 1, passed: [0], completed: false,
+  return {...session,executionArchives:[{scenarioIndex:0,execution:session.execution}], testing: true, scenarioIndex: 1, passed: [0], completed: false,
     execution: createExecution(session.scenarios[1], session.program, session.options)};
 }
 

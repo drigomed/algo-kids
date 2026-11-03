@@ -4,7 +4,7 @@ import {initialState,applyCommand,simulate,validateMission,createExecution,stepE
 import {validateCondition,passage,pathClear,frontCell,cellProperties} from '../src/rules.js';
 import {conditionOptions,defaultCondition,configureCondition,validateDecision,conditionQuestion} from '../src/condition-options.js';
 import {renderProgram,renderBoard,eventMessages,worldIndicators,describeEnvironment} from '../src/view.js';
-import {missions,missionVariants} from '../src/missions.js';
+import {missions,missionVariants} from './helpers/historical-catalog.js';
 import {createSession,stepSession,startVariantTests,canStep} from '../src/session.js';
 import {editProgram} from '../src/program.js';
 const eq=(variable,value)=>({type:'stateEquals',variable,value});
@@ -13,7 +13,7 @@ const sensor=(property='signal',value='green')=>({type:'cellPropertyEquals',rela
 const entity=(id,row,col,onEnter,collectible=false)=>({id,row,col,onEnter,collectible});
 const base=()=>({grid:{width:5,height:5,obstacles:[]},start:{row:4,col:0,direction:'L'},goal:{row:0,col:4},initialVariables:{flag:false,count:0,color:'red'},entities:[]});
 const command=(m,s,type='move')=>applyCommand(m,s,{type});
-function freeze(value){if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
+function freeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
 function finish(session){let steps=0;while(canStep(session)){assert(++steps<1000);session=stepSession(session);}return session;}
 
 test('igualdade usa tipo e valor, sem coerção, para booleanos, texto e números',()=>{

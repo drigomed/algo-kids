@@ -9,7 +9,7 @@ import {configureCondition} from '../src/condition-options.js';
 import {editProgram,sequenceAt} from '../src/program.js';
 import {renderProgram,renderBoard} from '../src/view.js';
 import {renderMemory,renderCommandPalette,renderDecisionTrace,failureMessage,commandMessages} from '../src/command-view.js';
-import {missions,missionVariants} from '../src/missions.js';
+import {missions,missionVariants} from './helpers/historical-catalog.js';
 import {createSession,stepSession,canStep,startVariantTests} from '../src/session.js';
 const mem=(variable,value)=>({type:'memoryEquals',variable,value});
 const eq=(variable,value)=>({type:'stateEquals',variable,value});
@@ -26,7 +26,7 @@ function base() {return {
  entities:[{id:'control',row:4,col:1,collectible:false,onEnter:[],interactions:[{id:'act',relativeTo:['front','here'],once:true,effects:[set('flag',true)]},{id:'change',relativeTo:['front'],effects:[set('text','blue')]}]}],
  presentation:{memory:{reading:{label:'Cor guardada',values:[{value:'red',label:'Vermelha'},{value:'blue',label:'Azul'}]},flag:{label:'Resposta guardada'}}}
 };}
-function freeze(value){if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
+function freeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
 function finish(s){let guard=0;while(canStep(s)){assert(++guard<2000);s=stepSession(s);}return s;}
 const end=(m,p)=>simulate(m,p).at(-1);
 const move={type:'move'};

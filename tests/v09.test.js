@@ -4,7 +4,7 @@ import {readFile,cp,mkdtemp,rm,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {execFileSync} from 'node:child_process';
-import {missions,missionVariants} from '../src/missions.js';
+import {missions,missionVariants} from './helpers/historical-catalog.js';
 import {initialState,simulate,validateMission} from '../src/engine.js';
 import {newMission,createDraft,transact,undo,redo,place,resize,addVariant,inheritField,resolved,at,assign,renameDeclaration,dependencies,removeAt} from '../src/studio/model.js';
 import {diagnose} from '../src/studio/validation.js';
@@ -16,12 +16,13 @@ import {renderInspector,readTyped,defaultForItem} from '../src/studio/inspectors
 import {schemaAt,defaultValue} from '../src/studio/authoring-schema.js';
 import {renderAuthorBoard} from '../src/studio/board-editor.js';
 import {mountStudio} from '../src/studio/app.js';
-const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
+const freeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
 const simple=()=>({...newMission(),solution:Array.from({length:3},()=>({type:'move'}))});
 const end=m=>simulate(m,m.solution).at(-1);
 function finish(t){let guard=0;while(!t.done){assert(++guard<30000);t=stepPlaytest(t);}return t;}
 const text=file=>readFile(new URL('../'+file,import.meta.url),'utf8');
-function reactive(){const m=simple();m.id='studio-reativa';m.initialVariables={liberada:false};m.entities=[{id:'controle',row:4,col:1,collectible:false,onEnter:[],interactions:[{id:'acionar',relativeTo:['front'],once:true,effects:[{type:'set',variable:'liberada',value:true}]}]}];m.barriers=[{id:'porta',row:4,col:2,passableWhen:{type:'stateEquals',variable:'liberada',value:true}}];const node={type:'interact',relativeTo:'front',entityId:'controle',actionId:'acionar'};m.commandOptions=[{id:'acionar',label:'Ativar dispositivo',node}];m.solution=[node,...m.solution];m.presentation.visual={chapter:'reactive',robotSkin:'mk3',environmentTheme:'yard',entities:{controle:{assetGroup:'button',state:{source:'variable',name:'liberada',values:[{value:true,state:'on'},{value:false,state:'off'}]}}},barrierDefaults:{assetGroup:'door'}};return m;}
+function reactive(){const m=simple();delete m.interactionPolicy; // Legacy front-interaction JSON contract.
+m.id='studio-reativa';m.initialVariables={liberada:false};m.entities=[{id:'controle',row:4,col:1,collectible:false,onEnter:[],interactions:[{id:'acionar',relativeTo:['front'],once:true,effects:[{type:'set',variable:'liberada',value:true}]}]}];m.barriers=[{id:'porta',row:4,col:2,passableWhen:{type:'stateEquals',variable:'liberada',value:true}}];const node={type:'interact',relativeTo:'front',entityId:'controle',actionId:'acionar'};m.commandOptions=[{id:'acionar',label:'Ativar dispositivo',node}];m.solution=[node,...m.solution];m.presentation.visual={chapter:'reactive',robotSkin:'mk3',environmentTheme:'yard',entities:{controle:{assetGroup:'button',state:{source:'variable',name:'liberada',values:[{value:true,state:'on'},{value:false,state:'off'}]}}},barrierDefaults:{assetGroup:'door'}};return m;}
 test('missão simples: criar, validar, exportar, importar e testar sem mudar tipos/AST',()=>{
  const m=freeze(simple()),serialized=serializeMission(m),n=parseMission(serialized);assert.deepEqual(n,m);assert.equal(serializeMission(n),serialized);assert.equal(end(n).status,'won');assert.equal(referenceValidated(finish(createPlaytest(n)),n),true);assert.equal(diagnose(newMission()).valid,true);assert.throws(()=>createPlaytest(newMission()));
 });
@@ -97,12 +98,12 @@ test('controlador: missão simples criada por botões, selo, exportação/import
  const imported=studioHarness();imported.app.importText(c.exported());assert.equal(imported.app.getDraft().mission.solution.length,3);assert.equal(imported.saved.size,1);
 });
 test('controlador: regras reativas criadas em formulários, sem editar JSON ou JS',async()=>{
- const c=studioHarness();c.element('#advanced').checked=true;
+ const c=studioHarness();c.element('#advanced').checked=true;c.click({delete:'["interactionPolicy"]'}); // Author the historical front-reach example explicitly.
  c.field([],'initialVariables');c.element('#new-key').value='liberada';c.click({addKey:'["initialVariables"]'});c.valueType(['initialVariables','liberada'],'boolean');
  c.element('#tool').value='entity';c.element('#board').onclick({target:{dataset:{row:'4',col:'1'},closest(){return this;}}});
- c.field(['entities',0],'interactions');c.item(['entities',0,'interactions']);c.item(['entities',0,'interactions',0,'relativeTo']);c.item(['entities',0,'interactions',0,'effects']);c.value(['entities',0,'interactions',0,'effects',0,'variable'],'string','liberada');c.valueType(['entities',0,'interactions',0,'effects',0,'value'],'boolean');c.value(['entities',0,'interactions',0,'effects',0,'value'],'boolean','true');
+ c.field(['entities',0],'interactions');c.item(['entities',0,'interactions']);c.item(['entities',0,'interactions',0,'relativeTo']);c.value(['entities',0,'interactions',0,'relativeTo',0],'string','front');c.item(['entities',0,'interactions',0,'effects']);c.value(['entities',0,'interactions',0,'effects',0,'variable'],'string','liberada');c.valueType(['entities',0,'interactions',0,'effects',0,'value'],'boolean');c.value(['entities',0,'interactions',0,'effects',0,'value'],'boolean','true');
  c.element('#tool').value='barrier';c.element('#board').onclick({target:{dataset:{row:'4',col:'2'},closest(){return this;}}});c.union(['barriers',0,'passableWhen'],'stateEquals');
- c.field([],'commandOptions');c.item(['commandOptions']);c.union(['commandOptions',0,'node'],'interact');c.click({solutionAdd:'command:comando'});for(let i=0;i<3;i++)c.click({solutionAdd:'move'});
+ c.field([],'commandOptions');c.item(['commandOptions']);c.union(['commandOptions',0,'node'],'interact');c.value(['commandOptions',0,'node','relativeTo'],'string','front');c.click({solutionAdd:'command:comando'});for(let i=0;i<3;i++)c.click({solutionAdd:'move'});
  c.value(['id'],'string','studio-reativa');c.value(['title'],'string','Controle e passagem');c.value(['presentation','visual','chapter'],'string','reactive');c.value(['presentation','visual','robotSkin'],'string','mk3');c.value(['presentation','visual','environmentTheme'],'string','yard');
  c.field(['presentation','visual'],'entities');c.element('#new-key').value='objeto1';c.click({addKey:'["presentation","visual","entities"]'});c.field(['presentation','visual','entities','objeto1'],'state');c.valueType(['presentation','visual','entities','objeto1','state'],'selector');c.field(['presentation','visual'],'barrierDefaults');
  c.element('#add-variant').onclick();c.element('#add-variant').onclick();c.click({override:'1',field:'initialVariables'});c.value(['variants',1,'initialVariables','liberada'],'boolean','true');c.value(['variants',0,'label'],'string','Treino: passagem fechada');c.value(['variants',1,'label'],'string','Teste: passagem já liberada');

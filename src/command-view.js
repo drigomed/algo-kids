@@ -35,11 +35,13 @@ export function renderMemory(mission,state) {
 }
 const reasons={memoryUnknown:'Antes, descubra e guarde essa informação. Use Inspecionar ou Guardar valor.',outOfReach:'Chegue perto e olhe para a casa certa antes de usar esse comando.',propertyMissing:'Não encontrei essa informação na casa à frente. Confira a posição e a direção.',typeMismatch:'Essa informação não combina com o campo de memória. Tente outra fonte.',targetMissing:'Não há um objeto para essa ação aqui.',incompatibleTarget:'Esse objeto não aceita a ação escolhida nesse alcance.',ambiguousTarget:'Há mais de um objeto para a mesma ação. Escolha uma posição com um único alvo.',preconditionFailed:'Ainda falta cumprir uma condição para usar esse objeto.',alreadyUsed:'Essa ação já foi usada nesta tentativa. Reinicie para experimentar de novo.',targetConsumed:'Esse objeto já foi retirado nesta tentativa.',effectFailed:'Essa ação não pôde terminar. O mundo foi preservado; vamos tentar outro caminho.'};
 export function failureMessage(mission,state) {
+ if(state.reason==='commandsRemaining')return 'Você chegou à meta, mas ainda há comandos no programa. Termine o algoritmo na chegada.';
  if(state.status==='energyDepleted')return energyMessage;
  const event=state.events.find(event=>event.type==='actionFailed');
+ if(mission.interactionPolicy==='here'&&event?.action==='interact'&&event.reason==='outOfReach')return 'Entre na mesma casa do objeto antes de interagir. Não é preciso virar para ele.';
  if(event?.reason==='loopCountInvalid')return 'A quantidade observada deve ser um número inteiro de 0 a 20. Inspecione uma quantidade válida antes de repetir.';
  if(event?.reason==='memoryUnknown'&&['for','while'].includes(event.action))return 'Ainda não sei essa informação; não consigo decidir se devo continuar.';
- return mission.presentation?.entities?.[event?.entityId]?.failureMessages?.[state.reason]??reasons[state.reason]??'Não foi possível realizar a ação. Confira o programa e tente de novo.';
+ return mission.presentation?.failures?.[state.reason]??mission.presentation?.entities?.[event?.entityId]?.failureMessages?.[state.reason]??reasons[state.reason]??'Não foi possível realizar a ação. Confira o programa e tente de novo.';
 }
 export function commandMessages(mission,state) {
  return state.events.flatMap(event=>{

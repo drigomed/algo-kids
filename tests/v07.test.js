@@ -11,7 +11,7 @@ import {renderProgram} from '../src/view.js';
 import {renderInlinePalette,renderDecisionTrace,commandMessages,failureMessage} from '../src/command-view.js';
 import {renderLoopPalette,renderLoopTrace} from '../src/loop-view.js';
 import {insertionLabel} from '../src/branch-view.js';
-import {missions,missionVariants} from '../src/missions.js';
+import {missions,missionVariants} from './helpers/historical-catalog.js';
 import {createSession,stepSession,canStep,startVariantTests} from '../src/session.js';
 const move={type:'move'},left={type:'turnLeft'},right={type:'turnRight'};
 const free={type:'pathClear'};
@@ -20,7 +20,7 @@ const until=(condition,body=[])=>({type:'while',condition,body});
 const eq=(variable,value)=>({type:'stateEquals',variable,value});
 const mem=(value=true)=>({type:'memoryEquals',variable:'known',value});
 const ifNode=(then=[],otherwise=[])=>({type:'if',condition:free,then,else:otherwise});
-const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
+const freeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
 const end=(m,p,options)=>simulate(m,p,options).at(-1);
 const checks=states=>states.flatMap(s=>s.events.filter(event=>event.type==='loopCheck'));
 const finish=s=>{let guard=0;while(canStep(s)){assert(++guard<11000);s=stepSession(s);}return s;};
@@ -55,7 +55,7 @@ for(const kind of ['won','collision','actionFailed'])test(`terminal ${kind} no c
  if(kind==='won')m.goal={row:4,col:1};
  if(kind==='collision')m.grid.obstacles=[{row:4,col:1}];
  if(kind==='actionFailed') {m.robotMemory.known.initial=null;m.conditionOptions=[{id:'known',label:'Sei?',condition:mem()}];body=[{type:'if',condition:mem(),then:[move],else:[right]},move];}
- const states=simulate(m,[repeat(4,body),left]);assert.equal(states.at(-1).status,kind);assert.equal(states.at(-1).instructionPointer,2);assert.equal(checks(states).length,1);
+ const states=simulate(m,[repeat(4,body),left]);assert.equal(states.at(-1).status,kind==='won'?'actionFailed':kind);assert.equal(states.at(-1).instructionPointer,2);assert.equal(checks(states).length,1);
  assert.equal(states.at(-1).direction,'L');assert.deepEqual(stepExecution(m,[repeat(4,body),left],statesByStep(m,[repeat(4,body),left]).execution).state,states.at(-1));
 });
 test('while falso inicialmente pula corpo e segue em um check',()=>{
@@ -195,7 +195,7 @@ test('loop não sobrescreve rastreio de if/switch nem altera sua decisão',()=>{
 });
 for(const m of missions.filter(m=>m.id<=23))test(`missão ${m.id}: paletas sem REPITA/ENQUANTO e soluções preservadas`,()=>{
  assert.equal(m.loopOptions,undefined);assert.equal(renderLoopPalette(m),'');assert.doesNotMatch(renderInlinePalette(m,''),/data-inline-loop|REPITA|ENQUANTO/);
- for(const scenario of missionVariants(m))assert.equal(end(scenario,m.solution).status,'won');
+ for(const scenario of missionVariants(m))assert.equal(end(scenario,m.solution).status,m.id===5?'actionFailed':'won'); // V094 rejects the two trailing commands in the frozen V093 reference.
 });
 for(const demo of missions.filter(m=>m.id>=24&&m.id<=25))test(`demo ${demo.id}: AST única, estados equivalentes, pausa/reset/variantes isolados`,()=>{
  const program=freeze(structuredClone(demo.solution));
@@ -211,7 +211,7 @@ for(const demo of missions.filter(m=>m.id>=24&&m.id<=25))test(`demo ${demo.id}: 
 });
 test('UI mantém confirmação antes de remover corpos, timers incrementais e estilos restritos',async()=>{
  const ui=await readFile(new URL('../src/ui.js',import.meta.url),'utf8'),css=await readFile(new URL('../src/style.css',import.meta.url),'utf8');
- assert.match(ui,/\['if','switch','for','while'\]\.includes\(node.type\).*window.confirm/);assert.match(ui,/if\(lastLoopKey!==loopKey\)/);assert.match(ui,/\$\('\.palette'\)\.hidden=target.length>0/);assert.match(ui,/generation===playbackGeneration/);assert.match(css,/@media\(prefers-reduced-motion:reduce\)\{\.loop-block/);assert.match(css,/\.loop-block .row-controls button[^}]*min-height:44px/);
+ assert.match(ui,/\['if','switch','for','while'\]\.includes\(node.type\).*window.confirm/);assert.match(ui,/if\(lastLoopKey!==loopKey\)/);assert.match(ui,/\$\('\.palette'\)\.hidden=running\|\|target.length>0/);assert.match(ui,/generation===playbackGeneration/);assert.match(css,/@media\(prefers-reduced-motion:reduce\)\{\.loop-block/);assert.match(css,/\.loop-block .row-controls button[^}]*min-height:44px/);
 });
 test('exemplo JSON completo, renomeável e serializável, sem regra específica no motor',async()=>{
  const text=await readFile(new URL('../docs/V07-example.json',import.meta.url),'utf8'),m=JSON.parse(text);assert.equal(validateMission(m),true);assert.equal(end(m,m.solution).status,'won');assert.deepEqual(JSON.parse(JSON.stringify(m)),m);
@@ -223,7 +223,7 @@ for(const outcome of ['won','collision','actionFailed'])test(`while interrompido
  if(outcome==='won')m.goal={row:4,col:1};
  if(outcome==='collision')m.grid.obstacles=[{row:4,col:1}];
  if(outcome==='actionFailed'){m.robotMemory.known.initial=null;m.conditionOptions=[{id:'known',label:'Sei?',condition:mem()}];body=[{type:'if',condition:mem(),then:[move],else:[]},move];}
- const p=[until(eq('open',true),body)],{execution,states}=statesByStep(m,p);assert.equal(execution.state.status,outcome);assert.equal(execution.state.instructionPointer,2);assert.equal(checks(states).length,1);assert.equal(execution.state.events[0].loop.loopType,'while');
+ const p=[until(eq('open',true),body)],{execution,states}=statesByStep(m,p);assert.equal(execution.state.status,outcome==='won'?'actionFailed':outcome);assert.equal(execution.state.instructionPointer,2);assert.equal(checks(states).length,1);assert.equal(execution.state.events.find(e=>e.loop).loop.loopType,'while');
  assert.doesNotMatch(renderLoopTrace(m,execution,p),/Executando o CORPO/);
 });
 test('progresso do corpo mostra a iteração executada, sem adiantar no último comando',()=>{

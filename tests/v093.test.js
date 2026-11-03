@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
-import {missions,missionVariants} from '../src/missions.js';
+import {missions,missionVariants} from './helpers/historical-catalog.js';
 import {simulate,initialState,applyCommand} from '../src/engine.js';
 import {createSession,stepSession,canStep,startVariantTests,interruptSession} from '../src/session.js';
 import {normalizeProgress,isUnlocked,currentMission,parseProgress,serializeProgress,createProgressStore,PROGRESS_KEY} from '../src/progress.js';
@@ -15,7 +15,7 @@ import {passageIndicators} from '../src/command-view.js';
 import {seq} from '../src/lock-mission-data.js';
 import {removeBox,discardBox,transportCycle} from '../src/demo-missions-v092.js';
 import {canonical,loopOption} from '../src/loops.js';
-import {gameController,memoryStorage,studioController} from './helpers/controllers.js';
+import {gameController,memoryStorage,studioController} from './helpers/historical-controllers.js';
 const clone=structuredClone;
 const mission=id=>clone(missions.find(m=>m.id===id));
 const end=(m,p=m.solution)=>simulate(m,p).at(-1);
@@ -43,7 +43,7 @@ function seeded(n){const storage=memoryStorage();storage.setItem(PROGRESS_KEY,se
 for(const record of baseline.missions)test(`V093: ${record.id} mantém domínio/trace V092, exceto transporte autorizado`,()=>{
  const m=mission(record.id);if([30,31,33].includes(m.id))return;
  assert.equal(hash(strip(m)),record.domain);if(m.id<=8)assert.equal(hash(m),record.definition);
- for(const [i,s]of missionVariants(m).entries()){assert.equal(hash(simulate(s,m.solution)),record.scenarios[i].trace);if(m.id<=8)assert.equal(hash(renderBoard(s,initialState(s)).replace(/file:\/\/[^'"\s)]*?\/src\/assets\//g,'assets/')),record.scenarios[i].board);}
+ for(const [i,s]of missionVariants(m).entries()){if(m.id===5)assert.equal(end(s).reason,'commandsRemaining');else assert.equal(hash(simulate(s,m.solution)),record.scenarios[i].trace);if(m.id<=8)assert.equal(hash(renderBoard(s,initialState(s)).replace(/file:\/\/[^'"\s)]*?\/src\/assets\//g,'assets/')),record.scenarios[i].board);}
 });
 for(const id of [30,31,33])test(`${id}: retirada, transporte à casa própria, descarte e retorno em todos cenários`,()=>{
  const m=mission(id);assert.deepEqual(m.entities.find(e=>e.id==='lixeira')&&[m.entities[1].row,m.entities[1].col],[3,1]);assert.deepEqual([m.start.row,m.start.col],[2,1]);assert.equal(m.grid.obstacles.some(p=>p.row===3&&p.col===1),false);

@@ -1,0 +1,49 @@
+{
+  "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "errors": [],
+  "results": [
+    {
+      "label": "Exploração: todas acessíveis, 28 removida, sem conquistas",
+      "viewport": 1366,
+      "width": 1351
+    },
+    {
+      "label": "13: identificações sinal/passagem sem interseção",
+      "status": "ok"
+    },
+    {
+      "label": "21 sem badges de chaves; 23 com A/B/Triagem e início separado",
+      "status": "ok"
+    },
+    {
+      "label": "23: referência construída por controles, quatro variantes aprovadas, histórico preservado e sem conquista fora de ordem",
+      "status": "ok"
+    },
+    {
+      "label": "Programa de 40 blocos cresce sem scroll interno",
+      "client": 2927,
+      "scroll": 2927,
+      "overflow": "visible",
+      "max": "none"
+    },
+    {
+      "label": "23 no celular 390px",
+      "viewport": 390,
+      "width": 390
+    },
+    {
+      "label": "30 no celular 390px",
+      "viewport": 390,
+      "width": 390
+    },
+    {
+      "label": "30: inspeção à frente, retirar aqui e descarte na casa da lixeira",
+      "status": "ok"
+    },
+    {
+      "label": "Studio 360px com quatro variantes e histórico",
+      "viewport": 360,
+      "width": 360
+    }
+  ]
+}

@@ -1,0 +1,714 @@
+{
+  "id": 30,
+  "title": "Quantas caixas preciso retirar?",
+  "demo": true,
+  "instructions": "Entre no ponto de retirada da pilha para interagir aqui. Leve uma caixa até a lixeira ao sul e volte. O corredor depois da pilha só libera quando ela esvaziar.",
+  "hint": "No ponto de retirada: retirar aqui; direita, avançar, descartar aqui; direita, direita, avançar, direita. Inspecionar continua podendo observar à frente.",
+  "start": {
+    "row": 2,
+    "col": 1,
+    "direction": "L"
+  },
+  "goal": {
+    "row": 2,
+    "col": 4
+  },
+  "grid": {
+    "width": 5,
+    "height": 5,
+    "obstacles": [
+      {
+        "row": 0,
+        "col": 0
+      },
+      {
+        "row": 0,
+        "col": 1
+      },
+      {
+        "row": 0,
+        "col": 2
+      },
+      {
+        "row": 0,
+        "col": 3
+      },
+      {
+        "row": 0,
+        "col": 4
+      },
+      {
+        "row": 1,
+        "col": 0
+      },
+      {
+        "row": 1,
+        "col": 1
+      },
+      {
+        "row": 1,
+        "col": 2
+      },
+      {
+        "row": 1,
+        "col": 3
+      },
+      {
+        "row": 1,
+        "col": 4
+      },
+      {
+        "row": 2,
+        "col": 0
+      },
+      {
+        "row": 3,
+        "col": 0
+      },
+      {
+        "row": 3,
+        "col": 1
+      },
+      {
+        "row": 3,
+        "col": 3
+      },
+      {
+        "row": 3,
+        "col": 4
+      },
+      {
+        "row": 4,
+        "col": 0
+      },
+      {
+        "row": 4,
+        "col": 1
+      },
+      {
+        "row": 4,
+        "col": 2
+      },
+      {
+        "row": 4,
+        "col": 3
+      },
+      {
+        "row": 4,
+        "col": 4
+      }
+    ]
+  },
+  "initialVariables": {
+    "restantes": 1,
+    "carregando": false,
+    "descartadas": 0
+  },
+  "robotMemory": {
+    "quantidadeObservada": {
+      "type": "number",
+      "initial": null
+    }
+  },
+  "entities": [
+    {
+      "id": "pilha",
+      "row": 2,
+      "col": 2,
+      "collectible": false,
+      "onEnter": [],
+      "properties": {
+        "quantidade": {
+          "stateVariable": "restantes"
+        }
+      },
+      "interactions": [
+        {
+          "id": "retirar",
+          "relativeTo": [
+            "here"
+          ],
+          "once": false,
+          "consume": false,
+          "when": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "stateAtLeast",
+                "variable": "restantes",
+                "value": 1
+              },
+              {
+                "type": "stateEquals",
+                "variable": "carregando",
+                "value": false
+              }
+            ]
+          },
+          "effects": [
+            {
+              "type": "increment",
+              "variable": "restantes",
+              "amount": -1
+            },
+            {
+              "type": "set",
+              "variable": "carregando",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lixeira",
+      "row": 3,
+      "col": 2,
+      "collectible": false,
+      "onEnter": [],
+      "properties": {
+        "quantidade": {
+          "stateVariable": "descartadas"
+        }
+      },
+      "interactions": [
+        {
+          "id": "descartar",
+          "relativeTo": [
+            "here"
+          ],
+          "once": false,
+          "consume": false,
+          "when": {
+            "type": "stateEquals",
+            "variable": "carregando",
+            "value": true
+          },
+          "effects": [
+            {
+              "type": "set",
+              "variable": "carregando",
+              "value": false
+            },
+            {
+              "type": "increment",
+              "variable": "descartadas",
+              "amount": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "barriers": [
+    {
+      "id": "bloqueio",
+      "row": 2,
+      "col": 3,
+      "passableWhen": {
+        "type": "stateEquals",
+        "variable": "restantes",
+        "value": 0
+      },
+      "failureCode": "stackBlocked"
+    }
+  ],
+  "winCondition": {
+    "type": "all",
+    "conditions": [
+      {
+        "type": "stateEquals",
+        "variable": "restantes",
+        "value": 0
+      },
+      {
+        "type": "stateEquals",
+        "variable": "carregando",
+        "value": false
+      }
+    ]
+  },
+  "commandOptions": [
+    {
+      "id": "inspecionar",
+      "label": "Inspecionar quantidade aqui",
+      "node": {
+        "type": "inspect",
+        "source": {
+          "type": "entityProperty",
+          "relativeTo": "front",
+          "property": "quantidade",
+          "entityId": "pilha"
+        },
+        "into": "quantidadeObservada"
+      }
+    },
+    {
+      "id": "retirar",
+      "label": "Retirar uma caixa aqui",
+      "node": {
+        "type": "interact",
+        "relativeTo": "here",
+        "entityId": "pilha",
+        "actionId": "retirar"
+      }
+    },
+    {
+      "id": "descartar",
+      "label": "Jogar uma caixa na lixeira aqui",
+      "node": {
+        "type": "interact",
+        "relativeTo": "here",
+        "entityId": "lixeira",
+        "actionId": "descartar"
+      }
+    }
+  ],
+  "loopOptions": [
+    {
+      "id": "observado",
+      "label": "Repetir a quantidade observada",
+      "kind": "for",
+      "count": {
+        "kind": "memoryVariable",
+        "name": "quantidadeObservada"
+      }
+    },
+    {
+      "id": "uma",
+      "label": "Repetir 1 vez (quantidade fixa)",
+      "kind": "for",
+      "times": 1
+    }
+  ],
+  "solution": [
+    {
+      "type": "inspect",
+      "source": {
+        "type": "entityProperty",
+        "relativeTo": "front",
+        "property": "quantidade",
+        "entityId": "pilha"
+      },
+      "into": "quantidadeObservada"
+    },
+    {
+      "type": "move"
+    },
+    {
+      "type": "for",
+      "count": {
+        "kind": "memoryVariable",
+        "name": "quantidadeObservada"
+      },
+      "body": [
+        {
+          "type": "interact",
+          "relativeTo": "here",
+          "entityId": "pilha",
+          "actionId": "retirar"
+        },
+        {
+          "type": "turnRight"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "interact",
+          "relativeTo": "here",
+          "entityId": "lixeira",
+          "actionId": "descartar"
+        },
+        {
+          "type": "turnRight"
+        },
+        {
+          "type": "turnRight"
+        },
+        {
+          "type": "move"
+        },
+        {
+          "type": "turnRight"
+        }
+      ]
+    },
+    {
+      "type": "move"
+    },
+    {
+      "type": "move"
+    }
+  ],
+  "presentation": {
+    "visual": {
+      "chapter": "advanced",
+      "goalSkin": "star",
+      "boardStyle": "blueprint",
+      "entities": {
+        "pilha": {
+          "assetGroup": "stack",
+          "quantity": {
+            "source": "property",
+            "name": "quantidade",
+            "empty": "hideImage"
+          },
+          "badge": "Pilha",
+          "details": []
+        },
+        "lixeira": {
+          "assetGroup": "bin",
+          "quantity": {
+            "source": "property",
+            "name": "quantidade"
+          },
+          "badge": "Lixeira",
+          "details": []
+        }
+      },
+      "barriers": {
+        "bloqueio": {
+          "assetGroup": "gate",
+          "badge": "Passagem",
+          "details": []
+        }
+      },
+      "properties": {}
+    },
+    "memory": {
+      "quantidadeObservada": {
+        "label": "Quantidade observada"
+      }
+    },
+    "stateIndicators": [
+      {
+        "variable": "restantes",
+        "label": "Caixas na pilha"
+      },
+      {
+        "variable": "carregando",
+        "label": "Carregando uma caixa"
+      },
+      {
+        "variable": "descartadas",
+        "label": "Caixas na lixeira"
+      }
+    ],
+    "entities": {
+      "pilha": {
+        "label": "Pilha de caixas",
+        "glyph": "▣",
+        "propertyLabels": {
+          "quantidade": "Caixas restantes"
+        },
+        "interactionMessage": "Você retirou uma caixa. Agora jogue-a na lixeira!",
+        "failureMessages": {
+          "preconditionFailed": "Verifique se ainda há caixas e se suas mãos estão vazias."
+        }
+      },
+      "lixeira": {
+        "label": "Lixeira",
+        "glyph": "▤",
+        "role": "delivery",
+        "interactionMessage": "Caixa descartada na lixeira!",
+        "failureMessages": {
+          "preconditionFailed": "Primeiro retire uma caixa da pilha."
+        }
+      }
+    },
+    "barriers": {
+      "bloqueio": {
+        "label": "Corredor após a pilha"
+      }
+    },
+    "failures": {
+      "stackBlocked": "Ainda há caixas bloqueando a passagem. Retire e descarte uma por vez."
+    }
+  },
+  "interactionPolicy": "here",
+  "variants": [
+    {
+      "id": "caixas1",
+      "label": "1 caixa(s)",
+      "initialVariables": {
+        "restantes": 1,
+        "carregando": false,
+        "descartadas": 0
+      },
+      "presentation": {
+        "visual": {
+          "chapter": "advanced",
+          "goalSkin": "star",
+          "boardStyle": "blueprint",
+          "entities": {
+            "pilha": {
+              "assetGroup": "stack",
+              "quantity": {
+                "source": "property",
+                "name": "quantidade",
+                "empty": "hideImage"
+              },
+              "badge": "Pilha",
+              "details": []
+            },
+            "lixeira": {
+              "assetGroup": "bin",
+              "quantity": {
+                "source": "property",
+                "name": "quantidade"
+              },
+              "badge": "Lixeira",
+              "details": []
+            }
+          },
+          "barriers": {
+            "bloqueio": {
+              "assetGroup": "gate",
+              "badge": "Passagem",
+              "details": []
+            }
+          },
+          "properties": {}
+        },
+        "memory": {
+          "quantidadeObservada": {
+            "label": "Quantidade observada"
+          }
+        },
+        "stateIndicators": [
+          {
+            "variable": "restantes",
+            "label": "Caixas na pilha"
+          },
+          {
+            "variable": "carregando",
+            "label": "Carregando uma caixa"
+          },
+          {
+            "variable": "descartadas",
+            "label": "Caixas na lixeira"
+          }
+        ],
+        "entities": {
+          "pilha": {
+            "label": "Pilha de caixas",
+            "glyph": "▣",
+            "propertyLabels": {
+              "quantidade": "Caixas restantes"
+            },
+            "interactionMessage": "Você retirou uma caixa. Agora jogue-a na lixeira!",
+            "failureMessages": {
+              "preconditionFailed": "Verifique se ainda há caixas e se suas mãos estão vazias."
+            }
+          },
+          "lixeira": {
+            "label": "Lixeira",
+            "glyph": "▤",
+            "role": "delivery",
+            "interactionMessage": "Caixa descartada na lixeira!",
+            "failureMessages": {
+              "preconditionFailed": "Primeiro retire uma caixa da pilha."
+            }
+          }
+        },
+        "barriers": {
+          "bloqueio": {
+            "label": "Corredor após a pilha"
+          }
+        },
+        "failures": {
+          "stackBlocked": "Ainda há caixas bloqueando a passagem. Retire e descarte uma por vez."
+        }
+      }
+    },
+    {
+      "id": "caixas2",
+      "label": "2 caixa(s)",
+      "initialVariables": {
+        "restantes": 2,
+        "carregando": false,
+        "descartadas": 0
+      },
+      "presentation": {
+        "visual": {
+          "chapter": "advanced",
+          "goalSkin": "star",
+          "boardStyle": "blueprint",
+          "entities": {
+            "pilha": {
+              "assetGroup": "stack",
+              "quantity": {
+                "source": "property",
+                "name": "quantidade",
+                "empty": "hideImage"
+              },
+              "badge": "Pilha",
+              "details": []
+            },
+            "lixeira": {
+              "assetGroup": "bin",
+              "quantity": {
+                "source": "property",
+                "name": "quantidade"
+              },
+              "badge": "Lixeira",
+              "details": []
+            }
+          },
+          "barriers": {
+            "bloqueio": {
+              "assetGroup": "gate",
+              "badge": "Passagem",
+              "details": []
+            }
+          },
+          "properties": {}
+        },
+        "memory": {
+          "quantidadeObservada": {
+            "label": "Quantidade observada"
+          }
+        },
+        "stateIndicators": [
+          {
+            "variable": "restantes",
+            "label": "Caixas na pilha"
+          },
+          {
+            "variable": "carregando",
+            "label": "Carregando uma caixa"
+          },
+          {
+            "variable": "descartadas",
+            "label": "Caixas na lixeira"
+          }
+        ],
+        "entities": {
+          "pilha": {
+            "label": "Pilha de caixas",
+            "glyph": "▣",
+            "propertyLabels": {
+              "quantidade": "Caixas restantes"
+            },
+            "interactionMessage": "Você retirou uma caixa. Agora jogue-a na lixeira!",
+            "failureMessages": {
+              "preconditionFailed": "Verifique se ainda há caixas e se suas mãos estão vazias."
+            }
+          },
+          "lixeira": {
+            "label": "Lixeira",
+            "glyph": "▤",
+            "role": "delivery",
+            "interactionMessage": "Caixa descartada na lixeira!",
+            "failureMessages": {
+              "preconditionFailed": "Primeiro retire uma caixa da pilha."
+            }
+          }
+        },
+        "barriers": {
+          "bloqueio": {
+            "label": "Corredor após a pilha"
+          }
+        },
+        "failures": {
+          "stackBlocked": "Ainda há caixas bloqueando a passagem. Retire e descarte uma por vez."
+        }
+      }
+    },
+    {
+      "id": "caixas3",
+      "label": "3 caixa(s)",
+      "initialVariables": {
+        "restantes": 3,
+        "carregando": false,
+        "descartadas": 0
+      },
+      "presentation": {
+        "visual": {
+          "chapter": "advanced",
+          "goalSkin": "star",
+          "boardStyle": "blueprint",
+          "entities": {
+            "pilha": {
+              "assetGroup": "stack",
+              "quantity": {
+                "source": "property",
+                "name": "quantidade",
+                "empty": "hideImage"
+              },
+              "badge": "Pilha",
+              "details": []
+            },
+            "lixeira": {
+              "assetGroup": "bin",
+              "quantity": {
+                "source": "property",
+                "name": "quantidade"
+              },
+              "badge": "Lixeira",
+              "details": []
+            }
+          },
+          "barriers": {
+            "bloqueio": {
+              "assetGroup": "gate",
+              "badge": "Passagem",
+              "details": []
+            }
+          },
+          "properties": {}
+        },
+        "memory": {
+          "quantidadeObservada": {
+            "label": "Quantidade observada"
+          }
+        },
+        "stateIndicators": [
+          {
+            "variable": "restantes",
+            "label": "Caixas na pilha"
+          },
+          {
+            "variable": "carregando",
+            "label": "Carregando uma caixa"
+          },
+          {
+            "variable": "descartadas",
+            "label": "Caixas na lixeira"
+          }
+        ],
+        "entities": {
+          "pilha": {
+            "label": "Pilha de caixas",
+            "glyph": "▣",
+            "propertyLabels": {
+              "quantidade": "Caixas restantes"
+            },
+            "interactionMessage": "Você retirou uma caixa. Agora jogue-a na lixeira!",
+            "failureMessages": {
+              "preconditionFailed": "Verifique se ainda há caixas e se suas mãos estão vazias."
+            }
+          },
+          "lixeira": {
+            "label": "Lixeira",
+            "glyph": "▤",
+            "role": "delivery",
+            "interactionMessage": "Caixa descartada na lixeira!",
+            "failureMessages": {
+              "preconditionFailed": "Primeiro retire uma caixa da pilha."
+            }
+          }
+        },
+        "barriers": {
+          "bloqueio": {
+            "label": "Corredor após a pilha"
+          }
+        },
+        "failures": {
+          "stackBlocked": "Ainda há caixas bloqueando a passagem. Retire e descarte uma por vez."
+        }
+      }
+    }
+  ]
+}

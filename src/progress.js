@@ -14,3 +14,5 @@ export function createProgressStore(catalog,getStorage){return {
  load(){try{const text=getStorage().getItem(PROGRESS_KEY);return {completed:text===null?new Set():parseProgress(catalog,text),message:''};}catch{return {completed:new Set(),message:'Não foi possível carregar o progresso local. Você pode jogar; conquistas anteriores desta sessão não foram recuperadas.'};}},
  save(completed){try{getStorage().setItem(PROGRESS_KEY,serializeProgress(catalog,completed));return {ok:true,message:''};}catch{return {ok:false,message:'Progresso mantido nesta sessão. O navegador não permitiu salvar; ao fechar ou recarregar, ele poderá ser perdido.'};}}
 };}
+// Acesso de exploração não representa conquista e não altera o registro salvo.
+export function explorationEnabled(search=''){return new URLSearchParams(search).get('unlockAll')==='1';}
